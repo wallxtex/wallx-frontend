@@ -7,7 +7,7 @@ const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleMenu = () => {
-        setIsOpen(!isOpen);
+        setIsOpen((prev) => !prev);
     };
 
     const mainLinks = [
@@ -31,8 +31,8 @@ const Navbar = () => {
                 {/* Center: Desktop Menu */}
                 <div className="hidden lg:flex flex-1 justify-center">
                     <ul className="flex m-0 p-0 list-none gap-10 xl:gap-16">
-                        {mainLinks.map((link, index) => (
-                            <li key={index} className="flex items-center justify-center">
+                        {mainLinks.map((link) => (
+                            <li key={link.name} className="flex items-center justify-center">
                                 <Link
                                     to={link.path}
                                     className="group relative flex items-center justify-center h-20 px-2 text-gray-700 font-medium text-base hover:text-[#d82b2b] transition-colors duration-300"
@@ -62,14 +62,17 @@ const Navbar = () => {
                     </Link>
 
                     {/* Hamburger Icon */}
-                    <div
-                        className="lg:hidden flex flex-col justify-between w-7 h-5 cursor-pointer relative z-50 ml-4"
+                    <button
+                        type="button"
+                        aria-label="Toggle Menu"
+                        aria-expanded={isOpen}
+                        className="lg:hidden flex flex-col justify-between w-7 h-5 cursor-pointer relative z-50 ml-4 bg-transparent border-none p-0 focus:outline-none"
                         onClick={toggleMenu}
                     >
                         <span className={`h-0.5 w-full bg-gray-800 rounded-lg transition-all duration-300 ease-in-out ${isOpen ? 'translate-y-2.5 rotate-45 !bg-[#d82b2b]' : ''}`}></span>
                         <span className={`h-0.5 w-full bg-gray-800 rounded-lg transition-all duration-300 ease-in-out ${isOpen ? 'opacity-0' : ''}`}></span>
                         <span className={`h-0.5 w-full bg-gray-800 rounded-lg transition-all duration-300 ease-in-out ${isOpen ? '-translate-y-2 -rotate-45 !bg-[#d82b2b]' : ''}`}></span>
-                    </div>
+                    </button>
                 </div>
 
                 {/* Mobile Menu Dropdown */}
@@ -79,8 +82,8 @@ const Navbar = () => {
           fixed top-20 left-0 w-full bg-white/98 backdrop-blur-md shadow-lg flex-col items-center justify-start transition-all duration-500 ease-out origin-top
           ${isOpen ? 'opacity-100 scale-y-100 h-[calc(100vh-80px)] overflow-y-auto' : 'opacity-0 scale-y-0 h-0'}
         `}>
-                    {mainLinks.map((link, index) => (
-                        <li key={index} className="w-full h-20 flex items-center justify-center border-b border-gray-100">
+                    {mainLinks.map((link) => (
+                        <li key={link.name} className="w-full h-20 flex items-center justify-center border-b border-gray-100">
                             <Link
                                 to={link.path}
                                 className="flex items-center justify-center h-full w-full px-6 text-gray-700 font-medium text-lg hover:text-[#d82b2b] hover:bg-gray-50 transition-colors duration-300"
