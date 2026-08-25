@@ -1,8 +1,10 @@
+import videoFile from '../assets/video.mp4';
+
 const HeroSectionVideo = () => {
   return (
-    <div className="w-full py-8 md:py-12 flex items-center justify-center bg-black">
-      {/* Full width container with increased height */}
-      <div className="w-full h-96 md:h-[500px] lg:h-[650px] flex items-center justify-center">
+    <div className="w-full h-screen flex items-center justify-center bg-black">
+      {/* Full width and full height container */}
+      <div className="w-full h-full flex items-center justify-center">
         <video
           className="w-full h-full object-cover"
           autoPlay
@@ -10,7 +12,7 @@ const HeroSectionVideo = () => {
           muted
           playsInline
         >
-          <source src="/src/assets/video.mp4" type="video/mp4" />
+          <source src={videoFile} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </div>
