@@ -2,11 +2,11 @@ import videoFile from '../assets/video.mp4';
 
 const HeroSectionVideo = () => {
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-black">
-      {/* Full width and full height container */}
-      <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full py-12 md:py-16 flex items-center justify-center bg-black">
+      {/* Medium size container - centered with proper height */}
+      <div className="w-full h-80 md:h-[450px] lg:h-[550px] flex items-center justify-center">
         <video
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover rounded-lg"
           autoPlay
           loop
           muted
