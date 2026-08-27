@@ -7,14 +7,14 @@ export const validateName = (value, fieldName = 'Name', max = 40) => {
 
 export const validateMobile = (value) => {
     if (!value.trim()) return 'Mobile number is required';
-    if (!/^[0-9]*$/.test(value)) return 'Mobile number can only contain digits';
+    if (!/^\d*$/.test(value)) return 'Mobile number can only contain digits';
     if (value.length !== 10) return 'Mobile number must be exactly 10 digits';
     return '';
 };
 
 export const validateEmail = (value) => {
     if (!value.trim()) return 'Email address is required';
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(value)) return 'Enter a valid email address';
     if (value.length > 80) return 'Email cannot exceed 80 characters';
     return '';
@@ -22,7 +22,7 @@ export const validateEmail = (value) => {
 
 export const validatePincode = (value) => {
     if (!value.trim()) return 'Pincode is required';
-    if (!/^[0-9]*$/.test(value)) return 'Pincode can only contain digits';
+    if (!/^\d*$/.test(value)) return 'Pincode can only contain digits';
     if (value.length !== 6) return 'Pincode must be exactly 6 digits';
     return '';
 };

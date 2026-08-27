@@ -18,7 +18,7 @@ import {
 
 const PAINTER_CONSTRAINTS = {
     name: { regex: /^[A-Za-z\s]*$/, max: 40 },
-    mobile: { regex: /^[0-9]*$/, max: 10 },
+    mobile: { regex: /^\d*$/, max: 10 },
     address: { max: 500 },
 };
 

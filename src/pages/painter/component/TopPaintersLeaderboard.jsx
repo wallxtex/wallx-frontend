@@ -64,6 +64,13 @@ const PODIUM_CONFIG = {
   },
 };
 
+const getRankBadgeStyle = (rank) => {
+  if (rank === 1) return 'bg-amber-400 text-amber-950 shadow-sm';
+  if (rank === 2) return 'bg-slate-300 text-slate-800';
+  if (rank === 3) return 'bg-orange-300 text-orange-900';
+  return 'bg-gray-100 text-gray-700 font-semibold';
+};
+
 const formatINR = (val) => {
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
@@ -210,15 +217,7 @@ const TopPaintersLeaderboard = () => {
                     className="hover:bg-red-50/30 transition-colors group"
                   >
                     <td className="py-4 pl-6 pr-3 text-left">
-                      <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${
-                        painter.rank === 1
-                          ? 'bg-amber-400 text-amber-950 shadow-sm'
-                          : painter.rank === 2
-                          ? 'bg-slate-300 text-slate-800'
-                          : painter.rank === 3
-                          ? 'bg-orange-300 text-orange-900'
-                          : 'bg-gray-100 text-gray-700 font-semibold'
-                      }`}>
+                      <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${getRankBadgeStyle(painter.rank)}`}>
                         #{painter.rank}
                       </span>
                     </td>

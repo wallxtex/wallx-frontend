@@ -25,8 +25,8 @@ const DEALER_CONSTRAINTS = {
     dealerName: { regex: /^[A-Za-z\s]*$/, max: 50 },
     shopName: { max: 80 },
     city: { regex: /^[A-Za-z\s]*$/, max: 50 },
-    mobile: { regex: /^[0-9]*$/, max: 10 },
-    pincode: { regex: /^[0-9]*$/, max: 6 },
+    mobile: { regex: /^\d*$/, max: 10 },
+    pincode: { regex: /^\d*$/, max: 6 },
     email: { max: 80 },
     area: { max: 100 },
 };

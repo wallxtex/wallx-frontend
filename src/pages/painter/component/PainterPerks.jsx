@@ -58,9 +58,9 @@ const PainterPerks = () => {
         </div>
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {perks.map((perk, index) => (
+          {perks.map((perk) => (
             <div
-              key={index}
+              key={perk.title}
               className="p-6 rounded-2xl bg-gray-50/70 border border-gray-200/80 hover:border-red-200 hover:bg-white hover:shadow-lg transition-all duration-300 group"
             >
               <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform">

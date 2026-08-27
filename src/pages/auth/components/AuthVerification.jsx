@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AuthBanner from './AuthBanner';
 import AuthBackButton from './AuthBackButton';
 
@@ -42,7 +42,7 @@ const AuthVerification = ({
     };
 
     const handleOtpChange = (index, value) => {
-        if (!/^[0-9]?$/.test(value)) return;
+        if (!/^\d?$/.test(value)) return;
 
         const newOtp = [...otp];
         newOtp[index] = value;
@@ -123,7 +123,7 @@ const AuthVerification = ({
                         <div className="flex justify-between items-center gap-3 sm:gap-4 my-2">
                             {otp.map((digit, index) => (
                                 <input
-                                    key={index}
+                                    key={`otp-slot-${index}`}
                                     ref={(el) => (inputRefs.current[index] = el)}
                                     type="text"
                                     inputMode="numeric"

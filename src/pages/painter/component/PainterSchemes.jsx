@@ -3,6 +3,12 @@ import { Link } from 'react-router-dom';
 import { IoFlameOutline, IoTimeOutline, IoCheckmarkCircle, IoSparklesOutline, IoGiftOutline, IoArrowForward } from 'react-icons/io5';
 import { PAINTER_SCHEMES } from './painterData';
 
+const getGridContainerClass = (count) => {
+  if (count === 1) return 'flex justify-center';
+  if (count === 2) return 'max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8';
+  return 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8';
+};
+
 const PainterSchemes = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedScheme, setSelectedScheme] = useState(null);
@@ -31,15 +37,16 @@ const PainterSchemes = () => {
             Active Schemes & Cash Offers for Painters
           </h2>
           <p className="mt-3 text-base sm:text-lg text-gray-600">
-            Maximize your income with WallX bonus pools, instant QR cashback boosters, and seasonal rewards on luxury texture buckets.
+            Maximize your income with WallX bonus pools, instant QR cashback boosters, and milestone rewards on luxury texture buckets and bags.
           </p>
         </div>
 
-        {/* Category Pills */}
-        <div className="mt-10 flex items-center justify-center flex-wrap gap-2 sm:gap-3">
+        {/* Category Filter Tabs */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
           {categories.map((cat) => (
             <button
               key={cat.id}
+              type="button"
               onClick={() => setActiveCategory(cat.id)}
               className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer ${
                 activeCategory === cat.id
@@ -52,14 +59,8 @@ const PainterSchemes = () => {
           ))}
         </div>
 
-        {/* Schemes Grid (Centered when 1 or 2 schemes exist) */}
-        <div className={`mt-10 ${
-          filteredSchemes.length === 1
-            ? 'flex justify-center'
-            : filteredSchemes.length === 2
-            ? 'max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8'
-            : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8'
-        }`}>
+        {/* Schemes Grid */}
+        <div className={`mt-10 ${getGridContainerClass(filteredSchemes.length)}`}>
           {filteredSchemes.map((scheme) => (
             <div
               key={scheme.id}
@@ -153,7 +154,8 @@ const PainterSchemes = () => {
               <button
                 type="button"
                 onClick={() => setSelectedScheme(null)}
-                className="text-gray-400 hover:text-gray-700 text-2xl font-semibold leading-none p-1"
+                className="text-gray-400 hover:text-gray-700 text-2xl font-semibold leading-none p-1.5 cursor-pointer rounded-lg hover:bg-gray-100 transition-colors"
+                aria-label="Close modal"
               >
                 ✕
               </button>
@@ -168,8 +170,8 @@ const PainterSchemes = () => {
             <div className="mt-5 space-y-3">
               <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Offer Terms & Eligibility:</h4>
               <ul className="space-y-2 text-sm text-gray-600">
-                {selectedScheme.features.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2">
+                {selectedScheme.features.map((item) => (
+                  <li key={item} className="flex items-start gap-2">
                     <IoCheckmarkCircle className="text-emerald-500 text-base shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
@@ -185,21 +187,14 @@ const PainterSchemes = () => {
               </ul>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-gray-100 flex gap-3">
+            <div className="mt-6 pt-4 border-t border-gray-100">
               <Link
                 to="/painter-signup"
-                className="flex-1 text-center py-3 bg-[#d82b2b] hover:bg-[#b82222] text-white rounded-xl text-sm font-semibold transition-colors"
+                className="w-full block text-center py-3 bg-[#d82b2b] hover:bg-[#b82222] text-white rounded-xl text-sm font-semibold shadow-md shadow-red-500/20 hover:shadow-lg transition-all"
                 onClick={() => setSelectedScheme(null)}
               >
                 Register & Start Earning
               </Link>
-              <button
-                type="button"
-                onClick={() => setSelectedScheme(null)}
-                className="px-5 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm font-medium transition-colors"
-              >
-                Close
-              </button>
             </div>
           </div>
         </div>
