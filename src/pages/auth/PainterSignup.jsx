@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import signupImg from '../../assets/webp/painter.webp';
 import {
     AuthLayout,
+    AuthHeader,
     InputField,
     PhoneInputField
 } from './components';
@@ -76,47 +77,77 @@ const PainterSignup = () => {
             bannerImg={signupImg}
             bannerAlt="WallX Painter Signup Banner"
             bannerPosition="object-[65%_center]"
-            title="Create Painter Account"
-            subtitle="Start Exploring Opportunities - It's Free"
-            description="Join the community and start your professional journey today."
-            onSubmit={handleSubmit}
-            submitText="Register"
+            maxWidth="max-w-[460px] xl:max-w-[480px]"
             backPath="/"
         >
-            <InputField
-                label="Full Name"
-                name="name"
-                placeholder="Enter your full name"
-                value={formData.name}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.name}
-                maxLength={40}
-                required
+            <AuthHeader
+                title="Create Painter Account"
+                subtitle="Start Exploring Opportunities - It's Free"
+                description="Join the community and start your professional journey today."
             />
 
-            <PhoneInputField
-                label="Mobile Number"
-                name="mobile"
-                placeholder="Enter 10-digit mobile number"
-                value={formData.mobile}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.mobile}
-                required
-            />
+            <form onSubmit={handleSubmit} noValidate className="space-y-3.5 sm:space-y-5 lg:space-y-6">
+                <InputField
+                    label="Full Name"
+                    name="name"
+                    placeholder="Enter your full name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.name}
+                    maxLength={40}
+                    required
+                />
 
-            <InputField
-                label="Address"
-                name="address"
-                placeholder="Enter your full address"
-                value={formData.address}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.address}
-                maxLength={500}
-                required
-            />
+                <PhoneInputField
+                    label="Mobile Number"
+                    name="mobile"
+                    placeholder="Enter 10-digit mobile number"
+                    value={formData.mobile}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.mobile}
+                    required
+                />
+
+                <InputField
+                    label="Address"
+                    name="address"
+                    placeholder="Enter your full address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.address}
+                    maxLength={500}
+                    required
+                />
+
+                <p className="text-xs text-gray-500 leading-normal pt-1">
+                    By clicking Register, you agree to our{' '}
+                    <Link to="/terms" className="text-[#d82b2b] hover:underline font-medium">
+                        Terms of Service
+                    </Link>{' '}
+                    and{' '}
+                    <Link to="/privacy" className="text-[#d82b2b] hover:underline font-medium">
+                        Privacy Policy
+                    </Link>
+                    .
+                </p>
+
+                <button
+                    type="submit"
+                    className="w-full h-[46px] sm:h-[50px] lg:h-[54px] bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-[15px] sm:text-[16px] rounded-lg shadow-sm hover:shadow transition-all duration-200 cursor-pointer flex items-center justify-center tracking-wide"
+                >
+                    Register
+                </button>
+            </form>
+
+            <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm text-gray-500">
+                Already have an account?{' '}
+                <Link to="/login" className="text-[#d82b2b] hover:underline font-semibold">
+                    Login here
+                </Link>
+            </div>
         </AuthLayout>
     );
 };

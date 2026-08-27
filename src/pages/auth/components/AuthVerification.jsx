@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AuthBanner from './AuthBanner';
-import AuthBackButton from './AuthBackButton';
+import AuthLayout from './AuthLayout';
 
 const AuthVerification = ({
     title = 'Enter verification code',
@@ -13,7 +11,6 @@ const AuthVerification = ({
     onVerify,
     role = 'Painter',
 }) => {
-    const navigate = useNavigate();
     const [otp, setOtp] = useState(['', '', '', '']);
     const inputRefs = useRef([]);
 
@@ -96,91 +93,85 @@ const AuthVerification = ({
     };
 
     return (
-        <div className="h-[calc(100vh-80px)] max-h-[calc(100vh-80px)] lg:h-screen lg:max-h-screen overflow-hidden bg-white flex flex-col lg:flex-row">
-            <AuthBanner
-                image={bannerImg}
-                alt={bannerAlt}
-                objectPosition={bannerPosition}
-            />
-
-            <div className="w-full lg:w-1/2 h-full flex flex-col justify-between relative px-6 sm:px-12 xl:px-24 py-6 sm:py-10 lg:py-12 overflow-y-auto">
-                <AuthBackButton onClick={() => navigate(backPath)} />
-
-                <div className="w-full max-w-[440px] mx-auto my-auto flex flex-col justify-center">
-                    <div className="text-left mb-6">
-                        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-                            {title}
-                        </h1>
-                        <p className="text-sm text-gray-500 mt-2 leading-relaxed">
-                            We have sent an OTP on your mobile number{' '}
-                            <span className="font-semibold text-gray-800">
-                                {mobile ? `+91 ${mobile}` : '+91 ••••••••••'}
-                            </span>
-                        </p>
-                    </div>
-
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="flex justify-between items-center gap-3 sm:gap-4 my-2">
-                            {otp.map((digit, index) => (
-                                <input
-                                    key={`otp-slot-${index}`}
-                                    ref={(el) => (inputRefs.current[index] = el)}
-                                    type="text"
-                                    inputMode="numeric"
-                                    maxLength={1}
-                                    value={digit}
-                                    onChange={(e) => handleOtpChange(index, e.target.value)}
-                                    onKeyDown={(e) => handleKeyDown(index, e)}
-                                    onPaste={handlePaste}
-                                    className="w-14 h-14 sm:w-16 sm:h-16 text-center text-xl sm:text-2xl font-bold rounded-xl border border-gray-200 bg-gray-50/50 text-gray-800 focus:bg-white focus:border-[#d82b2b] focus:ring-4 focus:ring-red-500/10 focus:outline-none transition-all duration-200 shadow-xs"
-                                />
-                            ))}
-                        </div>
-
-                        <div className="flex items-center justify-between text-sm py-1">
-                            <span className="text-gray-500 font-medium">
-                                {canResend ? (
-                                    <span className="text-red-500">OTP Expired</span>
-                                ) : (
-                                    <>Expires in: <span className="text-gray-900 font-bold tracking-wider">{formatTime(timeLeft)}</span></>
-                                )}
-                            </span>
-
-                            <button
-                                type="button"
-                                onClick={handleResendOtp}
-                                disabled={!canResend}
-                                className={`font-semibold transition-all duration-200 cursor-pointer ${
-                                    canResend
-                                        ? 'text-[#d82b2b] hover:text-[#b82222] underline underline-offset-4'
-                                        : 'text-gray-400 cursor-not-allowed opacity-60'
-                                }`}
-                            >
-                                Resend OTP
-                            </button>
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="w-full h-12 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-[15px] rounded-xl shadow-md shadow-red-500/20 hover:shadow-lg hover:shadow-red-500/30 active:scale-[0.99] transition-all duration-200 cursor-pointer flex items-center justify-center"
-                        >
-                            Verify & Continue
-                        </button>
-                    </form>
-
-                    <div className="mt-8 text-center text-sm text-gray-500">
-                        Need help?{' '}
-                        <a href="tel:18001239255" className="font-semibold text-gray-800 hover:text-[#d82b2b] transition-colors">
-                            Contact Support
-                        </a>
-                    </div>
-                </div>
-
-                <div className="text-center text-xs text-gray-400 mt-auto py-2">
-                    Secured by WallX Mitra Authentication
-                </div>
+        <AuthLayout
+            bannerImg={bannerImg}
+            bannerAlt={bannerAlt}
+            bannerPosition={bannerPosition}
+            maxWidth="max-w-[440px]"
+            backPath={backPath}
+        >
+            <div className="text-left mb-6">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+                    {title}
+                </h1>
+                <p className="text-sm text-gray-500 mt-2 leading-relaxed">
+                    We have sent an OTP on your mobile number{' '}
+                    <span className="font-semibold text-gray-800">
+                        {mobile ? `+91 ${mobile}` : '+91 ••••••••••'}
+                    </span>
+                </p>
             </div>
-        </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="flex justify-between items-center gap-3 sm:gap-4 my-2">
+                    {otp.map((digit, index) => (
+                        <input
+                            key={`otp-slot-${index}`}
+                            ref={(el) => (inputRefs.current[index] = el)}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            value={digit}
+                            onChange={(e) => handleOtpChange(index, e.target.value)}
+                            onKeyDown={(e) => handleKeyDown(index, e)}
+                            onPaste={handlePaste}
+                            className="w-14 h-14 sm:w-16 sm:h-16 text-center text-xl sm:text-2xl font-bold rounded-xl border border-gray-200 bg-gray-50/50 text-gray-800 focus:bg-white focus:border-[#d82b2b] focus:ring-4 focus:ring-red-500/10 focus:outline-none transition-all duration-200 shadow-xs"
+                        />
+                    ))}
+                </div>
+
+                <div className="flex items-center justify-between text-sm py-1">
+                    <span className="text-gray-500 font-medium">
+                        {canResend ? (
+                            <span className="text-red-500">OTP Expired</span>
+                        ) : (
+                            <>Expires in: <span className="text-gray-900 font-bold tracking-wider">{formatTime(timeLeft)}</span></>
+                        )}
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={handleResendOtp}
+                        disabled={!canResend}
+                        className={`font-semibold transition-all duration-200 cursor-pointer ${
+                            canResend
+                                ? 'text-[#d82b2b] hover:text-[#b82222] underline underline-offset-4'
+                                : 'text-gray-400 cursor-not-allowed opacity-60'
+                        }`}
+                    >
+                        Resend OTP
+                    </button>
+                </div>
+
+                <button
+                    type="submit"
+                    className="w-full h-12 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-[15px] rounded-xl shadow-md shadow-red-500/20 hover:shadow-lg hover:shadow-red-500/30 active:scale-[0.99] transition-all duration-200 cursor-pointer flex items-center justify-center"
+                >
+                    Verify & Continue
+                </button>
+            </form>
+
+            <div className="mt-8 text-center text-sm text-gray-500">
+                Need help?{' '}
+                <a href="tel:18001239255" className="font-semibold text-gray-800 hover:text-[#d82b2b] transition-colors">
+                    Contact Support
+                </a>
+            </div>
+
+            <div className="text-center text-xs text-gray-400 mt-6 py-2">
+                Secured by WallX Mitra Authentication
+            </div>
+        </AuthLayout>
     );
 };
 
