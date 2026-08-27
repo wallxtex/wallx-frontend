@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { IoChevronDown as ChevronDown } from "react-icons/io5";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
