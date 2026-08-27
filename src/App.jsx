@@ -1,8 +1,7 @@
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./common/Navbar";
-import HeroSectionVideo from "./components/HeroSectionVideo";
-import "./App.css";
+import "./index.css";
+import HomePage from "./components/pages/HomePage";
 
 function App() {
   return (
@@ -10,8 +9,7 @@ function App() {
       <div className="App">
         <Navbar />
         <Routes>
-          <Route path="/" element={<HeroSectionVideo />} />
-          {/* Add more routes here as needed */}
+          <Route path="/" element={<HomePage />} />
         </Routes>
       </div>
     </BrowserRouter>
