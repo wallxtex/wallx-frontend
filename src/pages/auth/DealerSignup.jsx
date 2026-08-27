@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import dealerBannerImg from '../../assets/webp/dealer.webp';
 import {
@@ -15,10 +15,9 @@ import {
     validateMobile,
     validateEmail,
     validatePincode,
-    validateRequiredText,
-    validateWithMap,
-    isInputAllowed
+    validateRequiredText
 } from './utils/validation';
+import { useAuthForm } from './utils/useAuthForm';
 
 const DEALER_CONSTRAINTS = {
     dealerName: { regex: /^[A-Za-z\s]*$/, max: 50 },
@@ -41,64 +40,30 @@ const DEALER_VALIDATORS = {
     area: (v) => validateRequiredText(v, 'Area', 2, 100),
 };
 
+const INITIAL_DEALER_STATE = {
+    dealerName: '',
+    shopName: '',
+    mobile: '',
+    email: '',
+    state: '',
+    city: '',
+    pincode: '',
+    area: ''
+};
+
 const DealerSignup = () => {
     const navigate = useNavigate();
-
-    const [formData, setFormData] = useState({
-        dealerName: '',
-        shopName: '',
-        mobile: '',
-        email: '',
-        state: '',
-        city: '',
-        pincode: '',
-        area: ''
-    });
-
-    const [errors, setErrors] = useState({
-        dealerName: '',
-        shopName: '',
-        mobile: '',
-        email: '',
-        state: '',
-        city: '',
-        pincode: '',
-        area: ''
-    });
-
-    const validateField = (name, value) => validateWithMap(name, value, DEALER_VALIDATORS);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (!isInputAllowed(name, value, DEALER_CONSTRAINTS)) return;
-
-        setFormData((prev) => ({ ...prev, [name]: value }));
-        setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
-    };
-
-    const handleBlur = (e) => {
-        const { name, value } = e.target;
-        setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
-    };
+    const {
+        formData,
+        errors,
+        handleChange,
+        handleBlur,
+        validateAll
+    } = useAuthForm(INITIAL_DEALER_STATE, DEALER_VALIDATORS, DEALER_CONSTRAINTS);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        const newErrors = {
-            dealerName: validateField('dealerName', formData.dealerName),
-            shopName: validateField('shopName', formData.shopName),
-            mobile: validateField('mobile', formData.mobile),
-            email: validateField('email', formData.email),
-            state: validateField('state', formData.state),
-            city: validateField('city', formData.city),
-            pincode: validateField('pincode', formData.pincode),
-            area: validateField('area', formData.area)
-        };
-
-        setErrors(newErrors);
-
-        const hasErrors = Object.values(newErrors).some((err) => err !== '');
-        if (hasErrors) return;
+        if (!validateAll()) return;
 
         console.log('Dealer form submitted:', formData);
         navigate('/dealer-verification', {

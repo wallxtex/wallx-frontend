@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import signupImg from '../../assets/webp/painter.webp';
 import {
@@ -10,10 +10,9 @@ import {
 import {
     validateName,
     validateMobile,
-    validateRequiredText,
-    validateWithMap,
-    isInputAllowed
+    validateRequiredText
 } from './utils/validation';
+import { useAuthForm } from './utils/useAuthForm';
 
 const PAINTER_CONSTRAINTS = {
     name: { regex: /^[A-Za-z\s]*$/, max: 40 },
@@ -27,46 +26,25 @@ const PAINTER_VALIDATORS = {
     mobile: validateMobile,
 };
 
+const INITIAL_PAINTER_STATE = {
+    name: '',
+    address: '',
+    mobile: ''
+};
+
 const PainterSignup = () => {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        name: '',
-        address: '',
-        mobile: ''
-    });
-    const [errors, setErrors] = useState({
-        name: '',
-        address: '',
-        mobile: ''
-    });
-
-    const validateField = (name, value) => validateWithMap(name, value, PAINTER_VALIDATORS);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (!isInputAllowed(name, value, PAINTER_CONSTRAINTS)) return;
-
-        setFormData(prev => ({ ...prev, [name]: value }));
-        setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
-    };
-
-    const handleBlur = (e) => {
-        const { name, value } = e.target;
-        setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
-    };
+    const {
+        formData,
+        errors,
+        handleChange,
+        handleBlur,
+        validateAll
+    } = useAuthForm(INITIAL_PAINTER_STATE, PAINTER_VALIDATORS, PAINTER_CONSTRAINTS);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        const newErrors = {
-            name: validateField('name', formData.name),
-            address: validateField('address', formData.address),
-            mobile: validateField('mobile', formData.mobile)
-        };
-        setErrors(newErrors);
-
-        const hasErrors = Object.values(newErrors).some((err) => err !== '');
-        if (hasErrors) return;
+        if (!validateAll()) return;
 
         console.log('Painter form submitted:', formData);
         navigate('/painter-verification', { state: { mobile: formData.mobile } });
