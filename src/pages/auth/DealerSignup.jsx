@@ -32,14 +32,14 @@ const DEALER_CONSTRAINTS = {
 };
 
 const DEALER_VALIDATORS = {
-    dealerName: (v) => validateName(v, 'Dealer name', 50),
-    shopName: (v) => validateRequiredText(v, 'Shop name', 2, 80),
+    dealerName: (v) => validateName(v, 'Dealer Name', 50),
+    shopName: (v) => validateRequiredText(v, 'Shop Name', 2, 80),
     mobile: validateMobile,
     email: validateEmail,
-    state: (v) => (!v.trim() ? 'Please select your state' : ''),
+    state: (v) => (!v.trim() ? 'Please select state' : ''),
     city: (v) => validateName(v, 'City', 50),
     pincode: validatePincode,
-    area: (v) => validateRequiredText(v, 'Area / Locality', 2, 100),
+    area: (v) => validateRequiredText(v, 'Area', 2, 100),
 };
 
 const DealerSignup = () => {
@@ -116,7 +116,7 @@ const DealerSignup = () => {
 
     return (
         <div className="h-[calc(100vh-80px)] max-h-[calc(100vh-80px)] lg:h-screen lg:max-h-screen overflow-hidden bg-white flex flex-col lg:flex-row">
-            {/* Desktop Banner: dealer.webp centered and covering full left panel */}
+            {/* Desktop Banner */}
             <AuthBanner
                 image={dealerBannerImg}
                 alt="WallX Dealer Signup Banner"
@@ -125,9 +125,8 @@ const DealerSignup = () => {
 
             {/* Form Container */}
             <div className="w-full lg:w-1/2 h-full flex flex-col justify-start lg:justify-center relative px-6 sm:px-12 lg:px-12 xl:px-20 py-6 sm:py-8 lg:py-8 xl:py-12 overflow-y-auto lg:overflow-y-hidden">
-                {/* Fixed Top Back Arrow Button on Laptop */}
                 <AuthBackButton
-                    to="/"
+                    onClick={() => navigate('/')}
                     className="mb-4 sm:mb-6 lg:mb-0 lg:absolute lg:top-6 lg:left-8 xl:top-9 xl:left-16 z-10"
                 />
 
@@ -142,7 +141,6 @@ const DealerSignup = () => {
                     <form onSubmit={handleSubmit} noValidate className="space-y-4 sm:space-y-5 lg:space-y-4.5 xl:space-y-5">
                         {/* Section 1: Business & Personal Details */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-4.5 xl:gap-5">
-                            {/* Dealer Name */}
                             <InputField
                                 label="Dealer Name"
                                 name="dealerName"
@@ -154,7 +152,6 @@ const DealerSignup = () => {
                                 maxLength={50}
                             />
 
-                            {/* Shop Name */}
                             <InputField
                                 label="Shop / Business Name"
                                 name="shopName"
@@ -169,7 +166,6 @@ const DealerSignup = () => {
 
                         {/* Section 2: Contact Details */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-4.5 xl:gap-5">
-                            {/* Phone Number */}
                             <PhoneInputField
                                 label="Phone Number"
                                 name="mobile"
@@ -180,7 +176,6 @@ const DealerSignup = () => {
                                 error={errors.mobile}
                             />
 
-                            {/* Email Address */}
                             <InputField
                                 label="Email Address"
                                 name="email"
@@ -196,7 +191,6 @@ const DealerSignup = () => {
 
                         {/* Section 3: State & City */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-4.5 xl:gap-5">
-                            {/* State */}
                             <SelectField
                                 label="State"
                                 name="state"
@@ -208,7 +202,6 @@ const DealerSignup = () => {
                                 error={errors.state}
                             />
 
-                            {/* City Name */}
                             <InputField
                                 label="City Name"
                                 name="city"
@@ -223,7 +216,6 @@ const DealerSignup = () => {
 
                         {/* Section 4: Pincode & Area */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-4.5 xl:gap-5">
-                            {/* Pincode */}
                             <InputField
                                 label="Pincode"
                                 name="pincode"
@@ -235,7 +227,6 @@ const DealerSignup = () => {
                                 maxLength={6}
                             />
 
-                            {/* Area / Market / Landmark */}
                             <InputField
                                 label="Area / Market / Landmark"
                                 name="area"
