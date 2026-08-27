@@ -11,6 +11,37 @@ import {
     INDIAN_STATES
 } from './components';
 
+import {
+    validateName,
+    validateMobile,
+    validateEmail,
+    validatePincode,
+    validateRequiredText,
+    validateWithMap,
+    isInputAllowed
+} from './utils/validation';
+
+const DEALER_CONSTRAINTS = {
+    dealerName: { regex: /^[A-Za-z\s]*$/, max: 50 },
+    shopName: { max: 80 },
+    city: { regex: /^[A-Za-z\s]*$/, max: 50 },
+    mobile: { regex: /^[0-9]*$/, max: 10 },
+    pincode: { regex: /^[0-9]*$/, max: 6 },
+    email: { max: 80 },
+    area: { max: 100 },
+};
+
+const DEALER_VALIDATORS = {
+    dealerName: (v) => validateName(v, 'Dealer name', 50),
+    shopName: (v) => validateRequiredText(v, 'Shop name', 2, 80),
+    mobile: validateMobile,
+    email: validateEmail,
+    state: (v) => (!v.trim() ? 'Please select your state' : ''),
+    city: (v) => validateName(v, 'City', 50),
+    pincode: validatePincode,
+    area: (v) => validateRequiredText(v, 'Area / Locality', 2, 100),
+};
+
 const DealerSignup = () => {
     const navigate = useNavigate();
 
@@ -36,75 +67,11 @@ const DealerSignup = () => {
         area: ''
     });
 
-    const validateField = (name, value) => {
-        switch (name) {
-            case 'dealerName': {
-                if (!value.trim()) return 'Dealer name is required';
-                if (!/^[A-Za-z\s]*$/.test(value)) return 'Name can only contain letters and spaces';
-                if (value.length > 50) return 'Name cannot exceed 50 characters';
-                return '';
-            }
-            case 'shopName': {
-                if (!value.trim()) return 'Shop name is required';
-                if (value.length < 2) return 'Shop name is too short';
-                if (value.length > 80) return 'Shop name cannot exceed 80 characters';
-                return '';
-            }
-            case 'mobile': {
-                if (!value.trim()) return 'Mobile number is required';
-                if (!/^[0-9]*$/.test(value)) return 'Mobile number can only contain digits';
-                if (value.length !== 10) return 'Mobile number must be exactly 10 digits';
-                return '';
-            }
-            case 'email': {
-                if (!value.trim()) return 'Email address is required';
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(value)) return 'Enter a valid email address';
-                if (value.length > 80) return 'Email cannot exceed 80 characters';
-                return '';
-            }
-            case 'state': {
-                if (!value.trim()) return 'Please select your state';
-                return '';
-            }
-            case 'city': {
-                if (!value.trim()) return 'City name is required';
-                if (!/^[A-Za-z\s]*$/.test(value)) return 'City can only contain letters and spaces';
-                if (value.length > 50) return 'City cannot exceed 50 characters';
-                return '';
-            }
-            case 'pincode': {
-                if (!value.trim()) return 'Pincode is required';
-                if (!/^[0-9]*$/.test(value)) return 'Pincode can only contain digits';
-                if (value.length !== 6) return 'Pincode must be exactly 6 digits';
-                return '';
-            }
-            case 'area': {
-                if (!value.trim()) return 'Area / Locality is required';
-                if (value.length < 2) return 'Area description is too short';
-                if (value.length > 100) return 'Area cannot exceed 100 characters';
-                return '';
-            }
-            default:
-                return '';
-        }
-    };
+    const validateField = (name, value) => validateWithMap(name, value, DEALER_VALIDATORS);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        // Input guardrails
-        if (name === 'dealerName' && !/^[A-Za-z\s]*$/.test(value)) return;
-        if (name === 'city' && !/^[A-Za-z\s]*$/.test(value)) return;
-        if (name === 'mobile' && !/^[0-9]*$/.test(value)) return;
-        if (name === 'pincode' && !/^[0-9]*$/.test(value)) return;
-        if (name === 'dealerName' && value.length > 50) return;
-        if (name === 'shopName' && value.length > 80) return;
-        if (name === 'city' && value.length > 50) return;
-        if (name === 'mobile' && value.length > 10) return;
-        if (name === 'pincode' && value.length > 6) return;
-        if (name === 'email' && value.length > 80) return;
-        if (name === 'area' && value.length > 100) return;
+        if (!isInputAllowed(name, value, DEALER_CONSTRAINTS)) return;
 
         setFormData((prev) => ({ ...prev, [name]: value }));
         setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));

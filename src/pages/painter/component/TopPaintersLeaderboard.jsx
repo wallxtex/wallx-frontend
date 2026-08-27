@@ -13,6 +13,112 @@ import {
 import { TOP_PAINTERS_DATA } from './painterData';
 import { INDIAN_STATES } from '../../../constants/states';
 
+const PODIUM_CONFIG = {
+  1: {
+    order: 'order-1 md:order-2 transform md:-translate-y-4 shadow-2xl',
+    cardBg: 'bg-gradient-to-b from-amber-50/70 via-white to-amber-50/40 border-2 border-amber-400',
+    crownBg: 'bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-300 border-4 border-white shadow-xl text-amber-950 text-3xl',
+    crownIcon: <IoTrophy className="text-amber-900 drop-shadow" />,
+    badgeClass: 'bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-md shadow-amber-500/30 font-extrabold',
+    badgeIcon: <IoStar className="text-white text-xs" />,
+    badgeLabel: '1st Champion',
+    avatarClass: 'w-24 h-24 border-4 ring-4 ring-amber-100 text-3xl font-black',
+    nameSize: 'text-2xl font-extrabold',
+    boxBg: 'bg-gradient-to-br from-amber-100/90 to-yellow-50 border border-amber-300/80 shadow-sm',
+    boxLabel: 'text-amber-900 font-bold',
+    cashColor: 'text-[#d82b2b] text-3xl font-black',
+    borderDivider: 'border-amber-200 text-amber-950',
+    hasMilestone: true,
+  },
+  2: {
+    order: 'order-2 md:order-1 shadow-md',
+    cardBg: 'bg-gradient-to-b from-slate-50 to-white border-2 border-slate-200',
+    crownBg: 'bg-gradient-to-tr from-slate-400 to-slate-200 border-2 border-white shadow-md text-slate-800 text-2xl font-black',
+    crownIcon: '2',
+    badgeClass: 'bg-slate-100 text-slate-700 border border-slate-300 font-bold',
+    badgeIcon: <IoRibbonOutline />,
+    badgeLabel: '2nd Position',
+    avatarClass: 'w-20 h-20 border-2 text-2xl font-bold',
+    nameSize: 'text-xl font-bold',
+    boxBg: 'bg-slate-100/80 border border-slate-200',
+    boxLabel: 'text-gray-500 font-semibold',
+    cashColor: 'text-gray-900 text-2xl font-extrabold',
+    borderDivider: 'border-slate-200 text-gray-600',
+    hasMilestone: false,
+  },
+  3: {
+    order: 'order-3 shadow-md',
+    cardBg: 'bg-gradient-to-b from-orange-50/60 to-white border-2 border-orange-200',
+    crownBg: 'bg-gradient-to-tr from-amber-700 to-orange-400 border-2 border-white shadow-md text-white text-2xl font-black',
+    crownIcon: '3',
+    badgeClass: 'bg-orange-100 text-orange-800 border border-orange-300 font-bold',
+    badgeIcon: <IoRibbonOutline />,
+    badgeLabel: '3rd Position',
+    avatarClass: 'w-20 h-20 border-2 text-2xl font-bold',
+    nameSize: 'text-xl font-bold',
+    boxBg: 'bg-orange-50/70 border border-orange-200',
+    boxLabel: 'text-gray-500 font-semibold',
+    cashColor: 'text-gray-900 text-2xl font-extrabold',
+    borderDivider: 'border-orange-200 text-gray-600',
+    hasMilestone: false,
+  },
+};
+
+const formatINR = (val) => {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(val);
+};
+
+const PodiumCard = ({ painter }) => {
+  const cfg = PODIUM_CONFIG[painter.rank];
+  if (!cfg) return null;
+
+  return (
+    <div className={`${cfg.order} ${cfg.cardBg} rounded-3xl p-6 hover:shadow-xl transition-all duration-300 relative text-center flex flex-col items-center`}>
+      <div className={`w-14 h-14 -mt-12 rounded-2xl flex items-center justify-center ${cfg.crownBg}`}>
+        {cfg.crownIcon}
+      </div>
+
+      <span className={`mt-3 inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs ${cfg.badgeClass}`}>
+        {cfg.badgeIcon} {cfg.badgeLabel} • {painter.tier}
+      </span>
+
+      <div className={`mt-4 rounded-full ${painter.avatarBg} flex items-center justify-center shadow-inner ${cfg.avatarClass}`}>
+        {painter.avatarInitials}
+      </div>
+
+      <h3 className={`mt-3 text-gray-900 flex items-center justify-center gap-1.5 ${cfg.nameSize}`}>
+        {painter.name}
+        <IoCheckmarkCircle className="text-blue-500 text-base" title="Verified Master Painter" />
+      </h3>
+
+      <div className="mt-1 flex items-center gap-1 text-xs text-gray-500 font-medium">
+        <IoLocationOutline className="text-gray-400 text-sm" />
+        {painter.city}, {painter.state}
+      </div>
+
+      <div className={`mt-5 w-full rounded-2xl p-4 ${cfg.boxBg}`}>
+        <div className={`text-xs uppercase tracking-wide ${cfg.boxLabel}`}>Total QR Cash Redeemed (@ ₹90/unit)</div>
+        <div className={`mt-0.5 ${cfg.cashColor}`}>
+          {formatINR(painter.totalRedeemedAmount)}
+        </div>
+        <div className={`mt-2 pt-2 border-t text-center text-xs ${cfg.borderDivider}`}>
+          <span>Scanned: <strong>{painter.bucketsScanned.toLocaleString()} Bags / Buckets</strong></span>
+        </div>
+      </div>
+
+      {cfg.hasMilestone && painter.recentReward && (
+        <div className="mt-4 p-2 rounded-xl bg-amber-50 text-amber-900 text-xs font-semibold border border-amber-200/60 w-full">
+          🎁 Milestone: {painter.recentReward}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const TopPaintersLeaderboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedState, setSelectedState] = useState('all');
@@ -27,23 +133,10 @@ const TopPaintersLeaderboard = () => {
   });
 
   const top3 = TOP_PAINTERS_DATA.slice(0, 3);
-  const rank1 = top3[0];
-  const rank2 = top3[1];
-  const rank3 = top3[2];
-
-  // Helper to format currency in Indian numbering
-  const formatINR = (val) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0,
-    }).format(val);
-  };
 
   return (
     <section id="top-painters" className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-white relative">
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs sm:text-sm font-semibold mb-3">
             <IoTrophy className="text-amber-500 text-base" />
@@ -59,128 +152,12 @@ const TopPaintersLeaderboard = () => {
 
         {/* Podium for Top 3 Painters */}
         <div className="mt-14 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-          
-          {/* Rank #2 (Silver) */}
-          {rank2 && (
-            <div className="order-2 md:order-1 bg-gradient-to-b from-slate-50 to-white rounded-3xl p-6 border-2 border-slate-200 shadow-md hover:shadow-xl transition-all duration-300 relative text-center flex flex-col items-center">
-              {/* Crown / Rank Icon */}
-              <div className="w-14 h-14 -mt-12 rounded-2xl bg-gradient-to-tr from-slate-400 to-slate-200 border-2 border-white shadow-md flex items-center justify-center text-slate-800 text-2xl font-black">
-                2
-              </div>
-              <span className="mt-3 inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300">
-                <IoRibbonOutline /> 2nd Position • {rank2.tier}
-              </span>
-
-              <div className={`mt-4 w-20 h-20 rounded-full ${rank2.avatarBg} border-2 flex items-center justify-center font-bold text-2xl shadow-inner`}>
-                {rank2.avatarInitials}
-              </div>
-
-              <h3 className="mt-3 text-xl font-bold text-gray-900 flex items-center justify-center gap-1.5">
-                {rank2.name}
-                <IoCheckmarkCircle className="text-blue-500 text-base" title="Verified Master Painter" />
-              </h3>
-
-              <div className="mt-1 flex items-center gap-1 text-xs text-gray-500 font-medium">
-                <IoLocationOutline className="text-gray-400 text-sm" />
-                {rank2.city}, {rank2.state}
-              </div>
-
-              {/* QR Cash Earning Box */}
-              <div className="mt-5 w-full bg-slate-100/80 rounded-2xl p-4 border border-slate-200">
-                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Total QR Cash Redeemed (@ ₹90/unit)</div>
-                <div className="text-2xl font-extrabold text-gray-900 mt-0.5">
-                  {formatINR(rank2.totalRedeemedAmount)}
-                </div>
-                <div className="mt-2 pt-2 border-t border-slate-200 text-center text-xs text-gray-600">
-                  <span>Scanned: <strong>{rank2.bucketsScanned.toLocaleString()} Bags / Buckets</strong></span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Rank #1 (Gold Champion) */}
-          {rank1 && (
-            <div className="order-1 md:order-2 bg-gradient-to-b from-amber-50/70 via-white to-amber-50/40 rounded-3xl p-7 border-2 border-amber-400 shadow-2xl hover:shadow-amber-500/20 transition-all duration-300 relative text-center flex flex-col items-center transform md:-translate-y-4">
-              {/* Champion Badge */}
-              <div className="w-16 h-16 -mt-14 rounded-2xl bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-300 border-4 border-white shadow-xl flex items-center justify-center text-amber-950 text-3xl font-black">
-                <IoTrophy className="text-amber-900 drop-shadow" />
-              </div>
-              <span className="mt-3 inline-flex items-center gap-1.5 px-4 py-1 rounded-full text-xs font-extrabold bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-md shadow-amber-500/30">
-                <IoStar className="text-white text-xs" /> #1 Champion • {rank1.tier}
-              </span>
-
-              <div className={`mt-4 w-24 h-24 rounded-full ${rank1.avatarBg} border-4 flex items-center justify-center font-black text-3xl shadow-inner ring-4 ring-amber-100`}>
-                {rank1.avatarInitials}
-              </div>
-
-              <h3 className="mt-3 text-2xl font-extrabold text-gray-900 flex items-center justify-center gap-1.5">
-                {rank1.name}
-                <IoCheckmarkCircle className="text-blue-500 text-lg" title="Verified Master Painter" />
-              </h3>
-
-              <div className="mt-1 flex items-center gap-1 text-sm text-gray-500 font-medium">
-                <IoLocationOutline className="text-amber-600 text-base" />
-                {rank1.city}, {rank1.state}
-              </div>
-
-              {/* QR Cash Earning Box */}
-              <div className="mt-5 w-full bg-gradient-to-br from-amber-100/90 to-yellow-50 rounded-2xl p-4 border border-amber-300/80 shadow-sm">
-                <div className="text-xs font-bold text-amber-900 uppercase tracking-wide">Total QR Cash Redeemed (@ ₹90/unit)</div>
-                <div className="text-3xl font-black text-[#d82b2b] mt-0.5">
-                  {formatINR(rank1.totalRedeemedAmount)}
-                </div>
-                <div className="mt-2.5 pt-2.5 border-t border-amber-200 text-center text-xs text-amber-950">
-                  <span>Scanned: <strong>{rank1.bucketsScanned.toLocaleString()} Bags / Buckets</strong></span>
-                </div>
-              </div>
-
-              <div className="mt-4 p-2 rounded-xl bg-amber-50 text-amber-900 text-xs font-semibold border border-amber-200/60 w-full">
-                🎁 Milestone: {rank1.recentReward}
-              </div>
-            </div>
-          )}
-
-          {/* Rank #3 (Bronze) */}
-          {rank3 && (
-            <div className="order-3 bg-gradient-to-b from-orange-50/60 to-white rounded-3xl p-6 border-2 border-orange-200 shadow-md hover:shadow-xl transition-all duration-300 relative text-center flex flex-col items-center">
-              {/* Rank Icon */}
-              <div className="w-14 h-14 -mt-12 rounded-2xl bg-gradient-to-tr from-amber-700 to-orange-400 border-2 border-white shadow-md flex items-center justify-center text-white text-2xl font-black">
-                3
-              </div>
-              <span className="mt-3 inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-800 border border-orange-300">
-                <IoRibbonOutline /> 3rd Position • {rank3.tier}
-              </span>
-
-              <div className={`mt-4 w-20 h-20 rounded-full ${rank3.avatarBg} border-2 flex items-center justify-center font-bold text-2xl shadow-inner`}>
-                {rank3.avatarInitials}
-              </div>
-
-              <h3 className="mt-3 text-xl font-bold text-gray-900 flex items-center justify-center gap-1.5">
-                {rank3.name}
-                <IoCheckmarkCircle className="text-blue-500 text-base" title="Verified Master Painter" />
-              </h3>
-
-              <div className="mt-1 flex items-center gap-1 text-xs text-gray-500 font-medium">
-                <IoLocationOutline className="text-gray-400 text-sm" />
-                {rank3.city}, {rank3.state}
-              </div>
-
-              {/* QR Cash Earning Box */}
-              <div className="mt-5 w-full bg-orange-50/70 rounded-2xl p-4 border border-orange-200">
-                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Total QR Cash Redeemed (@ ₹90/unit)</div>
-                <div className="text-2xl font-extrabold text-gray-900 mt-0.5">
-                  {formatINR(rank3.totalRedeemedAmount)}
-                </div>
-                <div className="mt-2 pt-2 border-t border-orange-200 text-center text-xs text-gray-600">
-                  <span>Scanned: <strong>{rank3.bucketsScanned.toLocaleString()} Bags / Buckets</strong></span>
-                </div>
-              </div>
-            </div>
-          )}
-
+          {top3.map((painter) => (
+            <PodiumCard key={painter.id} painter={painter} />
+          ))}
         </div>
 
-        {/* Filter and Search Bar for Top 10 Table */}
+        {/* Filter and Search Bar */}
         <div className="mt-16 bg-gray-50 border border-gray-200 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="relative w-full sm:w-80 md:w-96">
             <IoSearchOutline className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
@@ -193,7 +170,6 @@ const TopPaintersLeaderboard = () => {
             />
           </div>
 
-          {/* State Dropdown with All States */}
           <div className="flex items-center gap-2.5 w-full sm:w-auto">
             <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 whitespace-nowrap">
               <IoFilterOutline className="text-sm text-[#d82b2b]" />
@@ -233,7 +209,6 @@ const TopPaintersLeaderboard = () => {
                     key={painter.id}
                     className="hover:bg-red-50/30 transition-colors group"
                   >
-                    {/* 1. Rank Column (Touched on the left) */}
                     <td className="py-4 pl-6 pr-3 text-left">
                       <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${
                         painter.rank === 1
@@ -248,17 +223,14 @@ const TopPaintersLeaderboard = () => {
                       </span>
                     </td>
 
-                    {/* 2. Painter Name Column */}
                     <td className="py-4 px-4 text-left font-bold text-gray-900">
                       {painter.name}
                     </td>
 
-                    {/* 3. Location Column (Centered) */}
                     <td className="py-4 px-4 text-gray-600 text-center">
                       <span>{painter.city}, {painter.state}</span>
                     </td>
 
-                    {/* 4. Buckets / Bags Scanned (Centered) */}
                     <td className="py-4 px-4 text-center">
                       <div className="inline-flex items-center justify-center gap-1.5 font-semibold text-gray-700">
                         <IoQrCodeOutline className="text-gray-400" />
@@ -266,7 +238,6 @@ const TopPaintersLeaderboard = () => {
                       </div>
                     </td>
 
-                    {/* 5. QR Cash Redeemed (Centered) */}
                     <td className="py-4 px-4 sm:px-6 text-center font-extrabold text-base text-[#d82b2b]">
                       {formatINR(painter.totalRedeemedAmount)}
                     </td>
