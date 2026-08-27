@@ -7,6 +7,8 @@ import DealerSignup from './pages/auth/DealerSignup';
 import DealerVerification from './pages/auth/DealerVerification';
 import PainterPage from './pages/painter/PainterPage';
 import './App.css';
+import "./index.css";
+import HomePage from "./components/pages/HomePage";
 
 function App() {
   return (
@@ -26,6 +28,7 @@ function App() {
           <Route path="/dealer-signup" element={<DealerSignup />} />
           <Route path="/dealer-verification" element={<DealerVerification />} />
           {/* Add more routes here as needed */}
+          <Route path="/" element={<HomePage />} />
         </Routes>
       </div>
     </BrowserRouter>
