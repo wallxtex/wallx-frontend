@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import logo from '../assets/webp/wallx_final.webp';
-import { IoLocationOutline } from "react-icons/io5";
+import { IoPersonOutline, IoBriefcaseOutline } from "react-icons/io5";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const location = useLocation();
+
+    const hideOnDesktop =
+        location.pathname === '/painter-signup' ||
+        location.pathname === '/painter-verification' ||
+        location.pathname === '/dealer-signup' ||
+        location.pathname === '/dealer-verification';
 
     const toggleMenu = () => {
         setIsOpen((prev) => !prev);
@@ -18,7 +25,8 @@ const Navbar = () => {
     ];
 
     return (
-        <nav className="sticky top-0 z-50 h-20 w-full bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 flex justify-center items-center">
+        <nav className={`sticky top-0 z-50 h-20 w-full bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 flex justify-center items-center ${hideOnDesktop ? 'lg:hidden' : ''
+            }`}>
             <div className="flex justify-between items-center w-11/12 mx-auto max-w-screen-2xl">
 
                 {/* Left: Logo */}
@@ -31,35 +39,41 @@ const Navbar = () => {
                 {/* Center: Desktop Menu */}
                 <div className="hidden lg:flex flex-1 justify-center">
                     <ul className="flex m-0 p-0 list-none gap-10 xl:gap-16">
-                        {mainLinks.map((link) => (
-                            <li key={link.name} className="flex items-center justify-center">
-                                <Link
-                                    to={link.path}
-                                    className="group relative flex items-center justify-center h-20 px-2 text-gray-700 font-medium text-base hover:text-[#d82b2b] transition-colors duration-300"
-                                >
-                                    {link.name}
-                                    {/* Red Underline Effect */}
-                                    <span className="absolute bottom-4 left-1/2 w-0 h-[3px] bg-[#d82b2b] rounded transition-all duration-300 -translate-x-1/2 group-hover:w-full"></span>
-                                </Link>
-                            </li>
-                        ))}
+                        {mainLinks.map((link) => {
+                            const isActive = location.pathname === link.path || (link.path === '/painters' && location.pathname.startsWith('/painters'));
+                            return (
+                                <li key={link.name} className="flex items-center justify-center">
+                                    <Link
+                                        to={link.path}
+                                        className={`group relative flex items-center justify-center h-20 px-2 font-medium text-base transition-colors duration-300 ${
+                                            isActive ? 'text-[#d82b2b]' : 'text-gray-700 hover:text-[#d82b2b]'
+                                        }`}
+                                    >
+                                        {link.name}
+                                        {/* Red Underline Effect */}
+                                        <span className={`absolute bottom-4 left-1/2 h-[3px] bg-[#d82b2b] rounded transition-all duration-300 -translate-x-1/2 ${
+                                            isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                                        }`}></span>
+                                    </Link>
+                                </li>
+                            );
+                        })}
                     </ul>
                 </div>
 
                 {/* Right: Contact Button & Hamburger */}
                 <div className="flex-1 flex justify-end items-center gap-5">
-                    {/* Location Icon */}
-                    <div className="hidden lg:flex items-center justify-center w-14 h-14 text-gray-700 rounded-full hover:bg-[#d82b2b]/10 cursor-pointer transition-all duration-300">
-                        <IoLocationOutline className="text-2xl" />
+                    <div className="hidden lg:flex items-center gap-4 text-gray-700 font-medium text-[15px]">
+                        <Link to="/painter-signup" className="flex items-center gap-2 hover:text-[#d82b2b] transition-colors duration-300">
+                            <IoPersonOutline className="text-lg" />
+                            Painter Signup
+                        </Link>
+                        <span className="text-gray-300">|</span>
+                        <Link to="/dealer-signup" className="flex items-center gap-2 hover:text-[#d82b2b] transition-colors duration-300">
+                            <IoBriefcaseOutline className="text-lg" />
+                            Dealer Signup
+                        </Link>
                     </div>
-
-                    <Link
-                        to="/contact"
-                        style={{ padding: '8px 24px' }}
-                        className="hidden lg:flex items-center justify-center bg-[#d82b2b] text-white font-semibold rounded-full hover:bg-[#b92525] transition-colors duration-300"
-                    >
-                        Book Free Site Visit
-                    </Link>
 
                     {/* Hamburger Icon */}
                     <button
@@ -93,17 +107,22 @@ const Navbar = () => {
                             </Link>
                         </li>
                     ))}
-                    <li className="w-full flex items-center justify-center p-6 mt-2 gap-4">
-                        <div className="flex items-center justify-center w-14 h-14 text-gray-700 rounded-full hover:bg-[#d82b2b]/10 cursor-pointer transition-all duration-300">
-                            <IoLocationOutline className="text-3xl" />
-                        </div>
+                    <li className="w-full h-20 flex items-center justify-center border-b border-gray-100">
                         <Link
-                            to="/contact"
-                            style={{ padding: '12px 20px' }}
-                            className="w-full bg-[#d82b2b] text-white text-center font-semibold rounded-full hover:bg-[#b92525] transition-colors duration-300 flex justify-center items-center"
+                            to="/painter-signup"
+                            className="flex items-center justify-center h-full w-full px-6 text-gray-700 font-medium text-lg hover:text-[#d82b2b] hover:bg-gray-50 transition-colors duration-300"
                             onClick={() => setIsOpen(false)}
                         >
-                            Book Free Site Visit
+                            Painter Signup
+                        </Link>
+                    </li>
+                    <li className="w-full h-20 flex items-center justify-center border-b border-gray-100">
+                        <Link
+                            to="/dealer-signup"
+                            className="flex items-center justify-center h-full w-full px-6 text-gray-700 font-medium text-lg hover:text-[#d82b2b] hover:bg-gray-50 transition-colors duration-300"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            Dealer Signup
                         </Link>
                     </li>
                 </ul>

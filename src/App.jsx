@@ -1,6 +1,11 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './common/Navbar';
+import PainterSignup from './pages/auth/PainterSignup';
+import PainterVerification from './pages/auth/PainterVerification';
+import DealerSignup from './pages/auth/DealerSignup';
+import DealerVerification from './pages/auth/DealerVerification';
+import PainterPage from './pages/painter/PainterPage';
 import './App.css';
 
 function App() {
@@ -15,6 +20,11 @@ function App() {
               <p className="mt-4">Scroll down to see the sticky navbar in action.</p>
             </div>
           } />
+          <Route path="/painters" element={<PainterPage />} />
+          <Route path="/painter-signup" element={<PainterSignup />} />
+          <Route path="/painter-verification" element={<PainterVerification />} />
+          <Route path="/dealer-signup" element={<DealerSignup />} />
+          <Route path="/dealer-verification" element={<DealerVerification />} />
           {/* Add more routes here as needed */}
         </Routes>
       </div>
