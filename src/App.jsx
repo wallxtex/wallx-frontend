@@ -5,6 +5,7 @@ import PainterVerification from './pages/auth/PainterVerification';
 import DealerSignup from './pages/auth/DealerSignup';
 import DealerVerification from './pages/auth/DealerVerification';
 import PainterPage from './pages/painter/PainterPage';
+import DealersPage from './pages/dealers/DealersPage';
 import './App.css';
 import "./index.css";
 import HomePage from "./components/pages/HomePage";
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/painters" element={<PainterPage />} />
+          <Route path="/dealers" element={<DealersPage />} />
           <Route path="/painter-signup" element={<PainterSignup />} />
           <Route path="/painter-verification" element={<PainterVerification />} />
           <Route path="/dealer-signup" element={<DealerSignup />} />

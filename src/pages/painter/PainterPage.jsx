@@ -4,6 +4,7 @@ import TopPaintersLeaderboard from './component/TopPaintersLeaderboard';
 import RedeemQRGuide from './component/RedeemQRGuide';
 import PainterPerks from './component/PainterPerks';
 import PainterCTA from './component/PainterCTA';
+import FooterSection from '../../components/landing-pages/FooterSection';
 
 const PainterPage = () => {
   useEffect(() => {
@@ -17,6 +18,7 @@ const PainterPage = () => {
       <RedeemQRGuide />
       <PainterPerks />
       <PainterCTA />
+      <FooterSection />
     </main>
   );
 };
