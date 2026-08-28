@@ -42,49 +42,47 @@ const FourthSection = () => {
     },
   ];
 
-
-
   const toggleFAQ = (index) => {
     setExpandedIndex(expandedIndex === index ? -1 : index);
   };
 
   return (
-    <section ref={sectionRef} className="w-full bg-white py-20 md:py-32 lg:py-48">
-      <div className="w-full h-auto flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12">
+    <section ref={sectionRef} className="w-full bg-white py-16 md:py-24 lg:py-32">
+      <div className="w-full h-auto flex items-center justify-center px-4 sm:px-6 md:px-8">
         <div className="w-full max-w-4xl">
           {/* Section Header - Centered */}
           <div
             ref={headerRef}
-            className="w-full text-center mb-16 md:mb-20 lg:mb-24"
+            className="w-full text-center mb-12 md:mb-16 lg:mb-20"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-black leading-tight mb-6 md:mb-8">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-black leading-tight mb-4 md:mb-6 lg:mb-8">
               Frequently Asked <span className="text-orange-500">Questions</span>
             </h2>
-            <p className="text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Find answers to common questions about WallX and our services.
             </p>
           </div>
 
           {/* FAQs Container - Centered */}
-          <div className="w-full space-y-4 md:space-y-5 lg:space-y-6 mb-16 md:mb-20 lg:mb-24">
+          <div className="w-full space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6 mb-12 md:mb-16 lg:mb-20">
             {faqs.map((faq, index) => (
               <div
                 key={`faq-${index}`}
                 ref={(el) => {
                   if (el) faqsRef.current[index] = el;
                 }}
-                className="w-full bg-white rounded-2xl md:rounded-3xl border border-gray-200 hover:border-orange-300 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md"
+                className="w-full bg-white rounded-lg sm:rounded-xl md:rounded-2xl lg:rounded-3xl border border-gray-200 hover:border-orange-300 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md"
               >
                 <button
                   type="button"
                   onClick={() => toggleFAQ(index)}
-                  className="w-full flex items-center justify-between gap-4 p-6 md:p-8 lg:p-10 text-left hover:bg-gray-50 transition-colors duration-200"
+                  className="w-full flex items-center justify-between gap-3 sm:gap-4 p-4 sm:p-5 md:p-6 lg:p-8 text-left hover:bg-gray-50 transition-colors duration-200"
                 >
-                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-black leading-tight">
+                  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black leading-tight">
                     {faq.question}
                   </h3>
                   <ChevronDown
-                    className={`w-5 h-5 md:w-6 md:h-6 lg:w-6 lg:h-6 text-orange-500 shrink-0 transition-transform duration-300 ${
+                    className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-6 lg:h-6 text-orange-500 shrink-0 transition-transform duration-300 ${
                       expandedIndex === index ? "rotate-180" : ""
                     }`}
                   />
@@ -96,8 +94,8 @@ const FourthSection = () => {
                     expandedIndex === index ? "max-h-full" : "max-h-0"
                   }`}
                 >
-                  <div className="px-6 md:px-8 lg:px-10 py-6 md:py-8 lg:py-10 border-t border-gray-200 bg-gray-50">
-                    <p className="text-sm md:text-base lg:text-base text-gray-700 leading-relaxed">
+                  <div className="px-4 sm:px-5 md:px-6 lg:px-8 py-4 sm:py-5 md:py-6 lg:py-8 border-t border-gray-200 bg-gray-50">
+                    <p className="text-xs sm:text-sm md:text-base lg:text-base text-gray-700 leading-relaxed">
                       {faq.answer}
                     </p>
                   </div>
@@ -107,16 +105,16 @@ const FourthSection = () => {
           </div>
 
           {/* CTA Section - Centered */}
-          <div className="w-full p-8 md:p-10 lg:p-14 bg-linear-to-br from-orange-50 to-orange-100 rounded-3xl md:rounded-4xl border border-orange-200 text-center shadow-sm">
-            <h3 className="text-2xl md:text-3xl lg:text-4xl font-black text-black mb-4 md:mb-6 lg:mb-8">
+          <div className="w-full p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg sm:rounded-2xl md:rounded-3xl lg:rounded-4xl border border-orange-200 text-center shadow-sm">
+            <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-black mb-3 md:mb-4 lg:mb-6 leading-tight">
               Still have questions?
             </h3>
-            <p className="text-sm md:text-base lg:text-lg text-gray-700 mb-8 md:mb-10 lg:mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-700 mb-6 md:mb-8 lg:mb-10 max-w-2xl mx-auto leading-relaxed">
               Can't find the answer you're looking for? Our support team is here to help you.
             </p>
             <button
               type="button"
-              className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 md:py-4 lg:py-4 px-8 md:px-10 lg:px-12 rounded-2xl md:rounded-2xl lg:rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="inline-block bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm sm:text-base md:text-base lg:text-lg py-2.5 sm:py-3 md:py-3 lg:py-4 px-6 sm:px-8 md:px-10 lg:px-12 rounded-lg sm:rounded-xl md:rounded-2xl lg:rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               Contact Support
             </button>
