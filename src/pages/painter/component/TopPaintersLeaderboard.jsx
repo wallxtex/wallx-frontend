@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   IoTrophy, 
@@ -7,11 +7,28 @@ import {
   IoQrCodeOutline, 
   IoSearchOutline, 
   IoCheckmarkCircle, 
-  IoStar,
-  IoFilterOutline
+  IoStar, 
+  IoFilterOutline 
 } from 'react-icons/io5';
 import { TOP_PAINTERS_DATA } from './painterData';
 import { INDIAN_STATES } from '../../../constants/states';
+
+const createRunnerUpPodium = ({ order, cardBg, crownBg, crownIcon, badgeClass, badgeLabel, boxBg, borderDivider }) => ({
+  order,
+  cardBg,
+  crownBg,
+  crownIcon,
+  badgeClass,
+  badgeIcon: <IoRibbonOutline />,
+  badgeLabel,
+  avatarClass: 'w-20 h-20 border-2 text-2xl font-bold',
+  nameSize: 'text-xl font-bold',
+  boxBg,
+  boxLabel: 'text-gray-500 font-semibold',
+  cashColor: 'text-gray-900 text-2xl font-extrabold',
+  borderDivider,
+  hasMilestone: false,
+});
 
 const PODIUM_CONFIG = {
   1: {
@@ -30,38 +47,26 @@ const PODIUM_CONFIG = {
     borderDivider: 'border-amber-200 text-amber-950',
     hasMilestone: true,
   },
-  2: {
+  2: createRunnerUpPodium({
     order: 'order-2 md:order-1 shadow-md',
     cardBg: 'bg-gradient-to-b from-slate-50 to-white border-2 border-slate-200',
     crownBg: 'bg-gradient-to-tr from-slate-400 to-slate-200 border-2 border-white shadow-md text-slate-800 text-2xl font-black',
     crownIcon: '2',
     badgeClass: 'bg-slate-100 text-slate-700 border border-slate-300 font-bold',
-    badgeIcon: <IoRibbonOutline />,
     badgeLabel: '2nd Position',
-    avatarClass: 'w-20 h-20 border-2 text-2xl font-bold',
-    nameSize: 'text-xl font-bold',
     boxBg: 'bg-slate-100/80 border border-slate-200',
-    boxLabel: 'text-gray-500 font-semibold',
-    cashColor: 'text-gray-900 text-2xl font-extrabold',
     borderDivider: 'border-slate-200 text-gray-600',
-    hasMilestone: false,
-  },
-  3: {
+  }),
+  3: createRunnerUpPodium({
     order: 'order-3 shadow-md',
     cardBg: 'bg-gradient-to-b from-orange-50/60 to-white border-2 border-orange-200',
     crownBg: 'bg-gradient-to-tr from-amber-700 to-orange-400 border-2 border-white shadow-md text-white text-2xl font-black',
     crownIcon: '3',
     badgeClass: 'bg-orange-100 text-orange-800 border border-orange-300 font-bold',
-    badgeIcon: <IoRibbonOutline />,
     badgeLabel: '3rd Position',
-    avatarClass: 'w-20 h-20 border-2 text-2xl font-bold',
-    nameSize: 'text-xl font-bold',
     boxBg: 'bg-orange-50/70 border border-orange-200',
-    boxLabel: 'text-gray-500 font-semibold',
-    cashColor: 'text-gray-900 text-2xl font-extrabold',
     borderDivider: 'border-orange-200 text-gray-600',
-    hasMilestone: false,
-  },
+  }),
 };
 
 const getRankBadgeStyle = (rank) => {

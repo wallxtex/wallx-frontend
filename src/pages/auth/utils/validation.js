@@ -1,3 +1,10 @@
+const validateDigits = (value, fieldName, exactLength) => {
+    if (!value.trim()) return `${fieldName} is required`;
+    if (!/^\d*$/.test(value)) return `${fieldName} can only contain digits`;
+    if (value.length !== exactLength) return `${fieldName} must be exactly ${exactLength} digits`;
+    return '';
+};
+
 export const validateName = (value, fieldName = 'Name', max = 40) => {
     if (!value.trim()) return `${fieldName} is required`;
     if (!/^[A-Za-z\s]*$/.test(value)) return `${fieldName} can only contain letters and spaces`;
@@ -5,25 +12,15 @@ export const validateName = (value, fieldName = 'Name', max = 40) => {
     return '';
 };
 
-export const validateMobile = (value) => {
-    if (!value.trim()) return 'Mobile number is required';
-    if (!/^\d*$/.test(value)) return 'Mobile number can only contain digits';
-    if (value.length !== 10) return 'Mobile number must be exactly 10 digits';
-    return '';
-};
+export const validateMobile = (value) => validateDigits(value, 'Mobile number', 10);
+
+export const validatePincode = (value) => validateDigits(value, 'Pincode', 6);
 
 export const validateEmail = (value) => {
     if (!value.trim()) return 'Email address is required';
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(value)) return 'Enter a valid email address';
     if (value.length > 80) return 'Email cannot exceed 80 characters';
-    return '';
-};
-
-export const validatePincode = (value) => {
-    if (!value.trim()) return 'Pincode is required';
-    if (!/^\d*$/.test(value)) return 'Pincode can only contain digits';
-    if (value.length !== 6) return 'Pincode must be exactly 6 digits';
     return '';
 };
 

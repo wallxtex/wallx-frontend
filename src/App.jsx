@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './common/Navbar';
 import PainterSignup from './pages/auth/PainterSignup';

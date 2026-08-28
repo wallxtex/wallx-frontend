@@ -1,9 +1,9 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import dealerBannerImg from '../../assets/webp/dealer.webp';
 import {
     AuthLayout,
     AuthHeader,
+    AuthSwitchLink,
     InputField,
     PhoneInputField,
     SelectField,
@@ -205,13 +205,12 @@ const DealerSignup = () => {
                 </div>
             </form>
 
-            {/* Bottom Login Link */}
-            <div className="mt-4 sm:mt-6 lg:mt-4 xl:mt-5 text-center text-xs sm:text-sm lg:text-[13.5px] text-gray-600">
-                Already registered as a dealer?{' '}
-                <Link to="/login" className="text-[#d82b2b] font-semibold hover:underline">
-                    Log In
-                </Link>
-            </div>
+            <AuthSwitchLink
+                prompt="Already registered as a dealer?"
+                linkText="Log In"
+                to="/login"
+                className="mt-4 sm:mt-6 lg:mt-4 xl:mt-5 text-center text-xs sm:text-sm lg:text-[13.5px] text-gray-600"
+            />
         </AuthLayout>
     );
 };

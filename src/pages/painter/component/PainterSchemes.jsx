@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IoFlameOutline, IoTimeOutline, IoCheckmarkCircle, IoSparklesOutline, IoGiftOutline, IoArrowForward } from 'react-icons/io5';
 import { PAINTER_SCHEMES } from './painterData';
@@ -170,20 +170,16 @@ const PainterSchemes = () => {
             <div className="mt-5 space-y-3">
               <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Offer Terms & Eligibility:</h4>
               <ul className="space-y-2 text-sm text-gray-600">
-                {selectedScheme.features.map((item) => (
+                {[
+                  ...selectedScheme.features,
+                  'Valid across all verified WallX dealers pan-India.',
+                  "Cash disbursed to the painter's registered bank/UPI within 5 seconds of QR verification.",
+                ].map((item) => (
                   <li key={item} className="flex items-start gap-2">
                     <IoCheckmarkCircle className="text-emerald-500 text-base shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
                 ))}
-                <li className="flex items-start gap-2">
-                  <IoCheckmarkCircle className="text-emerald-500 text-base shrink-0 mt-0.5" />
-                  <span>Valid across all verified WallX dealers pan-India.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <IoCheckmarkCircle className="text-emerald-500 text-base shrink-0 mt-0.5" />
-                  <span>Cash disbursed to the painter's registered bank/UPI within 5 seconds of QR verification.</span>
-                </li>
               </ul>
             </div>
 

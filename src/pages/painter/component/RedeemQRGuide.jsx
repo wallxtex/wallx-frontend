@@ -1,4 +1,3 @@
-import React from 'react';
 import { IoQrCode, IoCashOutline, IoCheckmarkDoneCircle, IoPhonePortraitOutline, IoShieldCheckmark, IoFlash } from 'react-icons/io5';
 import { REDEEM_STEPS } from './painterData';
 

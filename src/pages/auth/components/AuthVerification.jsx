@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AuthLayout from './AuthLayout';
 
 const AuthVerification = ({
@@ -16,13 +16,10 @@ const AuthVerification = ({
 
     // 3 minutes (180 seconds) countdown timer
     const [timeLeft, setTimeLeft] = useState(180);
-    const [canResend, setCanResend] = useState(false);
+    const canResend = timeLeft <= 0;
 
     useEffect(() => {
-        if (timeLeft <= 0) {
-            setCanResend(true);
-            return;
-        }
+        if (timeLeft <= 0) return;
 
         const timer = setInterval(() => {
             setTimeLeft((prev) => prev - 1);
@@ -72,7 +69,6 @@ const AuthVerification = ({
     const handleResendOtp = () => {
         if (!canResend) return;
         setTimeLeft(180);
-        setCanResend(false);
         setOtp(['', '', '', '']);
         inputRefs.current[0]?.focus();
         console.log(`Resending ${role} OTP to:`, mobile);

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import PainterSchemes from './component/PainterSchemes';
 import TopPaintersLeaderboard from './component/TopPaintersLeaderboard';
 import RedeemQRGuide from './component/RedeemQRGuide';

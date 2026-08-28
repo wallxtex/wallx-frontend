@@ -1,5 +1,3 @@
-import React from 'react';
-
 const AuthHeader = ({ title, subtitle, description, className = 'mb-6 sm:mb-8 lg:mb-7 xl:mb-9' }) => {
     return (
         <div className={className}>

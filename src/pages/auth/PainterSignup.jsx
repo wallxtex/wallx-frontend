@@ -1,9 +1,9 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import signupImg from '../../assets/webp/painter.webp';
 import {
     AuthLayout,
     AuthHeader,
+    AuthSwitchLink,
     InputField,
     PhoneInputField
 } from './components';
@@ -120,12 +120,11 @@ const PainterSignup = () => {
                 </button>
             </form>
 
-            <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm text-gray-500">
-                Already have an account?{' '}
-                <Link to="/login" className="text-[#d82b2b] hover:underline font-semibold">
-                    Login here
-                </Link>
-            </div>
+            <AuthSwitchLink
+                prompt="Already have an account?"
+                linkText="Login here"
+                to="/login"
+            />
         </AuthLayout>
     );
 };

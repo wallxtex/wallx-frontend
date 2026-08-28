@@ -1,4 +1,3 @@
-import React from 'react';
 import defaultBannerImg from '../../../assets/webp/dealer.webp';
 
 const AuthBanner = ({

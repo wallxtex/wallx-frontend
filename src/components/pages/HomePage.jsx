@@ -1,4 +1,3 @@
-import React from "react";
 import HeroSectionVideo from "../landing-pages/HeroSectionVideo";
 import SecondSection from "../landing-pages/SecondSection";
 import ThirdSection from "../landing-pages/ThirdSection";
