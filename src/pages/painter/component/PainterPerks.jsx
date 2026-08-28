@@ -7,6 +7,7 @@ import {
   IoPhonePortraitOutline 
 } from 'react-icons/io5';
 import SectionHeader from './SectionHeader';
+import PainterSection from './PainterSection';
 
 const PainterPerks = () => {
   const perks = [
@@ -43,34 +44,32 @@ const PainterPerks = () => {
   ];
 
   return (
-    <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
-        <SectionHeader
-          badgeText="Exclusive Membership Benefits"
-          title="Why Join the WallX Painter Mitra Family?"
-          description="More than just cashbacks — we empower professional painters and texture contractors with security, training, and prestige."
-        />
+    <PainterSection className="bg-white">
+      <SectionHeader
+        badgeText="Exclusive Membership Benefits"
+        title="Why Join the WallX Painter Mitra Family?"
+        description="More than just cashbacks — we empower professional painters and texture contractors with security, training, and prestige."
+      />
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {perks.map((perk) => (
-            <div
-              key={perk.title}
-              className="p-6 rounded-2xl bg-gray-50/70 border border-gray-200/80 hover:border-red-200 hover:bg-white hover:shadow-lg transition-all duration-300 group"
-            >
-              <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                {perk.icon}
-              </div>
-              <h3 className="mt-4 text-lg font-bold text-gray-900 group-hover:text-[#d82b2b] transition-colors">
-                {perk.title}
-              </h3>
-              <p className="mt-2 text-sm text-gray-600 leading-relaxed">
-                {perk.desc}
-              </p>
+      <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        {perks.map((perk) => (
+          <div
+            key={perk.title}
+            className="p-6 rounded-2xl bg-gray-50/70 border border-gray-200/80 hover:border-red-200 hover:bg-white hover:shadow-lg transition-all duration-300 group"
+          >
+            <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+              {perk.icon}
             </div>
-          ))}
-        </div>
+            <h3 className="mt-4 text-lg font-bold text-gray-900 group-hover:text-[#d82b2b] transition-colors">
+              {perk.title}
+            </h3>
+            <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+              {perk.desc}
+            </p>
+          </div>
+        ))}
       </div>
-    </section>
+    </PainterSection>
   );
 };
 

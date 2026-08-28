@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import { IoFlashOutline, IoCallOutline, IoQrCodeOutline } from 'react-icons/io5';
+import PainterSection from './PainterSection';
 
 const PainterCTA = () => {
   return (
-    <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gray-950 text-white relative overflow-hidden">
+    <PainterSection className="bg-gray-950 text-white relative overflow-hidden">
       {/* Glow gradient blobs */}
       <div className="absolute inset-0 opacity-25 pointer-events-none">
-        <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-[#d82b2b] rounded-full blur-[100px]"></div>
-        <div className="absolute -top-20 -right-20 w-80 h-80 bg-amber-500 rounded-full blur-[100px]"></div>
+        <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-[#d82b2b] rounded-full blur-[100px]" />
+        <div className="absolute -top-20 -right-20 w-80 h-80 bg-amber-500 rounded-full blur-[100px]" />
       </div>
 
       <div className="relative max-w-5xl mx-auto text-center">
@@ -43,7 +44,7 @@ const PainterCTA = () => {
           * Instant cash redemption requires a valid UPI ID / bank account linked with registered mobile number.
         </p>
       </div>
-    </section>
+    </PainterSection>
   );
 };
 

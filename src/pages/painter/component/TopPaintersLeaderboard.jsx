@@ -13,6 +13,7 @@ import {
 import { TOP_PAINTERS_DATA } from './painterData';
 import { INDIAN_STATES } from '../../../constants/states';
 import SectionHeader from './SectionHeader';
+import PainterSection from './PainterSection';
 
 const createRunnerUpPodium = ({ order, cardBg, crownBg, crownIcon, badgeClass, badgeLabel, boxBg, borderDivider }) => ({
   order,
@@ -148,8 +149,7 @@ const TopPaintersLeaderboard = () => {
   const top3 = TOP_PAINTERS_DATA.slice(0, 3);
 
   return (
-    <section id="top-painters" className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-white relative">
-      <div className="max-w-7xl mx-auto">
+    <PainterSection id="top-painters" className="bg-white relative">
         <SectionHeader
           badgeIcon={<IoTrophy className="text-amber-500 text-base" />}
           badgeText="National QR Cash Leaderboard • Flat ₹90 / Bucket or Bag"
@@ -278,8 +278,7 @@ const TopPaintersLeaderboard = () => {
             </Link>
           </div>
         </div>
-      </div>
-    </section>
+    </PainterSection>
   );
 };
 
