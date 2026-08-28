@@ -4,9 +4,7 @@ import {
     AuthLayout,
     AuthHeader,
     AuthSwitchLink,
-    InputField,
-    PhoneInputField,
-    SelectField,
+    AuthFormField,
     INDIAN_STATES
 } from './components';
 
@@ -72,18 +70,13 @@ const DEALER_ROW_FIELDS = [
 
 const DealerSignup = () => {
     const navigate = useNavigate();
-    const {
-        formData,
-        errors,
-        handleChange,
-        handleBlur,
-        validateAll
-    } = useAuthForm(INITIAL_DEALER_STATE, DEALER_VALIDATORS, DEALER_CONSTRAINTS);
+    const authForm = useAuthForm(INITIAL_DEALER_STATE, DEALER_VALIDATORS, DEALER_CONSTRAINTS);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!validateAll()) return;
+        if (!authForm.validateAll()) return;
 
+        const { formData } = authForm;
         console.log('Dealer form submitted:', formData);
         navigate('/dealer-verification', {
             state: {
@@ -115,51 +108,9 @@ const DealerSignup = () => {
             <form onSubmit={handleSubmit} noValidate className="space-y-4 sm:space-y-5 lg:space-y-4.5 xl:space-y-5">
                 {DEALER_ROW_FIELDS.map((row, rowIdx) => (
                     <div key={`row-${rowIdx}`} className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-4.5 xl:gap-5">
-                        {row.map((field) => {
-                            if (field.isSelect) {
-                                return (
-                                    <SelectField
-                                        key={field.name}
-                                        label={field.label}
-                                        name={field.name}
-                                        placeholder={field.placeholder}
-                                        value={formData[field.name]}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        options={field.options}
-                                        error={errors[field.name]}
-                                    />
-                                );
-                            }
-                            if (field.isPhone) {
-                                return (
-                                    <PhoneInputField
-                                        key={field.name}
-                                        label={field.label}
-                                        name={field.name}
-                                        placeholder={field.placeholder}
-                                        value={formData[field.name]}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        error={errors[field.name]}
-                                    />
-                                );
-                            }
-                            return (
-                                <InputField
-                                    key={field.name}
-                                    label={field.label}
-                                    name={field.name}
-                                    type={field.type || 'text'}
-                                    placeholder={field.placeholder}
-                                    value={formData[field.name]}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={errors[field.name]}
-                                    maxLength={field.maxLength}
-                                />
-                            );
-                        })}
+                        {row.map((field) => (
+                            <AuthFormField key={field.name} field={field} form={authForm} />
+                        ))}
                     </div>
                 ))}
 

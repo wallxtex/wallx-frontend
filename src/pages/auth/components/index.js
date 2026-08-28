@@ -4,6 +4,7 @@ export { default as AuthBackButton } from './AuthBackButton';
 export { default as AuthVerification } from './AuthVerification';
 export { default as AuthLayout } from './AuthLayout';
 export { default as AuthSwitchLink } from './AuthSwitchLink';
+export { default as AuthFormField } from './AuthFormField';
 export { default as FormField } from './FormField';
 export { default as InputField } from './InputField';
 export { default as PhoneInputField } from './PhoneInputField';

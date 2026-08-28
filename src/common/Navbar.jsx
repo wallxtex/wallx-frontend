@@ -96,9 +96,13 @@ const Navbar = () => {
                         className="lg:hidden flex flex-col justify-between w-7 h-5 cursor-pointer relative z-50 ml-4 bg-transparent border-none p-0 focus:outline-none"
                         onClick={toggleMenu}
                     >
-                        <span className={`h-0.5 w-full bg-gray-800 rounded-lg transition-all duration-300 ease-in-out ${isOpen ? 'translate-y-2.5 rotate-45 !bg-[#d82b2b]' : ''}`}></span>
-                        <span className={`h-0.5 w-full bg-gray-800 rounded-lg transition-all duration-300 ease-in-out ${isOpen ? 'opacity-0' : ''}`}></span>
-                        <span className={`h-0.5 w-full bg-gray-800 rounded-lg transition-all duration-300 ease-in-out ${isOpen ? '-translate-y-2 -rotate-45 !bg-[#d82b2b]' : ''}`}></span>
+                        {[
+                            isOpen ? 'translate-y-2.5 rotate-45 !bg-[#d82b2b]' : '',
+                            isOpen ? 'opacity-0' : '',
+                            isOpen ? '-translate-y-2 -rotate-45 !bg-[#d82b2b]' : ''
+                        ].map((transformClass, barIdx) => (
+                            <span key={barIdx} className={`h-0.5 w-full bg-gray-800 rounded-lg transition-all duration-300 ease-in-out ${transformClass}`} />
+                        ))}
                     </button>
                 </div>
 

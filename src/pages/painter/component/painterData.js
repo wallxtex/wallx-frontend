@@ -1,40 +1,20 @@
 export const BASE_QR_CASH_PER_UNIT = 90; // ₹90 per bucket or bag
 
-const createPainter = ([
-  rank,
-  id,
-  name,
-  phoneMasked,
-  city,
-  state,
-  bucketsScanned,
-  tier,
-  monthlyGrowth,
-  badgeColor,
-  avatarBg,
-  avatarInitials,
-  joinedYear,
-  recentReward,
-  specialty
-]) => ({
-  rank,
-  id,
-  name,
-  phoneMasked,
-  city,
-  state,
-  bucketsScanned,
-  totalRedeemedAmount: bucketsScanned * BASE_QR_CASH_PER_UNIT,
-  tier,
-  monthlyGrowth,
-  badgeColor,
-  avatarBg,
-  avatarInitials,
-  joinedYear,
-  recentReward,
-  specialty,
-  verified: true,
-});
+const PAINTER_KEYS = [
+  'rank', 'id', 'name', 'phoneMasked', 'city', 'state',
+  'bucketsScanned', 'tier', 'monthlyGrowth', 'badgeColor',
+  'avatarBg', 'avatarInitials', 'joinedYear', 'recentReward', 'specialty'
+];
+
+const createPainter = (raw) => {
+  const painter = {};
+  PAINTER_KEYS.forEach((key, i) => {
+    painter[key] = raw[i];
+  });
+  painter.totalRedeemedAmount = painter.bucketsScanned * BASE_QR_CASH_PER_UNIT;
+  painter.verified = true;
+  return painter;
+};
 
 const PAINTERS_RAW_DATA = [
   [
@@ -101,33 +81,19 @@ const PAINTERS_RAW_DATA = [
 
 export const TOP_PAINTERS_DATA = PAINTERS_RAW_DATA.map(createPainter);
 
-const createScheme = ([
-  id,
-  title,
-  tag,
-  badge,
-  badgeColor,
-  cashback,
-  description,
-  validity,
-  highlight,
-  minRequirement,
-  category,
-  features
-]) => ({
-  id,
-  title,
-  tag,
-  badge,
-  badgeColor,
-  cashback,
-  description,
-  validity,
-  highlight,
-  minRequirement,
-  category,
-  features,
-});
+const SCHEME_KEYS = [
+  'id', 'title', 'tag', 'badge', 'badgeColor', 'cashback',
+  'description', 'validity', 'highlight', 'minRequirement',
+  'category', 'features'
+];
+
+const createScheme = (raw) => {
+  const scheme = {};
+  SCHEME_KEYS.forEach((key, i) => {
+    scheme[key] = raw[i];
+  });
+  return scheme;
+};
 
 const SCHEMES_RAW_DATA = [
   [

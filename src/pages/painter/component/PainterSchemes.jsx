@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IoFlameOutline, IoTimeOutline, IoCheckmarkCircle, IoSparklesOutline, IoGiftOutline, IoArrowForward } from 'react-icons/io5';
 import { PAINTER_SCHEMES } from './painterData';
+import SectionHeader from './SectionHeader';
 
 const getGridContainerClass = (count) => {
   if (count === 1) return 'flex justify-center';
@@ -27,19 +28,12 @@ const PainterSchemes = () => {
   return (
     <section id="painter-schemes" className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#fafafa]">
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-50 border border-red-200 text-[#d82b2b] text-xs sm:text-sm font-semibold mb-3">
-            <IoFlameOutline className="text-base animate-pulse" />
-            <span>High-Earning Painter Opportunities</span>
-          </div>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-            Active Schemes & Cash Offers for Painters
-          </h2>
-          <p className="mt-3 text-base sm:text-lg text-gray-600">
-            Maximize your income with WallX bonus pools, instant QR cashback boosters, and milestone rewards on luxury texture buckets and bags.
-          </p>
-        </div>
+        <SectionHeader
+          badgeIcon={<IoFlameOutline className="text-base animate-pulse" />}
+          badgeText="High-Earning Painter Opportunities"
+          title="Active Schemes & Cash Offers for Painters"
+          description="Maximize your income with WallX bonus pools, instant QR cashback boosters, and milestone rewards on luxury texture buckets and bags."
+        />
 
         {/* Category Filter Tabs */}
         <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">

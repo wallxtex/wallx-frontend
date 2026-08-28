@@ -1,7 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Crown } from "lucide-react";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,11 +11,11 @@ import {
   Legend
 } from "chart.js";
 
+import { useSectionAnimation } from "./useSectionAnimation";
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-gsap.registerPlugin(ScrollTrigger);
 
 const ThirdSection = () => {
-  const sectionRef = useRef(null);
   const headerRef = useRef(null);
   const performanceCardRef = useRef(null);
   const chartRef = useRef(null);
@@ -122,44 +120,7 @@ const ThirdSection = () => {
     }
   };
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.set(
-        [headerRef.current, performanceCardRef.current],
-        {
-          opacity: 0,
-          y: 30
-        }
-      );
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          toggleActions: "play none none reverse"
-        }
-      });
-
-      tl.to(headerRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power3.out"
-      })
-        .to(
-          performanceCardRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            ease: "power3.out"
-          },
-          "-=0.4"
-        );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  const sectionRef = useSectionAnimation(headerRef, performanceCardRef);
 
   return (
     <section ref={sectionRef} className="w-full bg-white py-20 md:py-32 lg:py-40">

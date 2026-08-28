@@ -12,6 +12,7 @@ import {
 } from 'react-icons/io5';
 import { TOP_PAINTERS_DATA } from './painterData';
 import { INDIAN_STATES } from '../../../constants/states';
+import SectionHeader from './SectionHeader';
 
 const createRunnerUpPodium = ({ order, cardBg, crownBg, crownIcon, badgeClass, badgeLabel, boxBg, borderDivider }) => ({
   order,
@@ -149,18 +150,13 @@ const TopPaintersLeaderboard = () => {
   return (
     <section id="top-painters" className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-white relative">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs sm:text-sm font-semibold mb-3">
-            <IoTrophy className="text-amber-500 text-base" />
-            <span>National QR Cash Leaderboard • Flat ₹90 / Bucket or Bag</span>
-          </div>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-            Top 10 Painters & QR Cash Redeem Earners
-          </h2>
-          <p className="mt-3 text-base sm:text-lg text-gray-600">
-            Meet our highest-earning texture coating champions who have earned massive cashbacks by redeeming genuine WallX QR coupons at flat ₹90 per bucket or bag.
-          </p>
-        </div>
+        <SectionHeader
+          badgeIcon={<IoTrophy className="text-amber-500 text-base" />}
+          badgeText="National QR Cash Leaderboard • Flat ₹90 / Bucket or Bag"
+          badgeClass="bg-amber-50 border-amber-200 text-amber-800"
+          title="Top 10 Painters & QR Cash Redeem Earners"
+          description="Meet our highest-earning texture coating champions who have earned massive cashbacks by redeeming genuine WallX QR coupons at flat ₹90 per bucket or bag."
+        />
 
         {/* Podium for Top 3 Painters */}
         <div className="mt-14 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 items-end">

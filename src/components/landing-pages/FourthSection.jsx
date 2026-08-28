@@ -1,15 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { IoChevronDown as ChevronDown } from "react-icons/io5";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { useSectionAnimation } from "./useSectionAnimation";
 
 const FourthSection = () => {
-  const sectionRef = useRef(null);
   const headerRef = useRef(null);
   const faqsRef = useRef([]);
   const [expandedIndex, setExpandedIndex] = useState(0);
+
+  const sectionRef = useSectionAnimation(headerRef, faqsRef);
 
   const faqs = [
     {
@@ -44,41 +42,7 @@ const FourthSection = () => {
     },
   ];
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.set([headerRef.current, ...faqsRef.current], {
-        opacity: 0,
-        y: 30,
-      });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          toggleActions: "play none none reverse",
-        },
-      });
-
-      tl.to(headerRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power3.out",
-      }).to(
-        faqsRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "power3.out",
-          stagger: 0.1,
-        },
-        "-=0.4"
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
 
   const toggleFAQ = (index) => {
     setExpandedIndex(expandedIndex === index ? -1 : index);

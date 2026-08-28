@@ -1,4 +1,5 @@
 import FormField from './FormField';
+import { FIELD_INPUT_BASE, getFieldBorderClass } from './fieldStyles';
 
 const PhoneInputField = ({
     label = 'Phone Number',
@@ -13,14 +14,10 @@ const PhoneInputField = ({
     countryCode = '+91',
     className = ''
 }) => {
-    const containerBorderClass = error
-        ? 'border-[#d82b2b]'
-        : 'border-gray-300 focus-within:border-[#d82b2b] focus-within:ring-1 focus-within:ring-[#d82b2b]';
-
     return (
         <FormField label={label} error={error} className={className}>
             <div
-                className={`w-full h-[46px] sm:h-[50px] lg:h-[44px] xl:h-[48px] border rounded-lg bg-gray-50/50 flex items-center px-3.5 sm:px-4 focus-within:bg-white transition-all ${containerBorderClass}`}
+                className={`${FIELD_INPUT_BASE} flex items-center focus-within:bg-white ${getFieldBorderClass(error)}`}
             >
                 <span className="text-gray-600 font-medium text-[13px] sm:text-[14px] lg:text-[14px] xl:text-[15px] mr-2 select-none">
                     {countryCode}

@@ -1,5 +1,6 @@
 import { IoQrCode, IoCashOutline, IoCheckmarkDoneCircle, IoPhonePortraitOutline, IoShieldCheckmark, IoFlash } from 'react-icons/io5';
 import { REDEEM_STEPS } from './painterData';
+import SectionHeader from './SectionHeader';
 
 const STEP_CARDS_META = [
   {
@@ -44,19 +45,13 @@ const RedeemQRGuide = () => {
   return (
     <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 via-white to-gray-50 border-y border-gray-200/70">
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-semibold mb-3">
-            <IoShieldCheckmark className="text-emerald-600 text-base" />
-            <span>100% Genuine & Instant Payout</span>
-          </div>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-            How to Redeem WallX QR Cash in 3 Simple Steps
-          </h2>
-          <p className="mt-3 text-base sm:text-lg text-gray-600">
-            No waiting, no coin conversions, no dealer dependency. Get real cash directly transferred to your bank UPI account in seconds.
-          </p>
-        </div>
+        <SectionHeader
+          badgeIcon={<IoShieldCheckmark className="text-emerald-600 text-base" />}
+          badgeText="100% Genuine & Instant Payout"
+          badgeClass="bg-emerald-50 border-emerald-200 text-emerald-800"
+          title="How to Redeem WallX QR Cash in 3 Simple Steps"
+          description="No waiting, no coin conversions, no dealer dependency. Get real cash directly transferred to your bank UPI account in seconds."
+        />
 
         {/* 3 Step Process Cards */}
         <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-8 relative">

@@ -4,8 +4,7 @@ import {
     AuthLayout,
     AuthHeader,
     AuthSwitchLink,
-    InputField,
-    PhoneInputField
+    AuthFormField
 } from './components';
 import {
     validateName,
@@ -40,20 +39,14 @@ const PAINTER_FIELDS = [
 
 const PainterSignup = () => {
     const navigate = useNavigate();
-    const {
-        formData,
-        errors,
-        handleChange,
-        handleBlur,
-        validateAll
-    } = useAuthForm(INITIAL_PAINTER_STATE, PAINTER_VALIDATORS, PAINTER_CONSTRAINTS);
+    const authForm = useAuthForm(INITIAL_PAINTER_STATE, PAINTER_VALIDATORS, PAINTER_CONSTRAINTS);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!validateAll()) return;
+        if (!authForm.validateAll()) return;
 
-        console.log('Painter form submitted:', formData);
-        navigate('/painter-verification', { state: { mobile: formData.mobile } });
+        console.log('Painter form submitted:', authForm.formData);
+        navigate('/painter-verification', { state: { mobile: authForm.formData.mobile } });
     };
 
     return (
@@ -71,37 +64,9 @@ const PainterSignup = () => {
             />
 
             <form onSubmit={handleSubmit} noValidate className="space-y-3.5 sm:space-y-5 lg:space-y-6">
-                {PAINTER_FIELDS.map((f) => {
-                    if (f.isPhone) {
-                        return (
-                            <PhoneInputField
-                                key={f.name}
-                                label={f.label}
-                                name={f.name}
-                                placeholder={f.placeholder}
-                                value={formData[f.name]}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                error={errors[f.name]}
-                                required
-                            />
-                        );
-                    }
-                    return (
-                        <InputField
-                            key={f.name}
-                            label={f.label}
-                            name={f.name}
-                            placeholder={f.placeholder}
-                            value={formData[f.name]}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            error={errors[f.name]}
-                            maxLength={f.maxLength}
-                            required
-                        />
-                    );
-                })}
+                {PAINTER_FIELDS.map((field) => (
+                    <AuthFormField key={field.name} field={field} form={authForm} />
+                ))}
 
                 <p className="text-xs text-gray-500 leading-normal pt-1">
                     By clicking Register, you agree to our{' '}

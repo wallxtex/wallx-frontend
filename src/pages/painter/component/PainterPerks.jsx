@@ -6,6 +6,7 @@ import {
   IoPeopleOutline, 
   IoPhonePortraitOutline 
 } from 'react-icons/io5';
+import SectionHeader from './SectionHeader';
 
 const PainterPerks = () => {
   const perks = [
@@ -44,17 +45,11 @@ const PainterPerks = () => {
   return (
     <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-50 border border-red-200 text-[#d82b2b] text-xs sm:text-sm font-semibold mb-3">
-            <span>Exclusive Membership Benefits</span>
-          </div>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-            Why Join the WallX Painter Mitra Family?
-          </h2>
-          <p className="mt-3 text-base sm:text-lg text-gray-600">
-            More than just cashbacks — we empower professional painters and texture contractors with security, training, and prestige.
-          </p>
-        </div>
+        <SectionHeader
+          badgeText="Exclusive Membership Benefits"
+          title="Why Join the WallX Painter Mitra Family?"
+          description="More than just cashbacks — we empower professional painters and texture contractors with security, training, and prestige."
+        />
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {perks.map((perk) => (

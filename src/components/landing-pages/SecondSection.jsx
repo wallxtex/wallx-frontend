@@ -1,9 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Shield, Palette, Hammer, Home } from "lucide-react";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { useSectionAnimation } from "./useSectionAnimation";
 
 const benefits = [
   {
@@ -34,56 +31,9 @@ const benefits = [
 ];
 
 export default function SecondSection() {
-  const sectionRef = useRef(null);
   const titleRef = useRef(null);
-  const descRef = useRef(null);
   const cardsRef = useRef([]);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.set(titleRef.current, { opacity: 0, y: 30 });
-      gsap.set(descRef.current, { opacity: 0, y: 20 });
-      gsap.set(cardsRef.current, { opacity: 0, y: 40 });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          toggleActions: "play none none reverse",
-        },
-      });
-
-      tl.to(titleRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power3.out",
-      })
-        .to(
-          descRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            ease: "power3.out",
-          },
-          "-=0.4",
-        )
-        .to(
-          cardsRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            ease: "power3.out",
-            stagger: 0.1,
-          },
-          "-=0.3",
-        );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  const sectionRef = useSectionAnimation(titleRef, cardsRef);
 
   return (
     <section ref={sectionRef} className="w-full bg-white">
@@ -103,7 +53,6 @@ export default function SecondSection() {
 
             {/* Description */}
             <p
-              ref={descRef}
               className="w-full max-w-3xl text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed mb-20 md:mb-28 lg:mb-32"
             >
               WallX is a premium rustic wall-finish solution designed to
