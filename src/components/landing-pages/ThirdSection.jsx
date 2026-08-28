@@ -1,7 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Crown } from "lucide-react";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,11 +11,11 @@ import {
   Legend
 } from "chart.js";
 
+import { useSectionAnimation } from "./useSectionAnimation";
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-gsap.registerPlugin(ScrollTrigger);
 
 const ThirdSection = () => {
-  const sectionRef = useRef(null);
   const headerRef = useRef(null);
   const performanceCardRef = useRef(null);
   const chartRef = useRef(null);
@@ -122,44 +120,7 @@ const ThirdSection = () => {
     }
   };
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.set(
-        [headerRef.current, performanceCardRef.current],
-        {
-          opacity: 0,
-          y: 30
-        }
-      );
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          toggleActions: "play none none reverse"
-        }
-      });
-
-      tl.to(headerRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power3.out"
-      })
-        .to(
-          performanceCardRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            ease: "power3.out"
-          },
-          "-=0.4"
-        );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  const sectionRef = useSectionAnimation(headerRef, performanceCardRef);
 
   return (
     <section ref={sectionRef} className="w-full bg-white py-20 md:py-32 lg:py-40">
@@ -188,44 +149,26 @@ const ThirdSection = () => {
           <div className="w-full flex flex-col gap-12 md:gap-16 lg:gap-16">
             {/* Painters Grid */}
             <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 lg:gap-8">
-              {/* Painter 1 */}
-              <div className="w-full bg-white rounded-3xl p-8 md:p-8 lg:p-10 border border-gray-100 hover:shadow-lg transition-all duration-300 text-center">
-                <div className="w-24 h-24 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-linear-to-br from-orange-400 to-orange-300 flex items-center justify-center mx-auto mb-6 md:mb-5 lg:mb-6 shadow-lg">
-                  <span className="text-2xl md:text-xl lg:text-2xl font-black text-white">RK</span>
+              {[
+                { initials: 'RK', name: 'Rajesh Kumar', location: 'Patna, Bihar', gradient: 'from-orange-400 to-orange-300' },
+                { initials: 'AS', name: 'Arun Singh', location: 'Delhi, India', gradient: 'from-blue-400 to-blue-300' },
+                { initials: 'VP', name: 'Vikram Patel', location: 'Mumbai, Maharashtra', gradient: 'from-green-400 to-green-300' },
+              ].map((painter) => (
+                <div
+                  key={painter.name}
+                  className="w-full bg-white rounded-3xl p-8 md:p-8 lg:p-10 border border-gray-100 hover:shadow-lg transition-all duration-300 text-center"
+                >
+                  <div className={`w-24 h-24 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-linear-to-br ${painter.gradient} flex items-center justify-center mx-auto mb-6 md:mb-5 lg:mb-6 shadow-lg`}>
+                    <span className="text-2xl md:text-xl lg:text-2xl font-black text-white">{painter.initials}</span>
+                  </div>
+                  <h3 className="text-lg md:text-lg lg:text-xl font-bold text-black mb-2">
+                    {painter.name}
+                  </h3>
+                  <p className="text-sm md:text-sm lg:text-base text-gray-600">
+                    {painter.location}
+                  </p>
                 </div>
-                <h3 className="text-lg md:text-lg lg:text-xl font-bold text-black mb-2">
-                  Rajesh Kumar
-                </h3>
-                <p className="text-sm md:text-sm lg:text-base text-gray-600">
-                  Patna, Bihar
-                </p>
-              </div>
-
-              {/* Painter 2 */}
-              <div className="w-full bg-white rounded-3xl p-8 md:p-8 lg:p-10 border border-gray-100 hover:shadow-lg transition-all duration-300 text-center">
-                <div className="w-24 h-24 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-linear-to-br from-blue-400 to-blue-300 flex items-center justify-center mx-auto mb-6 md:mb-5 lg:mb-6 shadow-lg">
-                  <span className="text-2xl md:text-xl lg:text-2xl font-black text-white">AS</span>
-                </div>
-                <h3 className="text-lg md:text-lg lg:text-xl font-bold text-black mb-2">
-                  Arun Singh
-                </h3>
-                <p className="text-sm md:text-sm lg:text-base text-gray-600">
-                  Delhi, India
-                </p>
-              </div>
-
-              {/* Painter 3 */}
-              <div className="w-full bg-white rounded-3xl p-8 md:p-8 lg:p-10 border border-gray-100 hover:shadow-lg transition-all duration-300 text-center">
-                <div className="w-24 h-24 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-linear-to-br from-green-400 to-green-300 flex items-center justify-center mx-auto mb-6 md:mb-5 lg:mb-6 shadow-lg">
-                  <span className="text-2xl md:text-xl lg:text-2xl font-black text-white">VP</span>
-                </div>
-                <h3 className="text-lg md:text-lg lg:text-xl font-bold text-black mb-2">
-                  Vikram Patel
-                </h3>
-                <p className="text-sm md:text-sm lg:text-base text-gray-600">
-                  Mumbai, Maharashtra
-                </p>
-              </div>
+              ))}
             </div>
 
             {/* Performance Chart Card */}
