@@ -1,7 +1,7 @@
 import InputField from './InputField';
 import PhoneInputField from './PhoneInputField';
 import SelectField from './SelectField';
-
+// auth form field
 const AuthFormField = ({ field, form }) => {
   const { name, label, placeholder, isSelect, isPhone, options, type, maxLength, required } = field;
   const commonProps = {
