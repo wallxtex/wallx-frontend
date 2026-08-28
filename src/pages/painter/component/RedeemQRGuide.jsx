@@ -88,18 +88,16 @@ const RedeemQRGuide = () => {
 
         {/* Security & Support Guarantee Bar */}
         <div className="mt-12 p-5 bg-white rounded-2xl border border-gray-200 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-          <div className="p-3">
-            <div className="font-bold text-gray-900 text-sm">🔒 Tamper-Proof Scratch Foil</div>
-            <div className="text-xs text-gray-500 mt-0.5">Each QR code is unique and 1-time scannable</div>
-          </div>
-          <div className="p-3 border-y sm:border-y-0 sm:border-x border-gray-200">
-            <div className="font-bold text-gray-900 text-sm">⚡ Instant Verification & SMS</div>
-            <div className="text-xs text-gray-500 mt-0.5">Receive instantaneous SMS & WhatsApp confirmation</div>
-          </div>
-          <div className="p-3">
-            <div className="font-bold text-gray-900 text-sm">📞 24/7 Painter Helpline</div>
-            <div className="text-xs text-gray-500 mt-0.5">Toll-free QR support: 1800-WALLX-HELP</div>
-          </div>
+          {[
+            { title: '🔒 Tamper-Proof Scratch Foil', desc: 'Each QR code is unique and 1-time scannable' },
+            { title: '⚡ Instant Verification & SMS', desc: 'Receive instantaneous SMS & WhatsApp confirmation', isMiddle: true },
+            { title: '📞 24/7 Painter Helpline', desc: 'Toll-free QR support: 1800-WALLX-HELP' },
+          ].map((item) => (
+            <div key={item.title} className={`p-3 ${item.isMiddle ? 'border-y sm:border-y-0 sm:border-x border-gray-200' : ''}`}>
+              <div className="font-bold text-gray-900 text-sm">{item.title}</div>
+              <div className="text-xs text-gray-500 mt-0.5">{item.desc}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

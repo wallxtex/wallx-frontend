@@ -51,6 +51,25 @@ const INITIAL_DEALER_STATE = {
     area: ''
 };
 
+const DEALER_ROW_FIELDS = [
+    [
+        { name: 'dealerName', label: 'Dealer Name', placeholder: 'Enter dealer / owner name', maxLength: 50 },
+        { name: 'shopName', label: 'Shop / Business Name', placeholder: 'Enter shop or firm name', maxLength: 80 },
+    ],
+    [
+        { name: 'mobile', label: 'Phone Number', placeholder: '10-digit mobile number', isPhone: true },
+        { name: 'email', label: 'Email Address', placeholder: 'name@domain.com', type: 'email', maxLength: 80 },
+    ],
+    [
+        { name: 'state', label: 'State', placeholder: 'Select state', isSelect: true, options: INDIAN_STATES },
+        { name: 'city', label: 'City Name', placeholder: 'Enter your city', maxLength: 50 },
+    ],
+    [
+        { name: 'pincode', label: 'Pincode', placeholder: '6-digit pincode', maxLength: 6 },
+        { name: 'area', label: 'Area / Market / Landmark', placeholder: 'e.g. Sector 18, Commercial Market', maxLength: 100 },
+    ],
+];
+
 const DealerSignup = () => {
     const navigate = useNavigate();
     const {
@@ -94,105 +113,55 @@ const DealerSignup = () => {
             />
 
             <form onSubmit={handleSubmit} noValidate className="space-y-4 sm:space-y-5 lg:space-y-4.5 xl:space-y-5">
-                {/* Section 1: Business & Personal Details */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-4.5 xl:gap-5">
-                    <InputField
-                        label="Dealer Name"
-                        name="dealerName"
-                        placeholder="Enter dealer / owner name"
-                        value={formData.dealerName}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={errors.dealerName}
-                        maxLength={50}
-                    />
-
-                    <InputField
-                        label="Shop / Business Name"
-                        name="shopName"
-                        placeholder="Enter shop or firm name"
-                        value={formData.shopName}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={errors.shopName}
-                        maxLength={80}
-                    />
-                </div>
-
-                {/* Section 2: Contact Details */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-4.5 xl:gap-5">
-                    <PhoneInputField
-                        label="Phone Number"
-                        name="mobile"
-                        placeholder="10-digit mobile number"
-                        value={formData.mobile}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={errors.mobile}
-                    />
-
-                    <InputField
-                        label="Email Address"
-                        name="email"
-                        type="email"
-                        placeholder="name@domain.com"
-                        value={formData.email}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={errors.email}
-                        maxLength={80}
-                    />
-                </div>
-
-                {/* Section 3: State & City */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-4.5 xl:gap-5">
-                    <SelectField
-                        label="State"
-                        name="state"
-                        placeholder="Select state"
-                        value={formData.state}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        options={INDIAN_STATES}
-                        error={errors.state}
-                    />
-
-                    <InputField
-                        label="City Name"
-                        name="city"
-                        placeholder="Enter your city"
-                        value={formData.city}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={errors.city}
-                        maxLength={50}
-                    />
-                </div>
-
-                {/* Section 4: Pincode & Area */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-4.5 xl:gap-5">
-                    <InputField
-                        label="Pincode"
-                        name="pincode"
-                        placeholder="6-digit pincode"
-                        value={formData.pincode}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={errors.pincode}
-                        maxLength={6}
-                    />
-
-                    <InputField
-                        label="Area / Market / Landmark"
-                        name="area"
-                        placeholder="e.g. Sector 18, Commercial Market"
-                        value={formData.area}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={errors.area}
-                        maxLength={100}
-                    />
-                </div>
+                {DEALER_ROW_FIELDS.map((row, rowIdx) => (
+                    <div key={`row-${rowIdx}`} className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-4.5 xl:gap-5">
+                        {row.map((field) => {
+                            if (field.isSelect) {
+                                return (
+                                    <SelectField
+                                        key={field.name}
+                                        label={field.label}
+                                        name={field.name}
+                                        placeholder={field.placeholder}
+                                        value={formData[field.name]}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        options={field.options}
+                                        error={errors[field.name]}
+                                    />
+                                );
+                            }
+                            if (field.isPhone) {
+                                return (
+                                    <PhoneInputField
+                                        key={field.name}
+                                        label={field.label}
+                                        name={field.name}
+                                        placeholder={field.placeholder}
+                                        value={formData[field.name]}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={errors[field.name]}
+                                    />
+                                );
+                            }
+                            return (
+                                <InputField
+                                    key={field.name}
+                                    label={field.label}
+                                    name={field.name}
+                                    type={field.type || 'text'}
+                                    placeholder={field.placeholder}
+                                    value={formData[field.name]}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    error={errors[field.name]}
+                                    maxLength={field.maxLength}
+                                />
+                            );
+                        })}
+                    </div>
+                ))}
 
                 {/* Submit Button */}
                 <div className="pt-3 sm:pt-4 lg:pt-3.5 xl:pt-5">

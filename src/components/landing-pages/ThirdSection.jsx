@@ -188,44 +188,26 @@ const ThirdSection = () => {
           <div className="w-full flex flex-col gap-12 md:gap-16 lg:gap-16">
             {/* Painters Grid */}
             <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 lg:gap-8">
-              {/* Painter 1 */}
-              <div className="w-full bg-white rounded-3xl p-8 md:p-8 lg:p-10 border border-gray-100 hover:shadow-lg transition-all duration-300 text-center">
-                <div className="w-24 h-24 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-linear-to-br from-orange-400 to-orange-300 flex items-center justify-center mx-auto mb-6 md:mb-5 lg:mb-6 shadow-lg">
-                  <span className="text-2xl md:text-xl lg:text-2xl font-black text-white">RK</span>
+              {[
+                { initials: 'RK', name: 'Rajesh Kumar', location: 'Patna, Bihar', gradient: 'from-orange-400 to-orange-300' },
+                { initials: 'AS', name: 'Arun Singh', location: 'Delhi, India', gradient: 'from-blue-400 to-blue-300' },
+                { initials: 'VP', name: 'Vikram Patel', location: 'Mumbai, Maharashtra', gradient: 'from-green-400 to-green-300' },
+              ].map((painter) => (
+                <div
+                  key={painter.name}
+                  className="w-full bg-white rounded-3xl p-8 md:p-8 lg:p-10 border border-gray-100 hover:shadow-lg transition-all duration-300 text-center"
+                >
+                  <div className={`w-24 h-24 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-linear-to-br ${painter.gradient} flex items-center justify-center mx-auto mb-6 md:mb-5 lg:mb-6 shadow-lg`}>
+                    <span className="text-2xl md:text-xl lg:text-2xl font-black text-white">{painter.initials}</span>
+                  </div>
+                  <h3 className="text-lg md:text-lg lg:text-xl font-bold text-black mb-2">
+                    {painter.name}
+                  </h3>
+                  <p className="text-sm md:text-sm lg:text-base text-gray-600">
+                    {painter.location}
+                  </p>
                 </div>
-                <h3 className="text-lg md:text-lg lg:text-xl font-bold text-black mb-2">
-                  Rajesh Kumar
-                </h3>
-                <p className="text-sm md:text-sm lg:text-base text-gray-600">
-                  Patna, Bihar
-                </p>
-              </div>
-
-              {/* Painter 2 */}
-              <div className="w-full bg-white rounded-3xl p-8 md:p-8 lg:p-10 border border-gray-100 hover:shadow-lg transition-all duration-300 text-center">
-                <div className="w-24 h-24 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-linear-to-br from-blue-400 to-blue-300 flex items-center justify-center mx-auto mb-6 md:mb-5 lg:mb-6 shadow-lg">
-                  <span className="text-2xl md:text-xl lg:text-2xl font-black text-white">AS</span>
-                </div>
-                <h3 className="text-lg md:text-lg lg:text-xl font-bold text-black mb-2">
-                  Arun Singh
-                </h3>
-                <p className="text-sm md:text-sm lg:text-base text-gray-600">
-                  Delhi, India
-                </p>
-              </div>
-
-              {/* Painter 3 */}
-              <div className="w-full bg-white rounded-3xl p-8 md:p-8 lg:p-10 border border-gray-100 hover:shadow-lg transition-all duration-300 text-center">
-                <div className="w-24 h-24 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-linear-to-br from-green-400 to-green-300 flex items-center justify-center mx-auto mb-6 md:mb-5 lg:mb-6 shadow-lg">
-                  <span className="text-2xl md:text-xl lg:text-2xl font-black text-white">VP</span>
-                </div>
-                <h3 className="text-lg md:text-lg lg:text-xl font-bold text-black mb-2">
-                  Vikram Patel
-                </h3>
-                <p className="text-sm md:text-sm lg:text-base text-gray-600">
-                  Mumbai, Maharashtra
-                </p>
-              </div>
+              ))}
             </div>
 
             {/* Performance Chart Card */}

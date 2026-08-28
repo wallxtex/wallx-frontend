@@ -32,6 +32,12 @@ const INITIAL_PAINTER_STATE = {
     mobile: ''
 };
 
+const PAINTER_FIELDS = [
+    { name: 'name', label: 'Full Name', placeholder: 'Enter your full name', maxLength: 40 },
+    { name: 'mobile', label: 'Mobile Number', placeholder: 'Enter 10-digit mobile number', isPhone: true },
+    { name: 'address', label: 'Address', placeholder: 'Enter your full address', maxLength: 500 },
+];
+
 const PainterSignup = () => {
     const navigate = useNavigate();
     const {
@@ -65,40 +71,37 @@ const PainterSignup = () => {
             />
 
             <form onSubmit={handleSubmit} noValidate className="space-y-3.5 sm:space-y-5 lg:space-y-6">
-                <InputField
-                    label="Full Name"
-                    name="name"
-                    placeholder="Enter your full name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.name}
-                    maxLength={40}
-                    required
-                />
-
-                <PhoneInputField
-                    label="Mobile Number"
-                    name="mobile"
-                    placeholder="Enter 10-digit mobile number"
-                    value={formData.mobile}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.mobile}
-                    required
-                />
-
-                <InputField
-                    label="Address"
-                    name="address"
-                    placeholder="Enter your full address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.address}
-                    maxLength={500}
-                    required
-                />
+                {PAINTER_FIELDS.map((f) => {
+                    if (f.isPhone) {
+                        return (
+                            <PhoneInputField
+                                key={f.name}
+                                label={f.label}
+                                name={f.name}
+                                placeholder={f.placeholder}
+                                value={formData[f.name]}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={errors[f.name]}
+                                required
+                            />
+                        );
+                    }
+                    return (
+                        <InputField
+                            key={f.name}
+                            label={f.label}
+                            name={f.name}
+                            placeholder={f.placeholder}
+                            value={formData[f.name]}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={errors[f.name]}
+                            maxLength={f.maxLength}
+                            required
+                        />
+                    );
+                })}
 
                 <p className="text-xs text-gray-500 leading-normal pt-1">
                     By clicking Register, you agree to our{' '}
