@@ -58,8 +58,8 @@ const Navbar = () => {
             {MAIN_NAV_LINKS.map((link) => {
               const isActive =
                 location.pathname === link.path ||
-                (link.path === "/painters" &&
-                  location.pathname.startsWith("/painters"));
+                (link.path === "/painters" && location.pathname.startsWith("/painters")) ||
+                (link.path === "/dealers" && location.pathname.startsWith("/dealers"));
               return (
                 <li
                   key={link.name}
