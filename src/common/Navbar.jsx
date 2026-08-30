@@ -1,19 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/webp/wallx_final.webp";
-import { IoPersonOutline, IoBriefcaseOutline } from "react-icons/io5";
-
-const MAIN_NAV_LINKS = [
-  { name: "Painters", path: "/painters" },
-  { name: "Dealers", path: "/dealers" },
-  { name: "Services", path: "/services" },
-  { name: "Products", path: "/product" },
-];
-
-const AUTH_NAV_LINKS = [
-  { name: "Painter Signup", path: "/painter-signup", icon: IoPersonOutline },
-  { name: "Dealer Signup", path: "/dealer-signup", icon: IoBriefcaseOutline },
-];
+import { AUTH_NAV_LINKS , MAIN_NAV_LINKS} from "../constants/navbar";
 
 const ALL_MOBILE_LINKS = [
   ...MAIN_NAV_LINKS,
