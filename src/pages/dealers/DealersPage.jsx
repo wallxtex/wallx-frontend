@@ -32,7 +32,6 @@ const DealersPage = () => {
     linkText: "Connect with Us",
     linkUrl: "/dealer-signup"
   };
-
   const leaderboardHeaderProps = {
     badgeIcon: <IoTrophy className="text-amber-500 text-base" />,
     badgeText: "National Dealer Volume Leaderboard",
