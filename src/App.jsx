@@ -9,6 +9,7 @@ import DealersPage from './pages/dealers/DealersPage';
 import ProductsPage from './pages/products/ProductsPage';
 import NotFound from './pages/NotFound';
 import './App.css';
+import ServicesPage from "./pages/services/ServicesPage";
 import "./index.css";
 import HomePage from "./components/pages/HomePage";
 
@@ -22,8 +23,12 @@ function App() {
           <Route path="/painters" element={<PainterPage />} />
           <Route path="/dealers" element={<DealersPage />} />
           <Route path="/product" element={<ProductsPage />} />
+          <Route path="/services" element={<ServicesPage />}></Route>
           <Route path="/painter-signup" element={<PainterSignup />} />
-          <Route path="/painter-verification" element={<PainterVerification />} />
+          <Route
+            path="/painter-verification"
+            element={<PainterVerification />}
+          />
           <Route path="/dealer-signup" element={<DealerSignup />} />
           <Route path="/dealer-verification" element={<DealerVerification />} />
           <Route path="*" element={<NotFound />} />
