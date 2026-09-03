@@ -206,41 +206,35 @@ const ProductsPage = () => {
           </div>
           
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            <div className="p-6 rounded-2xl bg-gray-50/70 border border-gray-200/80 hover:border-red-200 hover:bg-white hover:shadow-lg transition-all duration-300 group">
-              <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <IoShieldCheckmarkOutline className="text-2xl text-[#d82b2b]" />
+            {[
+              {
+                icon: <IoShieldCheckmarkOutline className="text-2xl text-[#d82b2b]" />,
+                title: "Unmatched Durability",
+                description: "Advanced polymers and rusting materials provide extreme resistance against weather, water, and wear."
+              },
+              {
+                icon: <IoLeafOutline className="text-2xl text-emerald-600" />,
+                title: "Eco-Friendly & Safe",
+                description: "Low VOC, lead-free formulations with robust anti-fungal properties ensure a safe environment for your family."
+              },
+              {
+                icon: <IoColorPaletteOutline className="text-2xl text-blue-600" />,
+                title: "Vibrant Shades",
+                description: "Superior color retention and high opacity guarantee a flawless finish that stays brighter for longer."
+              }
+            ].map((feature, idx) => (
+              <div key={idx} className="p-6 rounded-2xl bg-gray-50/70 border border-gray-200/80 hover:border-red-200 hover:bg-white hover:shadow-lg transition-all duration-300 group">
+                <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  {feature.icon}
+                </div>
+                <h3 className="mt-4 text-lg font-bold text-gray-900 group-hover:text-[#d82b2b] transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+                  {feature.description}
+                </p>
               </div>
-              <h3 className="mt-4 text-lg font-bold text-gray-900 group-hover:text-[#d82b2b] transition-colors">
-                Unmatched Durability
-              </h3>
-              <p className="mt-2 text-sm text-gray-600 leading-relaxed">
-                Advanced polymers and rusting materials provide extreme resistance against weather, water, and wear.
-              </p>
-            </div>
-            
-            <div className="p-6 rounded-2xl bg-gray-50/70 border border-gray-200/80 hover:border-red-200 hover:bg-white hover:shadow-lg transition-all duration-300 group">
-              <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <IoLeafOutline className="text-2xl text-emerald-600" />
-              </div>
-              <h3 className="mt-4 text-lg font-bold text-gray-900 group-hover:text-[#d82b2b] transition-colors">
-                Eco-Friendly & Safe
-              </h3>
-              <p className="mt-2 text-sm text-gray-600 leading-relaxed">
-                Low VOC, lead-free formulations with robust anti-fungal properties ensure a safe environment for your family.
-              </p>
-            </div>
-            
-            <div className="p-6 rounded-2xl bg-gray-50/70 border border-gray-200/80 hover:border-red-200 hover:bg-white hover:shadow-lg transition-all duration-300 group">
-              <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <IoColorPaletteOutline className="text-2xl text-blue-600" />
-              </div>
-              <h3 className="mt-4 text-lg font-bold text-gray-900 group-hover:text-[#d82b2b] transition-colors">
-                Vibrant Shades
-              </h3>
-              <p className="mt-2 text-sm text-gray-600 leading-relaxed">
-                Superior color retention and high opacity guarantee a flawless finish that stays brighter for longer.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
