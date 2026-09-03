@@ -12,115 +12,13 @@ import {
 import { INDIAN_STATES } from '../../../constants/states';
 import SectionHeader from './SectionHeader';
 import SharedSection from './SharedSection';
-
-const createRunnerUpPodium = ({ order, cardBg, crownBg, crownIcon, badgeClass, badgeLabel, boxBg, borderDivider }) => ({
-  order,
-  cardBg,
-  crownBg,
-  crownIcon,
-  badgeClass,
-  badgeIcon: <IoRibbonOutline />,
-  badgeLabel,
-  avatarClass: 'w-20 h-20 border-2 text-2xl font-bold',
-  nameSize: 'text-xl font-bold',
-  boxBg,
-  boxLabel: 'text-gray-500 font-semibold',
-  cashColor: 'text-gray-900 text-2xl font-extrabold',
-  borderDivider,
-  hasMilestone: false,
-});
-
-const PODIUM_CONFIG = {
-  1: {
-    order: 'order-1 md:order-2 transform md:-translate-y-4 shadow-2xl',
-    cardBg: 'bg-gradient-to-b from-amber-50/70 via-white to-amber-50/40 border-2 border-amber-400',
-    crownBg: 'bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-300 border-4 border-white shadow-xl text-amber-950 text-3xl',
-    crownIcon: <IoTrophy className="text-amber-900 drop-shadow" />,
-    badgeClass: 'bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-md shadow-amber-500/30 font-extrabold',
-    badgeIcon: <IoStar className="text-white text-xs" />,
-    badgeLabel: '1st Champion',
-    avatarClass: 'w-24 h-24 border-4 ring-4 ring-amber-100 text-3xl font-black',
-    nameSize: 'text-2xl font-extrabold',
-    boxBg: 'bg-gradient-to-br from-amber-100/90 to-yellow-50 border border-amber-300/80 shadow-sm',
-    boxLabel: 'text-amber-900 font-bold',
-    cashColor: 'text-[#d82b2b] text-3xl font-black',
-    borderDivider: 'border-amber-200 text-amber-950',
-    hasMilestone: true,
-  },
-  2: createRunnerUpPodium({
-    order: 'order-2 md:order-1 shadow-md',
-    cardBg: 'bg-gradient-to-b from-slate-50 to-white border-2 border-slate-200',
-    crownBg: 'bg-gradient-to-tr from-slate-400 to-slate-200 border-2 border-white shadow-md text-slate-800 text-2xl font-black',
-    crownIcon: '2',
-    badgeClass: 'bg-slate-100 text-slate-700 border border-slate-300 font-bold',
-    badgeLabel: '2nd Position',
-    boxBg: 'bg-slate-100/80 border border-slate-200',
-    borderDivider: 'border-slate-200 text-gray-600',
-  }),
-  3: createRunnerUpPodium({
-    order: 'order-3 shadow-md',
-    cardBg: 'bg-gradient-to-b from-orange-50/60 to-white border-2 border-orange-200',
-    crownBg: 'bg-gradient-to-tr from-amber-700 to-orange-400 border-2 border-white shadow-md text-white text-2xl font-black',
-    crownIcon: '3',
-    badgeClass: 'bg-orange-100 text-orange-800 border border-orange-300 font-bold',
-    badgeLabel: '3rd Position',
-    boxBg: 'bg-orange-50/70 border border-orange-200',
-    borderDivider: 'border-orange-200 text-gray-600',
-  }),
-};
+import PodiumCard from './PodiumCard';
 
 export const getRankBadgeStyle = (rank) => {
   if (rank === 1) return 'bg-amber-400 text-amber-950 shadow-sm';
   if (rank === 2) return 'bg-slate-300 text-slate-800';
   if (rank === 3) return 'bg-orange-300 text-orange-900';
   return 'bg-gray-100 text-gray-700 font-semibold';
-};
-
-const PodiumCard = ({ person, metricsConfig }) => {
-  const cfg = PODIUM_CONFIG[person.rank];
-  if (!cfg) return null;
-
-  return (
-    <div className={`${cfg.order} ${cfg.cardBg} rounded-3xl p-6 hover:shadow-xl transition-all duration-300 relative text-center flex flex-col items-center`}>
-      <div className={`w-14 h-14 -mt-12 rounded-2xl flex items-center justify-center ${cfg.crownBg}`}>
-        {cfg.crownIcon}
-      </div>
-
-      <span className={`mt-3 inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs ${cfg.badgeClass}`}>
-        {cfg.badgeIcon} {cfg.badgeLabel} {person.tier && `• ${person.tier}`}
-      </span>
-
-      <div className={`mt-4 rounded-full ${person.avatarBg} flex items-center justify-center shadow-inner ${cfg.avatarClass}`}>
-        {person.avatarInitials}
-      </div>
-
-      <h3 className={`mt-3 text-gray-900 flex items-center justify-center gap-1.5 ${cfg.nameSize}`}>
-        {person.name}
-        {person.verified && <IoCheckmarkCircle className="text-blue-500 text-base" title="Verified" />}
-      </h3>
-
-      <div className="mt-1 flex items-center gap-1 text-xs text-gray-500 font-medium">
-        <IoLocationOutline className="text-gray-400 text-sm" />
-        {person.city}, {person.state}
-      </div>
-
-      <div className={`mt-5 w-full rounded-2xl p-4 ${cfg.boxBg}`}>
-        <div className={`text-xs uppercase tracking-wide ${cfg.boxLabel}`}>{metricsConfig.primaryLabel}</div>
-        <div className={`mt-0.5 ${cfg.cashColor}`}>
-          {metricsConfig.formatPrimary ? metricsConfig.formatPrimary(person[metricsConfig.primaryKey]) : person[metricsConfig.primaryKey]}
-        </div>
-        <div className={`mt-2 pt-2 border-t text-center text-xs ${cfg.borderDivider}`}>
-          <span>{metricsConfig.secondaryLabel}: <strong>{metricsConfig.formatSecondary ? metricsConfig.formatSecondary(person[metricsConfig.secondaryKey]) : person[metricsConfig.secondaryKey]}</strong></span>
-        </div>
-      </div>
-
-      {cfg.hasMilestone && person.recentReward && (
-        <div className="mt-4 p-2 rounded-xl bg-amber-50 text-amber-900 text-xs font-semibold border border-amber-200/60 w-full">
-          🎁 Milestone: {person.recentReward}
-        </div>
-      )}
-    </div>
-  );
 };
 
 const SharedLeaderboard = ({

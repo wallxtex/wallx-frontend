@@ -12,6 +12,8 @@ import {
 } from "chart.js";
 
 import { useSectionAnimation } from "./useSectionAnimation";
+import PodiumCard from '../../common/components/Shared/PodiumCard';
+import { TOP_PAINTERS_DATA } from '../../pages/painter/component/painterData';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -19,6 +21,23 @@ const ThirdSection = () => {
   const headerRef = useRef(null);
   const performanceCardRef = useRef(null);
   const chartRef = useRef(null);
+
+  const formatINR = (val) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0,
+    }).format(val);
+  };
+
+  const metricsConfig = {
+    primaryLabel: "Total QR Cash Redeemed (@ ₹90/unit)",
+    primaryKey: "totalRedeemedAmount",
+    formatPrimary: formatINR,
+    secondaryLabel: "Scanned",
+    secondaryKey: "bucketsScanned",
+    formatSecondary: (val) => `${val.toLocaleString()} Bags / Buckets`
+  };
 
   // Performance chart data
   const chartData = {
@@ -147,27 +166,10 @@ const ThirdSection = () => {
 
           {/* Main Content - Grid Layout */}
           <div className="w-full flex flex-col gap-10 md:gap-12 lg:gap-16">
-            {/* Painters Grid */}
-            <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-8">
-              {[
-                { initials: 'RK', name: 'Rajesh Kumar', location: 'Patna, Bihar', gradient: 'from-orange-400 to-orange-300' },
-                { initials: 'AS', name: 'Arun Singh', location: 'Delhi, India', gradient: 'from-blue-400 to-blue-300' },
-                { initials: 'VP', name: 'Vikram Patel', location: 'Mumbai, Maharashtra', gradient: 'from-green-400 to-green-300' },
-              ].map((painter) => (
-                <div
-                  key={painter.name}
-                  className="w-full bg-white rounded-xl sm:rounded-2xl md:rounded-3xl p-6 sm:p-7 md:p-8 lg:p-10 border border-gray-100 hover:shadow-lg transition-all duration-300 text-center"
-                >
-                  <div className={`w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br ${painter.gradient} flex items-center justify-center mx-auto mb-5 md:mb-6 lg:mb-7 shadow-lg`}>
-                    <span className="text-xl sm:text-2xl md:text-3xl font-black text-white">{painter.initials}</span>
-                  </div>
-                  <h3 className="text-base sm:text-lg md:text-lg lg:text-xl font-bold text-black mb-2">
-                    {painter.name}
-                  </h3>
-                  <p className="text-xs sm:text-sm md:text-sm lg:text-base text-gray-600">
-                    {painter.location}
-                  </p>
-                </div>
+            {/* Podium for Top 3 */}
+            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 items-end mt-12 mb-8">
+              {TOP_PAINTERS_DATA.slice(0, 3).map((person) => (
+                <PodiumCard key={person.id} person={person} metricsConfig={metricsConfig} />
               ))}
             </div>
 
