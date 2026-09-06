@@ -11,4 +11,4 @@ const AUTH_NAV_LINKS = [
   { name: "Painter Signup", path: "/painter-signup", icon: IoPersonOutline },
   { name: "Dealer Signup", path: "/dealer-signup", icon: IoBriefcaseOutline },
 ];
-export {MAIN_NAV_LINKS , AUTH_NAV_LINKS}
+export { MAIN_NAV_LINKS, AUTH_NAV_LINKS };
