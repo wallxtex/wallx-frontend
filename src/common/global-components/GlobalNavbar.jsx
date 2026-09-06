@@ -11,7 +11,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import logo from "../../assets/webp/wallx_final.webp";
-import NotificationsData from "./data/notification";
+import NotificationsData from "./data/NotificationData";
 // Mock data — replace with real user/notification data once available.
 const painter = { name: "Sagar", initials: "S" };
 
