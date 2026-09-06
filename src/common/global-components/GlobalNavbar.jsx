@@ -11,8 +11,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import logo from "../../assets/webp/wallx_final.webp";
-import notifications from "./data/notification";
-
+import NotificationsData from "./data/notification";
 // Mock data — replace with real user/notification data once available.
 const painter = { name: "Sagar", initials: "S" };
 
@@ -25,7 +24,7 @@ const GlobalNavbar = () => {
   const notifRef = useRef(null);
   const profileRef = useRef(null);
 
-  const unreadCount = notifications.filter((n) => n.unread).length;
+  const unreadCount = NotificationsData.filter((n) => n.unread).length;
 
   // Close either dropdown when clicking outside of it.
   useEffect(() => {
