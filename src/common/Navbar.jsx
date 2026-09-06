@@ -8,7 +8,7 @@ const ALL_MOBILE_LINKS = [
   ...AUTH_NAV_LINKS.map(({ name, path }) => ({ name, path })),
 ];
 
-const Navbar = () => {
+const PublicNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
@@ -145,4 +145,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default PublicNavbar;
