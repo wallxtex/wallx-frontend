@@ -1,4 +1,4 @@
-const notifications = [
+const  NotificationsData = [
   {
     id: 1,
     title: "Redeem approved",
@@ -18,4 +18,4 @@ const notifications = [
     unread: false,
   },
 ];
-export default notifications;
+export default NotificationsData;
