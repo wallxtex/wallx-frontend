@@ -245,8 +245,6 @@ const ProductsPage = () => {
         onClose={() => setIsModalOpen(false)} 
         product={selectedProduct} 
       />
-
-      <FooterSection />
     </div>
   );
 };

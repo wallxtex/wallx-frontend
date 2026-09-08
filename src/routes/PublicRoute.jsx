@@ -7,6 +7,7 @@ const HomePage = lazy(() => import("../components/pages/HomePage"));
 const PainterPage = lazy(() => import("../pages/painter/PainterPage"));
 const DealersPage = lazy(() => import("../pages/dealers/DealersPage"));
 const ServicesPage = lazy(() => import("../pages/services/ServicesPage"));
+const ProductsPage = lazy(() => import("../pages/products/ProductsPage"));
 // const NotFound = lazy(() => import("../pages"));
 
 // Lazy Loaded Auth Components
@@ -28,6 +29,8 @@ const PublicRoute = () => {
           <Route path="/painters" element={<PainterPage />} />
           <Route path="/dealers" element={<DealersPage />} />
           <Route path="/services" element={<ServicesPage />} />
+          <Route path="/product" element={<ProductsPage />} />
+          <Route path="/products" element={<ProductsPage />} />
         </Route>
         {/* ================= SECTION 2: AUTHENTICATION PAGES ================= */}
         <Route path="/painter-signup" element={<PainterSignup />} />

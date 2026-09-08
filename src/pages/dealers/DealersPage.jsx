@@ -117,7 +117,7 @@ const DealersPage = () => {
         secondaryBtnLink="tel:18001239255"
         footerNote="* Minimum initial order volume requirements apply for new authorized dealerships."
       />
-      <FooterSection />
+
     </main>
   );
 };
