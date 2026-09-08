@@ -203,8 +203,6 @@ function ServicesPage() {
         footerNote="* Minimum initial order volume requirements apply for new authorized dealerships."
       />
 
-      {/* Footer Section */}
-      <FooterSection />
     </div>
   );
 }

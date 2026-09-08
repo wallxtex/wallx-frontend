@@ -1,26 +1,23 @@
-import React, { useEffect, useRef } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import video from '../../assets/reddem.mp4'
-import { benefitSections } from '../../constants/benefitSection'
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import video from '../../assets/redeem_new_video.mp4';
+import { ArrowUpRight } from 'lucide-react';
+import { benefitSections } from '../../constants/benefitSection';
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger);
 
 const RedeemSections = () => {
-  const videoRef = useRef(null)
-  const headingRef = useRef(null)
-  const benefitsRef = useRef([])
-  const containerRef = useRef(null)
+  const videoRef = useRef(null);
+  const headingRef = useRef(null);
+  const containerRef = useRef(null);
+  const benefitsRef = useRef([]);
 
   useEffect(() => {
-    // Heading animation
     if (headingRef.current) {
       gsap.fromTo(
         headingRef.current,
-        {
-          opacity: 0,
-          y: 50,
-        },
+        { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
@@ -33,17 +30,13 @@ const RedeemSections = () => {
             toggleActions: 'play none none none',
           },
         }
-      )
+      );
     }
 
-    // Video animation
     if (videoRef.current) {
       gsap.fromTo(
         videoRef.current,
-        {
-          opacity: 0,
-          scale: 0.9,
-        },
+        { opacity: 0, scale: 0.9 },
         {
           opacity: 1,
           scale: 1,
@@ -56,21 +49,17 @@ const RedeemSections = () => {
             toggleActions: 'play none none none',
           },
         }
-      )
+      );
     }
 
-    // Benefits cards staggered animation
     benefitsRef.current.forEach((benefit, index) => {
       if (benefit) {
         gsap.fromTo(
           benefit,
-          {
-            opacity: 0,
-            y: 50,
-          },
+          { opacity: 0, x: 50 },
           {
             opacity: 1,
-            y: 0,
+            x: 0,
             duration: 0.6,
             delay: index * 0.1,
             ease: 'power3.out',
@@ -81,125 +70,108 @@ const RedeemSections = () => {
               toggleActions: 'play none none none',
             },
           }
-        )
-
-        // Hover animation for each benefit card
-        const card = benefit.querySelector('.benefit-card')
-        if (card) {
-          benefit.addEventListener('mouseenter', () => {
-            gsap.to(card, {
-              y: -10,
-              boxShadow: '0 20px 40px rgba(234, 88, 12, 0.3)',
-              duration: 0.3,
-              ease: 'power2.out',
-            })
-          })
-          benefit.addEventListener('mouseleave', () => {
-            gsap.to(card, {
-              y: 0,
-              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-              duration: 0.3,
-              ease: 'power2.out',
-            })
-          })
-        }
+        );
       }
-    })
+    });
 
     return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
-    }
-  }, [])
+      // Safe cleanup without breaking strict mode
+    };
+  }, []);
 
   return (
     <div
       ref={containerRef}
       className="w-full py-16 md:py-24 lg:py-32 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-white to-gray-50"
     >
-      <div className="max-w-7xl mx-auto">
-        {/* Top Heading Section */}
+      <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto">
+
+        {/* Hero Section: Video & CTA combined */}
         <div
           ref={headingRef}
-          className="text-center mb-12 md:mb-16 lg:mb-20"
+          className="w-full flex flex-col lg:flex-row overflow-hidden rounded-2xl md:rounded-3xl mb-16 md:mb-24 lg:mb-32 bg-red-50"
         >
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-gray-900 mb-3 md:mb-4 lg:mb-6 leading-tight">
-            Benefits of Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-500">Redeem Program</span>
-          </h1>
-          <p className="text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl mx-auto text-gray-600 leading-relaxed">
-            Join thousands of satisfied customers who are enjoying exclusive rewards and special privileges. Transform your shopping experience with our premium redemption program.
-          </p>
-        </div>
+          {/* Left Side: Video */}
+          <div className="w-full lg:w-1/2 relative h-[300px] sm:h-[400px] lg:h-auto min-h-[400px]">
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            >
+              <source src={video} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            {/* Overlay on Hover */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+          </div>
 
-        {/* Main Content - Video in Center */}
-        <div className="mb-12 md:mb-16 lg:mb-20">
-          <div
-            ref={videoRef}
-            className="relative group mx-auto max-w-4xl"
-          >
-            {/* Glow Effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-600/30 via-orange-500/20 to-transparent rounded-lg sm:rounded-2xl md:rounded-3xl blur-3xl group-hover:blur-2xl transition-all duration-500 -z-10"></div>
-            
-            {/* Video Container */}
-            <div className="relative rounded-lg sm:rounded-2xl md:rounded-3xl overflow-hidden shadow-xl md:shadow-2xl group-hover:shadow-orange-500/50 transition-shadow duration-300 aspect-video">
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-full h-full object-cover"
-              >
-                <source src={video} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-
-              {/* Overlay on Hover */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
+          {/* Right Side: Content & CTA */}
+          <div className="w-full lg:w-1/2 p-8 sm:p-12 md:p-16 lg:p-20 flex flex-col justify-center items-start text-gray-900">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 leading-tight">
+              Benefits of Our Redeem Program
+            </h1>
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 mb-8 max-w-xl leading-relaxed">
+              Join thousands of satisfied customers who are enjoying exclusive rewards and special privileges. Transform your shopping experience with our premium redemption program.
+            </p>
+            <button className="group inline-flex items-center gap-3 px-6 sm:px-8 py-3 bg-red-600 text-white font-bold text-sm md:text-base lg:text-lg rounded-xl hover:bg-red-700 hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
+              Start Redeeming Now
+              <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
           </div>
         </div>
 
-        {/* Benefits Grid Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 lg:gap-8 mb-12 md:mb-16 lg:mb-20">
-          {benefitSections.map((benefit, index) => (
-            <div
-              key={index}
-              ref={(el) => (benefitsRef.current[index] = el)}
-            >
-              <div className="benefit-card h-full p-5 sm:p-6 md:p-7 lg:p-8 bg-white rounded-lg sm:rounded-xl md:rounded-2xl border-2 border-transparent hover:border-orange-500 shadow-lg transition-all duration-300">
-                {/* Icon */}
-                <div className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl mb-3 md:mb-4 lg:mb-5 transition-transform duration-300 hover:scale-110">
-                  {benefit.icon}
-                </div>
+        {/* Realigned "Everything a home needs" Grid Section */}
+        <div className="w-full flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-10">
 
-                {/* Title */}
-                <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-2 md:mb-3 transition-colors duration-300 hover:text-orange-600 leading-snug">
-                  {benefit.title}
-                </h3>
+          {/* Left Content */}
+          <div className="w-full lg:w-[40%] flex flex-col justify-center pt-4 lg:pt-8 text-center lg:text-left">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl font-extrabold text-[#222222] mb-4 sm:mb-6 leading-[1.2] sm:leading-[1.1] tracking-tight">
+              Turn Every Opportunity <br className="hidden sm:block" /> Into a Reward
+            </h2>
+            <p className="text-sm sm:text-base md:text-lg text-gray-700 max-w-sm leading-relaxed mx-auto lg:mx-0">
+              Join our scheme to unlock exclusive rewards, exciting benefits, and seamless fast redemption.
+            </p>
+          </div>
 
-                {/* Description */}
-                <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed">
-                  {benefit.description}
-                </p>
-
-                {/* Arrow Icon */}
-                <div className="mt-4 flex items-center gap-2 text-orange-600 font-semibold text-sm opacity-0 transition-all duration-300 hover:opacity-100 hover:translate-x-2">
-                  <span>Learn more</span>
-                  <span className="text-lg">→</span>
+          {/* Right Content - Cards Grid */}
+          <div className="w-full lg:w-[60%] grid grid-cols-2 gap-3 sm:gap-4 md:gap-5">
+            {benefitSections.map((benefit, index) => (
+              <div
+                key={index}
+                ref={(el) => (benefitsRef.current[index] = el)}
+                className="group flex flex-col sm:flex-row items-center justify-center sm:justify-between p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-2xl bg-red-50 hover:shadow-md transition-all cursor-pointer border border-transparent hover:border-red-200"
+              >
+                <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 md:gap-5 w-full text-center sm:text-left">
+                  <div className="flex-shrink-0 w-12 h-12 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center justify-center p-2 sm:p-3">
+                    <img
+                      src={benefit.image}
+                      alt={benefit.title}
+                      className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="flex flex-col flex-1 pr-0 sm:pr-2">
+                    <h3 className="text-xs sm:text-lg md:text-xl font-bold text-gray-900 leading-tight sm:leading-snug mb-0.5 sm:mb-1">
+                      {benefit.title}
+                    </h3>
+                    <p className="text-[9px] sm:text-xs md:text-sm text-gray-600 leading-tight sm:leading-relaxed line-clamp-2">
+                      {benefit.description}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
         </div>
 
-        {/* CTA Section */}
-        <div className="text-center">
-          <button className="inline-block px-6 sm:px-8 md:px-10 lg:px-12 py-2.5 sm:py-3 md:py-3 lg:py-4 bg-gradient-to-r from-orange-600 to-orange-500 text-white font-bold text-sm sm:text-base md:text-base lg:text-lg rounded-lg sm:rounded-xl md:rounded-2xl hover:shadow-2xl hover:shadow-orange-500/50 transform hover:-translate-y-1 transition-all duration-300">
-            Start Redeeming Now
-          </button>
-        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default RedeemSections
+export default RedeemSections;
