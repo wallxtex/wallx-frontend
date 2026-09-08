@@ -1,9 +1,7 @@
-import { useState, useRef, useEffect } from "react";
 import HeroSectionVideo from "../landing-pages/HeroSectionVideo";
 import SecondSection from "../landing-pages/SecondSection";
 import ThirdSection from "../landing-pages/ThirdSection";
 import FourthSection from "../landing-pages/FourthSection";
-import FooterSection from "../landing-pages/FooterSection";
 import RedeemSections from "../landing-pages/RedeemSections";
 import CardsSections from "../landing-pages/CardsSections";
 

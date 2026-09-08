@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { IoChevronDown as ChevronDown } from "react-icons/io5";
 import fullWidthVideo from "../../assets/see_provide_me_a_video_where_w.mp4";
-import { useSectionAnimation } from "./useSectionAnimation";
 
 const FourthSection = () => {
   const headerRef = useRef(null);

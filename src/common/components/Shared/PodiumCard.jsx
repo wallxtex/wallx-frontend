@@ -17,7 +17,7 @@ const createRunnerUpPodium = ({ order, cardBg, crownBg, crownIcon, badgeClass, b
   hasMilestone: false,
 });
 
-export const PODIUM_CONFIG = {
+const PODIUM_CONFIG = {
   1: {
     order: 'order-2 transform -translate-y-2 sm:-translate-y-4 shadow-2xl z-10',
     cardBg: 'bg-gradient-to-b from-amber-50/70 via-white to-amber-50/40 border-2 border-amber-400',

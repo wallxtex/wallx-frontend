@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import video from '../../assets/redeem_new_video.mp4';
-import { ArrowUpRight } from 'lucide-react';
 import { benefitSections } from '../../constants/benefitSection';
 
 gsap.registerPlugin(ScrollTrigger);
