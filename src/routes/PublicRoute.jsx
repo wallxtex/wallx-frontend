@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import PublicLayouts from "../layout/PublicLayout";
+import ProductsPage from "../pages/products/ProductsPage";
 
 // Lazy Loaded Public Page Components
 const HomePage = lazy(() => import("../components/pages/HomePage"));
@@ -29,8 +30,8 @@ const PublicRoute = () => {
           <Route path="/painters" element={<PainterPage />} />
           <Route path="/dealers" element={<DealersPage />} />
           <Route path="/services" element={<ServicesPage />} />
-          <Route path="/product" element={<ProductsPage />} />
-          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/products" element={<ProductsPage/>} />
+
         </Route>
         {/* ================= SECTION 2: AUTHENTICATION PAGES ================= */}
         <Route path="/painter-signup" element={<PainterSignup />} />

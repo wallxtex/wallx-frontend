@@ -4,7 +4,7 @@ const MAIN_NAV_LINKS = [
   { name: "Painters", path: "/painters" },
   { name: "Dealers", path: "/dealers" },
   { name: "Services", path: "/services" },
-  { name: "Products", path: "/product" },
+  { name: "Products", path: "/products" },
 ];
 
 const AUTH_NAV_LINKS = [
