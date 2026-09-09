@@ -15,11 +15,9 @@ import NotificationsData from "./data/NotificationData";
 // Mock data — replace with real user/notification data once available.
 const painter = { name: "Sagar", initials: "S" };
 
-
 const GlobalNavbar = () => {
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [lang, setLang] = useState("EN");
 
   const notifRef = useRef(null);
   const profileRef = useRef(null);
@@ -102,7 +100,7 @@ const GlobalNavbar = () => {
                     </p>
                   </div>
                   <div className="max-h-80 overflow-y-auto">
-                    {notifications.map((n) => (
+                    {NotificationsData.map((n) => (
                       <div
                         key={n.id}
                         className="px-4 py-3 border-b border-gray-50 last:border-b-0 hover:bg-gray-50"
