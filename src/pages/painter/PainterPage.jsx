@@ -18,7 +18,6 @@ const PainterPage = () => {
       <RedeemQRGuide />
       <PainterPerks />
       <PainterCTA />
-      <FooterSection />
     </main>
   );
 };

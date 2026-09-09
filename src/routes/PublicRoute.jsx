@@ -8,6 +8,7 @@ const HomePage = lazy(() => import("../components/pages/HomePage"));
 const PainterPage = lazy(() => import("../pages/painter/PainterPage"));
 const DealersPage = lazy(() => import("../pages/dealers/DealersPage"));
 const ServicesPage = lazy(() => import("../pages/services/ServicesPage"));
+const ProductsPage = lazy(() => import("../pages/products/ProductsPage"));
 // const NotFound = lazy(() => import("../pages"));
 
 // Lazy Loaded Auth Components

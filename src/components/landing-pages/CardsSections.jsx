@@ -34,7 +34,7 @@ const CardsSections = () => {
         {/* Heading */}
         <div className="mb-12 md:mb-16 lg:mb-20 text-center">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-tight mb-3 md:mb-4">
-            Your Walls Deserve More Than Just <span className="text-orange-600">Paint</span>
+            Your Walls Deserve More Than Just <span className="text-red-600">Paint</span>
           </h2>
           <p className="text-gray-600 text-sm sm:text-base md:text-lg lg:text-lg mt-4 md:mt-6 max-w-2xl mx-auto leading-relaxed">
             Transform your space with our premium wallpaper collection
@@ -52,7 +52,7 @@ const CardsSections = () => {
                 animationDelay: `${index * 100}ms`,
               }}
             >
-              <div className="relative overflow-hidden rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 h-64 sm:h-72 md:h-80 lg:h-96 cursor-pointer transform hover:-translate-y-2">
+              <div className="relative overflow-hidden rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-black/40 transition-all duration-500 h-64 sm:h-72 md:h-80 lg:h-96 cursor-pointer transform hover:-translate-y-2">
                 {/* Image */}
                 <img
                   src={card.image}
