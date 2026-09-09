@@ -1,7 +1,6 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import PublicLayouts from "../layout/PublicLayout";
-import ProductsPage from "../pages/products/ProductsPage";
 
 // Lazy Loaded Public Page Components
 const HomePage = lazy(() => import("../components/pages/HomePage"));
@@ -10,8 +9,6 @@ const DealersPage = lazy(() => import("../pages/dealers/DealersPage"));
 const ServicesPage = lazy(() => import("../pages/services/ServicesPage"));
 const ProductsPage = lazy(() => import("../pages/products/ProductsPage"));
 // const NotFound = lazy(() => import("../pages"));
-
-// Lazy Loaded Auth Components
 const PainterSignup = lazy(() => import("../pages/auth/PainterSignup"));
 const PainterVerification = lazy(
   () => import("../pages/auth/PainterVerification"),
@@ -39,7 +36,7 @@ const PublicRoute = () => {
         <Route path="/dealer-signup" element={<DealerSignup />} />
         <Route path="/dealer-verification" element={<DealerVerification />} />
 
-        {/* ================= SECTION 3: 404 NOT FOUND ROUTE ================= */}
+        {/* ================= SECTION 3: 404 NOT FOUND ROUTE missiong================= */}
       </Routes>
     </Suspense>
   );
