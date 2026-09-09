@@ -9,8 +9,6 @@ const DealersPage = lazy(() => import("../pages/dealers/DealersPage"));
 const ServicesPage = lazy(() => import("../pages/services/ServicesPage"));
 const ProductsPage = lazy(() => import("../pages/products/ProductsPage"));
 // const NotFound = lazy(() => import("../pages"));
-
-// Lazy Loaded Auth Components
 const PainterSignup = lazy(() => import("../pages/auth/PainterSignup"));
 const PainterVerification = lazy(
   () => import("../pages/auth/PainterVerification"),
