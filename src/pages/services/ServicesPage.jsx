@@ -1,9 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { services } from "../../constants/services";
 import FooterSection from "../../components/landing-pages/FooterSection";
 import SharedCTA from "../../common/components/Shared/SharedCTA";
+import SidebarForm from "../../components/landing-pages/SidebarForm";
+import servicesVideo from "../../assets/services-video.mp4";
 import {
   IoBusinessOutline,
   IoCallOutline,
@@ -15,6 +17,7 @@ gsap.registerPlugin(ScrollTrigger);
 function ServicesPage() {
   const sectionRef = useRef(null);
   const containerRef = useRef(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -110,9 +113,36 @@ function ServicesPage() {
   }, []);
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white flex flex-col">
+      {/* Hero Video Section */}
+      <section className="relative w-full h-[60vh] md:h-[80vh] min-h-[400px] overflow-hidden bg-gray-900 flex items-center justify-center border-b border-gray-100">
+        {/* Video Background */}
+        <video 
+          className="absolute inset-0 w-full h-full object-cover"
+          src={servicesVideo}
+          autoPlay
+          loop
+          muted
+          playsInline
+        ></video>
+        
+        {/* Dark Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+
+        {/* Content Box */}
+        <div className="relative z-10 max-w-7xl w-11/12 mx-auto flex flex-col items-center md:items-start text-center md:text-left animate-[slideUp_0.5s_ease-out]">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-3 sm:mb-6 drop-shadow-md">
+            Protecting Walls, Elevating Spaces
+          </h1>
+          <p className="text-xs sm:text-base md:text-xl text-gray-200 max-w-3xl leading-relaxed drop-shadow-sm px-2 md:px-0">
+            Expert rust protection solutions paired with thoughtful interior design — safeguarding your walls while transforming your spaces.
+          </p>
+        </div>
+      </section>
+
       {/* Services Section */}
       <section
+        id="services-grid"
         ref={sectionRef}
         className="w-full px-4 py-8 sm:px-6 sm:py-12 md:py-16 lg:px-8 lg:py-20"
       >
@@ -150,10 +180,10 @@ function ServicesPage() {
               <div
                 key={service.id}
                 data-service-card
-                className="group flex cursor-pointer flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-md hover:border-gray-300"
+                className="group relative flex cursor-pointer flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-md hover:border-gray-300 h-full max-w-[320px] mx-auto sm:max-w-none w-full"
               >
                 {/* Image */}
-                <div className="aspect-square w-full overflow-hidden bg-gray-100">
+                <div className="h-48 sm:h-auto sm:aspect-square w-full overflow-hidden bg-gray-100">
                   <img
                     src={service.image}
                     alt={service.alt}
@@ -167,13 +197,7 @@ function ServicesPage() {
                     {service.title}
                   </h3>
 
-                  {service.description && (
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      {service.description}
-                    </p>
-                  )}
-
-                  <span className="mt-auto inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">
+                  <span className="mt-auto inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-gray-700 transition-colors">
                     Learn more
                     <span
                       aria-hidden="true"
@@ -182,6 +206,26 @@ function ServicesPage() {
                       →
                     </span>
                   </span>
+                </div>
+
+                {/* Hover Overlay (Slides from Right to Left) */}
+                <div className="absolute inset-0 bg-white/98 backdrop-blur-md p-4 sm:p-6 flex flex-col translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out z-10 border border-gray-200">
+                  <div className="flex flex-col h-full items-center text-center">
+                    <div className="flex-1 flex flex-col justify-center items-center w-full overflow-y-auto">
+                      <h3 className="text-sm sm:text-lg font-bold text-gray-900 uppercase tracking-wider mb-2 sm:mb-4 leading-snug">{service.title}</h3>
+
+                      <p className="text-gray-600 text-[11px] sm:text-sm leading-tight sm:leading-relaxed px-1">
+                        {service.description || "Premium quality service for your walls."}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => setIsSidebarOpen(true)}
+                      className="w-full py-2 sm:py-3 border border-[#d82b2b] text-[#d82b2b] font-bold text-xs sm:text-sm uppercase tracking-wider hover:bg-[#d82b2b] hover:text-white transition-colors duration-300 mt-2 sm:mt-4 shrink-0"
+                    >
+                      Contact Us
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -203,6 +247,7 @@ function ServicesPage() {
         footerNote="* Minimum initial order volume requirements apply for new authorized dealerships."
       />
 
+      <SidebarForm isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
     </div>
   );
 }

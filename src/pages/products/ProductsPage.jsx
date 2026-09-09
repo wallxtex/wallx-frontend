@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { IoShieldCheckmarkOutline, IoLeafOutline, IoColorPaletteOutline } from 'react-icons/io5';
 import wallxImage from '../../assets/webp/wallx-removebg-preview.webp';
+import wallBucketImage from '../../assets/webp/wall-bucket.webp';
 import ProductModal from './ProductModal';
 import FooterSection from '../../components/landing-pages/FooterSection';
+import productsVideo from '../../assets/products-video.mp4';
 
 // --- Product Data Array ---
 const PRODUCTS = [
@@ -33,7 +35,7 @@ const PRODUCTS = [
     category: "Interior",
     weight: "20 L",
     price: "4500",
-    image: wallxImage,
+    image: wallBucketImage,
     quickFeatures: [
       { icon: "✨", label: "Rich Finish" },
       { icon: "🧼", label: "Washable" },
@@ -96,8 +98,8 @@ const ProductsPage = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const filteredProducts = activeCategory === "All" 
-    ? PRODUCTS 
+  const filteredProducts = activeCategory === "All"
+    ? PRODUCTS
     : PRODUCTS.filter(p => p.category === activeCategory);
 
   const openModal = (product) => {
@@ -107,17 +109,29 @@ const ProductsPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-      
-      {/* Hero Section */}
-      <section className="bg-white py-20 px-4 relative overflow-hidden border-b border-gray-100">
-        {/* Subtle background accent */}
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-[#d82b2b] opacity-10 blur-3xl"></div>
-        <div className="max-w-6xl w-11/12 mx-auto relative z-10 flex flex-col items-center text-center">
-          <span className="text-[#d82b2b] font-bold tracking-widest uppercase text-sm mb-4">Premium Collection</span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6">
+
+      {/* Hero Video Section */}
+      <section className="relative w-full h-[60vh] md:h-[80vh] min-h-[400px] overflow-hidden bg-gray-900 flex items-center justify-center border-b border-gray-100">
+        {/* Video Background */}
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={productsVideo}
+          autoPlay
+          loop
+          muted
+          playsInline
+        ></video>
+
+        {/* Dark Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+
+        {/* Content Box */}
+        <div className="relative z-10 max-w-7xl w-11/12 mx-auto flex flex-col items-center md:items-start text-center md:text-left animate-[slideUp_0.5s_ease-out]">
+
+          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-3 sm:mb-6 drop-shadow-md">
             Discover the WallX Collection
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-base md:text-xl text-gray-200 max-w-2xl leading-relaxed drop-shadow-sm px-2 md:px-0">
             Elevate your spaces with our luxury paints and textures. Engineered for exceptional durability, unparalleled coverage, and a flawless finish.
           </p>
         </div>
@@ -125,18 +139,17 @@ const ProductsPage = () => {
 
       {/* Main Content Area */}
       <div className="max-w-7xl w-11/12 mx-auto py-16">
-        
+
         {/* Category Filter */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
           {CATEGORIES.map(category => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 shadow-sm ${
-                activeCategory === category 
-                  ? 'bg-[#d82b2b] text-white shadow-[#d82b2b]/30' 
-                  : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-              }`}
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 shadow-sm ${activeCategory === category
+                ? 'bg-[#d82b2b] text-white shadow-[#d82b2b]/30'
+                : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                }`}
             >
               {category}
             </button>
@@ -147,39 +160,36 @@ const ProductsPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
           {filteredProducts.map(product => (
             <div key={product.id} className="group relative bg-white border border-gray-100 overflow-hidden shadow-sm transition-shadow duration-300 w-full max-w-sm h-[26rem] flex flex-col items-center justify-center p-8">
-              
+
               {/* Base View */}
-              <img 
-                src={product.image} 
-                alt={product.name} 
+              <img
+                src={product.image}
+                alt={product.name}
                 className="w-72 h-72 object-contain mb-6 drop-shadow-md group-hover:scale-95 transition-transform duration-700"
               />
               <h2 className="text-lg font-semibold text-gray-800 text-center px-4">{product.name}</h2>
-              
+
               {/* Hover Overlay (Slides from Right to Left) */}
               <div className="absolute inset-0 bg-white/98 backdrop-blur-md p-8 flex flex-col translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out z-10 border border-gray-200">
-                <div className="flex flex-col h-full items-center text-center justify-center">
-                  <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 leading-snug">{product.name}</h3>
-                  
-                  <p className="text-gray-500 text-sm mb-6 leading-relaxed px-2 line-clamp-3">
-                    {product.features[0]?.description || "Premium quality finish for your walls."}
-                  </p>
-                  
-                  <div className="text-xs text-gray-400 font-medium mb-2 uppercase tracking-wide">Key Features</div>
-                  <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-sm text-gray-600 mb-8">
-                    {product.quickFeatures.slice(0, 3).map((qf, i) => (
-                      <span key={i}>- {qf.label}</span>
-                    ))}
+                <div className="flex flex-col h-full items-center text-center">
+                  <div className="flex-1 flex flex-col justify-center items-center w-full">
+                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 leading-snug">{product.name}</h3>
+
+                    <p className="text-gray-500 text-sm mb-6 leading-relaxed px-2 line-clamp-3">
+                      {product.features[0]?.description || "Premium quality finish for your walls."}
+                    </p>
+
+                    <div className="text-xs text-gray-400 font-medium mb-2 uppercase tracking-wide">Key Features</div>
+                    <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-sm text-gray-600">
+                      {product.quickFeatures.slice(0, 3).map((qf, i) => (
+                        <span key={i}>- {qf.label}</span>
+                      ))}
+                    </div>
                   </div>
-                  
-                  <div className="font-bold text-gray-900 text-xl mb-8 mt-auto">
-                    MRP ₹{product.price} 
-                    <span className="text-xs font-normal text-gray-500 block mt-1">(Inclusive of all taxes) per {product.weight}</span>
-                  </div>
-                  
-                  <button 
+
+                  <button
                     onClick={() => openModal(product)}
-                    className="w-full py-3 border border-[#d82b2b] text-[#d82b2b] font-bold text-sm uppercase tracking-wider hover:bg-[#d82b2b] hover:text-white transition-colors duration-300"
+                    className="w-full py-3 border border-[#d82b2b] text-[#d82b2b] font-bold text-sm uppercase tracking-wider hover:bg-[#d82b2b] hover:text-white transition-colors duration-300 mt-4 shrink-0"
                   >
                     View Product
                   </button>
@@ -189,7 +199,7 @@ const ProductsPage = () => {
             </div>
           ))}
         </div>
-        
+
         {filteredProducts.length === 0 && (
           <div className="text-center py-20">
             <h3 className="text-2xl font-bold text-gray-500">No products found in this category.</h3>
@@ -204,7 +214,7 @@ const ProductsPage = () => {
             <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">Why Choose WallX?</h2>
             <p className="text-base sm:text-lg text-gray-600 mt-3 max-w-2xl mx-auto">Our products are scientifically formulated to deliver the perfect balance of aesthetics and long-lasting protection.</p>
           </div>
-          
+
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {[
               {
@@ -240,10 +250,10 @@ const ProductsPage = () => {
       </section>
 
       {/* Modal */}
-      <ProductModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        product={selectedProduct} 
+      <ProductModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={selectedProduct}
       />
     </div>
   );
