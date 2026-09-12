@@ -6,7 +6,6 @@ import PublicRoute from "./routes/PublicRoute";
 
 function App() {
   return (
-    // minor commet
     <div className="App">
       <Routes>
         <Route path="/*" element={<PublicRoute/>} />

@@ -19,7 +19,7 @@ const DealerVerification = lazy(
 );
 const PublicRoute = () => {
   return (
-    <Suspense fallback={<div className="text-center text-12xl">Message comes from prod side</div>}>
+    <Suspense fallback={<div className="text-center text-12xl">Docker image build | fetch from docker hub | vps working fine</div>}>
       <Routes>
         {/* ================= SECTION 1: PUBLIC LANDING PAGES ================= */}
         <Route element={<PublicLayouts />}>
