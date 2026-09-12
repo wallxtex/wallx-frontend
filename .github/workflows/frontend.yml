@@ -1,4 +1,4 @@
-name: Wallx Frontend 
+name: Wallx Frontend CI/CD
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - main
 
 jobs:
+
   # ==========================================
   # CI - SonarCloud
   # ==========================================
@@ -14,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -30,6 +32,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+
   # ==========================================
   # CD - Docker + VPS Deployment
   # ==========================================
@@ -39,24 +42,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ----------------------------------------
+
+      # ==========================================
       # Checkout
-      # ----------------------------------------
+      # ==========================================
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ----------------------------------------
+
+      # ==========================================
       # Login to Docker Hub
-      # ----------------------------------------
+      # ==========================================
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # ----------------------------------------
-      # Build and Push Docker Image
-      # ----------------------------------------
+
+      # ==========================================
+      # Build & Push Docker Image
+      # ==========================================
       - name: Build and Push Frontend Image
         uses: docker/build-push-action@v6
         with:
@@ -66,9 +72,10 @@ jobs:
             sagarchaurasia176/wallx-f:latest
             sagarchaurasia176/wallx-f:${{ github.sha }}
 
-      # ----------------------------------------
-      # Deploy to VPS
-      # ----------------------------------------
+
+      # ==========================================
+      # Deploy to Hostinger VPS
+      # ==========================================
       - name: Deploy to Hostinger VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -84,22 +91,29 @@ jobs:
             echo "Starting Wallx frontend deployment"
             echo "======================================"
 
-            # Pull latest image
+
+            # ==========================================
+            # Pull latest Docker image
+            # ==========================================
             echo "Pulling latest Docker image..."
 
             docker pull sagarchaurasia176/wallx-f:latest
 
 
+            # ==========================================
             # Stop old container
-            echo "Stopping old container..."
+            # ==========================================
+            echo "Stopping old frontend container..."
 
             docker stop wallx-frontend || true
 
             docker rm wallx-frontend || true
 
 
+            # ==========================================
             # Start new container
-            echo "Starting new container..."
+            # ==========================================
+            echo "Starting new frontend container..."
 
             docker run -d \
               --name wallx-frontend \
@@ -108,13 +122,17 @@ jobs:
               sagarchaurasia176/wallx-f:latest
 
 
+            # ==========================================
             # Wait for container
-            echo "Waiting for frontend..."
+            # ==========================================
+            echo "Waiting for frontend to start..."
 
             sleep 5
 
 
+            # ==========================================
             # Health check
+            # ==========================================
             echo "Checking frontend health..."
 
             for i in {1..10}
@@ -130,19 +148,32 @@ jobs:
             done
 
 
+            # ==========================================
             # Final health check
+            # ==========================================
             if ! curl -fsS http://127.0.0.1:3000/ > /dev/null
             then
               echo "Frontend health check failed!"
 
+              echo "======================================"
+              echo "Container status:"
+              echo "======================================"
+
+              docker ps -a --filter name=wallx-frontend
+
+              echo "======================================"
               echo "Container logs:"
+              echo "======================================"
+
               docker logs --tail 100 wallx-frontend
 
               exit 1
             fi
 
 
-            # Cleanup old images
+            # ==========================================
+            # Cleanup unused images
+            # ==========================================
             echo "Cleaning unused Docker images..."
 
             docker image prune -f
