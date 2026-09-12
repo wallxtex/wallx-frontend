@@ -19,7 +19,7 @@ const DealerVerification = lazy(
 );
 const PublicRoute = () => {
   return (
-    <Suspense fallback={<div className="text-center text-12xl">hi sagar...</div>}>
+    <Suspense fallback={<div className="text-center text-12xl">Message comes from prod side</div>}>
       <Routes>
         {/* ================= SECTION 1: PUBLIC LANDING PAGES ================= */}
         <Route element={<PublicLayouts />}>
