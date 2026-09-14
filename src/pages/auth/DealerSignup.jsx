@@ -25,6 +25,8 @@ const DEALER_CONSTRAINTS = {
     pincode: { regex: /^\d*$/, max: 6 },
     email: { max: 80 },
     area: { max: 100 },
+    pin: { regex: /^\d*$/, max: 4 },
+    confirmPin: { regex: /^\d*$/, max: 4 },
 };
 
 const DEALER_VALIDATORS = {
@@ -36,6 +38,16 @@ const DEALER_VALIDATORS = {
     city: (v) => validateName(v, 'City', 50),
     pincode: validatePincode,
     area: (v) => validateRequiredText(v, 'Area', 2, 100),
+    pin: (v) => {
+        if (!v) return 'PIN is required';
+        if (v.length !== 4) return 'PIN must be 4 digits';
+        return '';
+    },
+    confirmPin: (v, formState) => {
+        if (!v) return 'Please confirm PIN';
+        if (v !== formState.pin) return 'PINs do not match';
+        return '';
+    },
 };
 
 const INITIAL_DEALER_STATE = {
@@ -46,7 +58,9 @@ const INITIAL_DEALER_STATE = {
     state: '',
     city: '',
     pincode: '',
-    area: ''
+    area: '',
+    pin: '',
+    confirmPin: ''
 };
 
 const DEALER_ROW_FIELDS = [
@@ -65,6 +79,10 @@ const DEALER_ROW_FIELDS = [
     [
         { name: 'pincode', label: 'Pincode', placeholder: '6-digit pincode', maxLength: 6 },
         { name: 'area', label: 'Area / Market / Landmark', placeholder: 'e.g. Sector 18, Commercial Market', maxLength: 100 },
+    ],
+    [
+        { name: 'pin', label: 'Create 4-Digit PIN', placeholder: 'Enter 4-digit PIN', maxLength: 4, type: 'password' },
+        { name: 'confirmPin', label: 'Confirm 4-Digit PIN', placeholder: 'Re-enter 4-digit PIN', maxLength: 4, type: 'password' },
     ],
 ];
 
@@ -118,7 +136,7 @@ const DealerSignup = () => {
                 <div className="pt-3 sm:pt-4 lg:pt-3.5 xl:pt-5">
                     <button
                         type="submit"
-                        className="w-full h-[48px] sm:h-[52px] lg:h-[44px] xl:h-[48px] bg-[#d82b2b] hover:bg-[#b92525] active:scale-[0.99] text-white font-semibold text-[15px] sm:text-base lg:text-[15px] xl:text-[16px] rounded-lg transition-all shadow-md shadow-[#d82b2b]/20 flex items-center justify-center cursor-pointer"
+                        className="w-full h-11 sm:h-12 bg-[#d82b2b] hover:bg-[#b92525] active:scale-[0.99] text-white font-semibold text-sm sm:text-base rounded-lg transition-all shadow-md shadow-[#d82b2b]/20 flex items-center justify-center cursor-pointer"
                     >
                         Register Dealer Account
                     </button>
@@ -128,7 +146,7 @@ const DealerSignup = () => {
             <AuthSwitchLink
                 prompt="Already registered as a dealer?"
                 linkText="Log In"
-                to="/login"
+                to="/dealer-login"
                 className="mt-4 sm:mt-6 lg:mt-4 xl:mt-5 text-center text-xs sm:text-sm lg:text-[13.5px] text-gray-600"
             />
         </AuthLayout>

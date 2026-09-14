@@ -1,5 +1,5 @@
 export const FIELD_INPUT_BASE =
-    'w-full h-[46px] sm:h-[50px] lg:h-[44px] xl:h-[48px] border rounded-lg bg-gray-50/50 px-3.5 sm:px-4 text-[14px] sm:text-[15px] lg:text-[14px] xl:text-[15px] transition-all';
+    'w-full h-10 sm:h-11 lg:h-12 border rounded-lg bg-gray-50/50 px-3 sm:px-4 text-xs sm:text-sm lg:text-base transition-all';
 
 export const getFieldBorderClass = (error) =>
     error

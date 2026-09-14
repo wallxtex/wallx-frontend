@@ -17,9 +17,16 @@ const DealerSignup = lazy(() => import("../pages/auth/DealerSignup"));
 const DealerVerification = lazy(
   () => import("../pages/auth/DealerVerification"),
 );
+const PainterLogin = lazy(() => import("../pages/auth/PainterLogin"));
+const DealerLogin = lazy(() => import("../pages/auth/DealerLogin"));
+
 const PublicRoute = () => {
   return (
-    <Suspense fallback={<div className="text-center text-12xl">ci-cd | working fine</div>}>
+    <Suspense fallback={
+      <div className="flex h-screen w-full items-center justify-center bg-white">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-[#d82b2b]"></div>
+      </div>
+    }>
       <Routes>
         {/* ================= SECTION 1: PUBLIC LANDING PAGES ================= */}
         <Route element={<PublicLayouts />}>
@@ -31,8 +38,10 @@ const PublicRoute = () => {
 
         </Route>
         {/* ================= SECTION 2: AUTHENTICATION PAGES ================= */}
+        <Route path="/painter-login" element={<PainterLogin />} />
         <Route path="/painter-signup" element={<PainterSignup />} />
         <Route path="/painter-verification" element={<PainterVerification />} />
+        <Route path="/dealer-login" element={<DealerLogin />} />
         <Route path="/dealer-signup" element={<DealerSignup />} />
         <Route path="/dealer-verification" element={<DealerVerification />} />
 
