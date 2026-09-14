@@ -10,7 +10,7 @@ import {
   PanelLeftOpen,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { painterMenu } from "./data/PainterSidebarMenus";
+// import { painterMenu } from "./data/PainterSidebarMenus";
 
 // ============================================================================
 // CONTEXT & PROVIDER
@@ -380,13 +380,13 @@ const SidebarFooter = () => {
 // MAIN SIDEBAR COMPONENT
 // ============================================================================
 
-const GlobalSidebar = () => {
+const GlobalSidebar = ({ Menu }) => {
   return (
     <SidebarProvider animate={true}>
       <SidebarBody>
         {/* Navigation Menu */}
         <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
-          {painterMenu.map((item) => (
+          {Menu?.map((item) => (
             <SidebarLink key={item.path} item={item} />
           ))}
         </nav>

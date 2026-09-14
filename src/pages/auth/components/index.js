@@ -10,3 +10,4 @@ export { default as InputField } from './InputField';
 export { default as PhoneInputField } from './PhoneInputField';
 export { default as SelectField } from './SelectField';
 export { INDIAN_STATES } from '../../../constants/states';
+export { default as ForgotPinModal } from './ForgotPinModal';

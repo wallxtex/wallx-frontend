@@ -6,7 +6,7 @@ const AuthBanner = ({
     objectPosition = 'object-center'
 }) => {
     return (
-        <div className="hidden lg:block lg:w-1/2 h-full relative overflow-hidden shrink-0 bg-gray-900">
+        <div className="hidden md:block md:w-1/2 h-full relative overflow-hidden shrink-0 bg-gray-900">
             <img
                 src={image}
                 alt={alt}

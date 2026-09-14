@@ -96,7 +96,7 @@ const AuthVerification = ({
             maxWidth="max-w-[440px]"
             backPath={backPath}
         >
-            <div className="text-left mb-6">
+            <div className="text-center mb-6">
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
                     {title}
                 </h1>

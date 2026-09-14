@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Bell,
-  ScanLine,
   User,
   Settings,
   HelpCircle,
@@ -57,15 +56,6 @@ const GlobalNavbar = () => {
 
         {/* Right: actions */}
         <div className="flex items-center gap-1 sm:gap-2">
-          {/* Scan quick action — decorative only, no functionality */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center justify-center w-11 h-11 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors duration-200"
-            aria-label="Scan"
-          >
-            <ScanLine className="w-5 h-5" />
-          </motion.button>
 
           {/* Notifications */}
           <div className="relative" ref={notifRef}>
