@@ -7,6 +7,7 @@ import DealerRoutes from "./routes/DealerRoute";
 
 function App() {
   return (
+    // painter
     <div className="App">
       <Routes>
         <Route path="/*" element={<PublicRoute />} />
