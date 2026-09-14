@@ -11,19 +11,5 @@ export const painterMenu = [
     path: "/painter/dashboard",
     icon: LayoutDashboard,
   },
-  // {
-  //   label: "Profile",
-  //   path: "/painter/profile",
-  //   icon: User,
-  // },
-  // {
-  //   label: "Services",
-  //   path: "/painter/services",
-  //   icon: Wrench,
-  // },
-  // {
-  //   label: "Orders",
-  //   path: "/painter/orders",
-  //   icon: ShoppingBag,
-  // },
+
 ];
