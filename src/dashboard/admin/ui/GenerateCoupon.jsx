@@ -3,7 +3,7 @@ import QRCode from "qrcode";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import PrivateApi from "../../../utils/privateApi";
-import CouponHeader from "./GenerateCoupon/CouponHeader";
+import CouponStats from "./GenerateCoupon/CouponStats";
 import GenerateForm from "./GenerateCoupon/GenerateForm";
 import AlertMessage from "./GenerateCoupon/AlertMessage";
 import CouponFooter from "./GenerateCoupon/CouponFooter";
@@ -127,7 +127,8 @@ const GenerateCoupon = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-3 sm:p-4 md:p-6">
-      <CouponHeader />
+
+      <CouponStats />
 
       <GenerateForm
         scannerCount={scannerCount}

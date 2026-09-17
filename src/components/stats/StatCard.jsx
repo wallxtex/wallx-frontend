@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
 
 // Color mapping for accent colors with gradient support
 const accentColorMap = {
@@ -105,62 +103,38 @@ const StatCard = ({
   const isUnavailable = value === null || value === undefined;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 p-6 group">
-      {/* Header row: icon + label + enhanced progress ring */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          {/* Icon badge with pulse effect */}
-          <div
-            className={`w-14 h-14 rounded-full flex items-center justify-center ${colors.iconBg} ${colors.iconBorder} border-2 transition-transform duration-300 group-hover:scale-110`}
-          >
-            <Icon className={`w-7 h-7 ${colors.iconText}`} />
-          </div>
-
-          {/* Label */}
-          <div>
-            <div className="text-sm font-semibold text-gray-900 mb-1">
-              {label}
-            </div>
-            <div className="text-xs text-gray-500 font-medium">
-              {accentColor === "orange" && "PaintBucket"}
-              {accentColor === "blue" && "Store"}
-              {accentColor === "green" && "Ticket"}
-              {accentColor === "purple" && "MessageSquareMore"}
-            </div>
-          </div>
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 p-4 group">
+      {/* Header row: icon + label */}
+      <div className="flex items-center gap-3 mb-4">
+        {/* Icon badge with pulse effect */}
+        <div
+          className={`w-12 h-12 rounded-full flex items-center justify-center ${colors.iconBg} ${colors.iconBorder} border-2 transition-transform duration-300 group-hover:scale-110 flex-shrink-0`}
+        >
+          <Icon className={`w-6 h-6 ${colors.iconText}`} />
         </div>
 
-        {/* Enhanced circular progress ring */}
-        <div className="w-16 h-16 flex-shrink-0 relative">
-          <CircularProgressbar
-            value={isUnavailable ? 0 : displayProgress}
-            strokeWidth={10}
-            text=""
-            styles={buildStyles({
-              pathColor: colors.ring,
-              trailColor: colors.trail,
-              pathTransitionDuration: 0.3,
-              rotation: 0,
-            })}
-          />
-          {/* Center percentage text */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className={`text-xs font-bold ${colors.iconText}`}>
-              {isUnavailable ? "—" : `${Math.round(displayProgress)}%`}
-            </span>
+        {/* Label */}
+        <div className="overflow-hidden">
+          <div className="text-sm font-semibold text-gray-900 mb-0.5 truncate">
+            {label}
+          </div>
+          <div className="text-xs text-gray-500 font-medium truncate">
+            {accentColor === "orange" && "PaintBucket"}
+            {accentColor === "blue" && "Store"}
+            {accentColor === "green" && "Ticket"}
+            {accentColor === "purple" && "MessageSquareMore"}
           </div>
         </div>
       </div>
 
       {/* Large stat value with enhanced styling */}
       <div
-        className={`inline-flex items-center px-5 py-2.5 rounded-xl ${colors.numberBg} transition-all duration-500 ${
-          isFlashing ? "scale-105" : "scale-100"
-        }`}
+        className={`inline-flex items-center px-4 py-2 rounded-xl ${colors.numberBg} transition-all duration-500 ${isFlashing ? "scale-105" : "scale-100"
+          }`}
         title={isUnavailable ? "Data unavailable" : undefined}
       >
         <span
-          className={`text-4xl font-bold ${colors.numberText} tabular-nums`}
+          className={`text-3xl font-bold ${colors.numberText} tabular-nums`}
         >
           {displayValue}
         </span>
