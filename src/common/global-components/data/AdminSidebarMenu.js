@@ -16,6 +16,16 @@ export const adminMenu = [
         label: "Dealer",
         path: "/admin/dealer-page",
         icon: Store,
+        subItems: [
+            {
+                label: "Management",
+                path: "/admin/dealer-page",
+            },
+            {
+                label: "Sign up Accounts",
+                path: "/admin/dealer-signup",
+            }
+        ]
     },
     {
         label: "Painter",

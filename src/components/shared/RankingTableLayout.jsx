@@ -117,7 +117,7 @@ const RankingTableLayout = ({
       </div>
 
       {/* Item Details Modal */}
-      {selectedItem && renderModal(selectedItem, () => setSelectedItem(null))}
+      {selectedItem && renderModal && renderModal(selectedItem, () => setSelectedItem(null))}
     </div>
   );
 };

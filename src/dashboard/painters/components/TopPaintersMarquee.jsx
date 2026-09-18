@@ -8,6 +8,13 @@ const TopPaintersMarquee = () => {
   // Duplicate the list for seamless scrolling
   const duplicatedPainters = [...TOP_PAINTERS_DATA, ...TOP_PAINTERS_DATA];
 
+  const getCardStyle = (rank) => {
+    if (rank === 1) return "bg-gradient-to-b from-amber-50/70 via-white to-amber-50/40 border-2 border-amber-400";
+    if (rank === 2) return "bg-gradient-to-b from-slate-50 to-white border-2 border-slate-300";
+    if (rank === 3) return "bg-gradient-to-b from-orange-50/60 to-white border-2 border-orange-300";
+    return "bg-white border border-gray-100";
+  };
+
   return (
     <div className="w-full">
       {/* Section Label - Bilingual, Compact */}
@@ -45,7 +52,7 @@ const TopPaintersMarquee = () => {
           {duplicatedPainters.map((painter, idx) => (
             <motion.div
               key={`${painter.id}-${idx}`}
-              className="shrink-0 w-[200px] sm:w-[260px] h-[260px] sm:h-[300px] bg-white border border-gray-100 rounded-3xl p-5 sm:p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08)] flex flex-col items-center justify-center text-center relative overflow-hidden group hover:shadow-[0_12px_40px_-8px_rgba(216,43,43,0.2)] transition-all duration-300 hover:-translate-y-1"
+              className={`shrink-0 w-[200px] sm:w-[260px] h-[260px] sm:h-[300px] rounded-3xl p-5 sm:p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08)] flex flex-col items-center justify-center text-center relative overflow-hidden group hover:shadow-[0_12px_40px_-8px_rgba(216,43,43,0.2)] transition-all duration-300 hover:-translate-y-1 ${getCardStyle(painter.rank)}`}
             >
               {/* Background Accent */}
               <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-br from-[#d82b2b]/10 via-[#d82b2b]/5 to-transparent" />

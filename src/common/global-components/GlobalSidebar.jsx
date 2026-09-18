@@ -8,6 +8,7 @@ import {
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
+  ChevronDown,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 // import { painterMenu } from "./data/PainterSidebarMenus";
@@ -257,69 +258,143 @@ const SidebarBody = ({ children }) => {
 const SidebarLink = ({ item }) => {
   const { open, setOpen, isMobile, isTouch, pinned } = useSidebar();
   const { pathname } = useLocation();
+  const [isExpanded, setIsExpanded] = useState(false);
 
-  const isActive = pathname === item.path;
+  const hasSubItems = Boolean(item.subItems && item.subItems.length > 0);
+
+  useEffect(() => {
+    if (hasSubItems && item.subItems.some((sub) => pathname === sub.path)) {
+      setIsExpanded(true);
+    }
+  }, [pathname, hasSubItems, item]);
+
+  // Is active if the main path matches OR any subItem path matches
+  const isActive = hasSubItems
+    ? pathname === item.path || item.subItems.some((sub) => pathname === sub.path)
+    : pathname === item.path;
+
   const IconComponent = item.icon;
 
-  return (
-    <motion.div
-      whileHover={!open ? { x: 0 } : { x: 4 }}
-      whileTap={{ scale: 0.98 }}
-      onMouseEnter={() => {
-        // Auto-expand on hover when collapsed — real mouse only.
-        if (!isMobile && !isTouch && !pinned && !open) setOpen(true);
-      }}
-    >
-      <Link
-        to={item.path}
-        onClick={() => {
-          if (isMobile) setOpen(false);
-        }}
-        className={cn(
-          "flex items-center gap-3 px-3 py-3 mx-2 rounded-lg font-medium text-sm transition-all duration-200 group relative",
-          open ? "justify-start" : "justify-center",
-          isActive
-            ? "bg-[#d82b2b]/10 text-[#ff5c5c]"
-            : "text-gray-700 hover:bg-gray-50 hover:text-black"
-        )}
-      >
-        {/* Active Indicator Bar */}
-        {isActive && open && (
-          <motion.div
-            layoutId="activeIndicator"
-            className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#d82b2b] rounded-r-lg"
-            transition={{ duration: 0.2 }}
-          />
-        )}
+  const handleLinkClick = (e) => {
+    if (hasSubItems) {
+      if (!item.path) {
+        e.preventDefault();
+      }
+      setIsExpanded(!isExpanded);
+      if (!open) setOpen(true);
+    } else {
+      if (isMobile) setOpen(false);
+    }
+  };
 
-        {/* Icon */}
-        <motion.div
-          animate={{ scale: isActive ? 1.1 : 1 }}
-          transition={{ duration: 0.2 }}
+  return (
+    <>
+      <motion.div
+        whileHover={!open ? { x: 0 } : { x: 4 }}
+        whileTap={{ scale: 0.98 }}
+        onMouseEnter={() => {
+          // Auto-expand on hover when collapsed — real mouse only.
+          if (!isMobile && !isTouch && !pinned && !open) setOpen(true);
+        }}
+      >
+        <Link
+          to={item.path || "#"}
+          onClick={handleLinkClick}
           className={cn(
-            "flex-shrink-0 transition-colors duration-200",
-            isActive ? "text-[#ff5c5c]" : "text-gray-500 group-hover:text-black"
+            "flex items-center gap-3 px-3 py-3 mx-2 rounded-lg font-medium text-sm transition-all duration-200 group relative",
+            open ? "justify-start" : "justify-center",
+            isActive
+              ? "bg-[#d82b2b]/10 text-[#ff5c5c]"
+              : "text-gray-700 hover:bg-gray-50 hover:text-black"
           )}
         >
-          <IconComponent className="w-5 h-5" />
-        </motion.div>
-
-        {/* Label - Show when expanded */}
-        <AnimatePresence initial={false}>
-          {open && (
-            <motion.span
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: "auto" }}
-              exit={{ opacity: 0, width: 0 }}
+          {/* Active Indicator Bar */}
+          {isActive && open && (
+            <motion.div
+              layoutId="activeIndicator"
+              className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#d82b2b] rounded-r-lg"
               transition={{ duration: 0.2 }}
-              className="truncate flex-1 whitespace-nowrap"
-            >
-              {item.label}
-            </motion.span>
+            />
           )}
-        </AnimatePresence>
-      </Link>
-    </motion.div>
+
+          {/* Icon */}
+          <motion.div
+            animate={{ scale: isActive ? 1.1 : 1 }}
+            transition={{ duration: 0.2 }}
+            className={cn(
+              "flex-shrink-0 transition-colors duration-200",
+              isActive ? "text-[#ff5c5c]" : "text-gray-500 group-hover:text-black"
+            )}
+          >
+            <IconComponent className="w-5 h-5" />
+          </motion.div>
+
+          {/* Label & Chevron */}
+          <AnimatePresence initial={false}>
+            {open && (
+              <motion.div
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: "auto" }}
+                exit={{ opacity: 0, width: 0 }}
+                transition={{ duration: 0.2 }}
+                className="flex items-center justify-between flex-1 overflow-hidden whitespace-nowrap"
+              >
+                <span className="truncate">{item.label}</span>
+                {hasSubItems && (
+                  <motion.div
+                    animate={{ rotate: isExpanded ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ChevronDown className="w-4 h-4 ml-2" />
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </Link>
+      </motion.div>
+
+      {/* Sub Items */}
+      <AnimatePresence>
+        {hasSubItems && isExpanded && open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden flex flex-col gap-1 ml-9 mt-1 mr-2"
+          >
+            {item.subItems.map((sub) => {
+              const isSubActive = pathname === sub.path;
+              return (
+                <Link
+                  key={sub.path}
+                  to={sub.path}
+                  onClick={() => {
+                    if (isMobile) setOpen(false);
+                  }}
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-xs sm:text-sm transition-all duration-200",
+                    isSubActive
+                      ? "bg-[#d82b2b]/10 text-[#ff5c5c]"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-black"
+                  )}
+                >
+                  {/* Subtle dot for sub-item */}
+                  <span
+                    className={cn(
+                      "w-1.5 h-1.5 rounded-full flex-shrink-0",
+                      isSubActive ? "bg-[#d82b2b]" : "bg-gray-300"
+                    )}
+                  />
+                  <span className="truncate">{sub.label}</span>
+                </Link>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

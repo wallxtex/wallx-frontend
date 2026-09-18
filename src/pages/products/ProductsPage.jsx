@@ -97,6 +97,7 @@ const ProductsPage = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeCardId, setActiveCardId] = useState(null);
 
   const filteredProducts = activeCategory === "All"
     ? PRODUCTS
@@ -159,7 +160,11 @@ const ProductsPage = () => {
         {/* Product Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
           {filteredProducts.map(product => (
-            <div key={product.id} className="group relative bg-white border border-gray-100 overflow-hidden shadow-sm transition-shadow duration-300 w-full max-w-sm h-[26rem] flex flex-col items-center justify-center p-8">
+            <div 
+              key={product.id} 
+              onClick={() => setActiveCardId(activeCardId === product.id ? null : product.id)}
+              className="group relative bg-white border border-gray-100 overflow-hidden shadow-sm transition-shadow duration-300 w-full max-w-sm h-[26rem] flex flex-col items-center justify-center p-8 cursor-pointer"
+            >
 
               {/* Base View */}
               <img
@@ -170,7 +175,7 @@ const ProductsPage = () => {
               <h2 className="text-lg font-semibold text-gray-800 text-center px-4">{product.name}</h2>
 
               {/* Hover Overlay (Slides from Right to Left) */}
-              <div className="absolute inset-0 bg-white/98 backdrop-blur-md p-8 flex flex-col translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out z-10 border border-gray-200">
+              <div className={`absolute inset-0 bg-white/98 backdrop-blur-md p-8 flex flex-col transition-transform duration-700 ease-in-out z-10 border border-gray-200 ${activeCardId === product.id ? 'translate-x-0' : 'translate-x-full lg:group-hover:translate-x-0'}`}>
                 <div className="flex flex-col h-full items-center text-center">
                   <div className="flex-1 flex flex-col justify-center items-center w-full">
                     <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 leading-snug">{product.name}</h3>
@@ -188,7 +193,10 @@ const ProductsPage = () => {
                   </div>
 
                   <button
-                    onClick={() => openModal(product)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openModal(product);
+                    }}
                     className="w-full py-3 border border-[#d82b2b] text-[#d82b2b] font-bold text-sm uppercase tracking-wider hover:bg-[#d82b2b] hover:text-white transition-colors duration-300 mt-4 shrink-0"
                   >
                     View Product

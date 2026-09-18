@@ -44,6 +44,12 @@ const GenerateCoupon = lazy(
 const VisitEnquiry = lazy(
   () => import("../dashboard/admin/ui/Visit-Enquiry"),
 );
+const DealerSignupAccounts = lazy(
+  () => import("../dashboard/admin/ui/DealerSignupAccounts"),
+);
+const AdminDealerDetails = lazy(
+  () => import("../dashboard/admin/ui/AdminDealerDetails"),
+);
 
 // Dealer Pages
 const DealersDashboard = lazy(
@@ -119,7 +125,9 @@ export const routeConfig = [
     children: [
       { path: "/admin/dashboard", element: AdminDashboard },
       { path: "/admin/dealer-page", element: AdminDealersDashboard },
+      { path: "/admin/dealer-details/:id", element: AdminDealerDetails },
       { path: "/admin/painter-page", element: AdminPainterDashboard },
+      { path: "/admin/dealer-signup", element: DealerSignupAccounts },
       { path: "/admin/generate-coupon", element: GenerateCoupon },
       { path: "/admin/visit-enquiry", element: VisitEnquiry },
     ],

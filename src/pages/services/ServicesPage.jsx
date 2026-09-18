@@ -18,6 +18,7 @@ function ServicesPage() {
   const sectionRef = useRef(null);
   const containerRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeCardId, setActiveCardId] = useState(null);
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -180,6 +181,7 @@ function ServicesPage() {
               <div
                 key={service.id}
                 data-service-card
+                onClick={() => setActiveCardId(activeCardId === service.id ? null : service.id)}
                 className="group relative flex cursor-pointer flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-md hover:border-gray-300 h-full max-w-[320px] mx-auto sm:max-w-none w-full"
               >
                 {/* Image */}
@@ -209,7 +211,7 @@ function ServicesPage() {
                 </div>
 
                 {/* Hover Overlay (Slides from Right to Left) */}
-                <div className="absolute inset-0 bg-white/98 backdrop-blur-md p-4 sm:p-6 flex flex-col translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out z-10 border border-gray-200">
+                <div className={`absolute inset-0 bg-white/98 backdrop-blur-md p-4 sm:p-6 flex flex-col transition-transform duration-700 ease-in-out z-10 border border-gray-200 ${activeCardId === service.id ? 'translate-x-0' : 'translate-x-full lg:group-hover:translate-x-0'}`}>
                   <div className="flex flex-col h-full items-center text-center">
                     <div className="flex-1 flex flex-col justify-center items-center w-full overflow-y-auto">
                       <h3 className="text-sm sm:text-lg font-bold text-gray-900 uppercase tracking-wider mb-2 sm:mb-4 leading-snug">{service.title}</h3>
@@ -220,7 +222,10 @@ function ServicesPage() {
                     </div>
 
                     <button
-                      onClick={() => setIsSidebarOpen(true)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsSidebarOpen(true);
+                      }}
                       className="w-full py-2 sm:py-3 border border-[#d82b2b] text-[#d82b2b] font-bold text-xs sm:text-sm uppercase tracking-wider hover:bg-[#d82b2b] hover:text-white transition-colors duration-300 mt-2 sm:mt-4 shrink-0"
                     >
                       Contact Us

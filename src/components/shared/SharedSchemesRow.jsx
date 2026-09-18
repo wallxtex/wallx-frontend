@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { ChevronRight, X, CheckCircle2, Plus } from "lucide-react";
 import CreateSchemeModal from "../admin/CreateSchemeModal";
 
-const SharedSchemesRow = ({ title, subtitle, schemes, type }) => {
+const SharedSchemesRow = ({ title, subtitle, schemes, type, hideCreateButton = false }) => {
   const [selectedScheme, setSelectedScheme] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
@@ -17,15 +17,17 @@ const SharedSchemesRow = ({ title, subtitle, schemes, type }) => {
             {subtitle}
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => setIsCreateModalOpen(true)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-[#d82b2b] hover:bg-[#b82222] text-white text-xs sm:text-sm font-semibold rounded-lg shadow-md shadow-red-500/20 transition-colors cursor-pointer"
-        >
-          <Plus className="w-4 h-4" />
-          <span className="hidden sm:inline">New Scheme</span>
-          <span className="sm:hidden">New</span>
-        </button>
+        {!hideCreateButton && (
+          <button
+            type="button"
+            onClick={() => setIsCreateModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-[#d82b2b] hover:bg-[#b82222] text-white text-xs sm:text-sm font-semibold rounded-lg shadow-md shadow-red-500/20 transition-colors cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span className="hidden sm:inline">New Scheme</span>
+            <span className="sm:hidden">New</span>
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 w-full">
