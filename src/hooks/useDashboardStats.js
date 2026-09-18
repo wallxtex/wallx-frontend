@@ -19,12 +19,18 @@ const getConsistentMockData = () => {
     return JSON.parse(stored);
   }
   
+  const getSecureRandom = () => {
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return array[0] / (0xffffffff + 1);
+  };
+  
   // Generate new mock data only if it doesn't exist
   const newMockData = {
-    totalPainters: Math.floor(Math.random() * 500) + 100,
-    totalDealers: Math.floor(Math.random() * 200) + 50,
-    totalCoupons: Math.floor(Math.random() * 1000) + 300,
-    totalVisitEnquiries: Math.floor(Math.random() * 100) + 10,
+    totalPainters: Math.floor(getSecureRandom() * 500) + 100,
+    totalDealers: Math.floor(getSecureRandom() * 200) + 50,
+    totalCoupons: Math.floor(getSecureRandom() * 1000) + 300,
+    totalVisitEnquiries: Math.floor(getSecureRandom() * 100) + 10,
   };
   
   // Store it so it persists across refreshes

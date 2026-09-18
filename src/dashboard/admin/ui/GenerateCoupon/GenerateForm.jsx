@@ -8,7 +8,16 @@ const GenerateForm = ({
   handleGenerateCoupons,
 }) => {
   return (
-    <div className="bg-white rounded-lg sm:rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
+    <div className="bg-white rounded-lg sm:rounded-xl border border-gray-200 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] p-4 sm:p-6 mb-4 sm:mb-6">
+      <div className="mb-5 sm:mb-6 pb-4 border-b border-gray-100">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <Ticket className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+          Generate Coupons
+        </h2>
+        <p className="text-xs sm:text-sm text-gray-600 mt-1">
+          Create QR code tokens for scanner devices
+        </p>
+      </div>
       <div className="max-w-xl">
         <label
           htmlFor="scannerCount"

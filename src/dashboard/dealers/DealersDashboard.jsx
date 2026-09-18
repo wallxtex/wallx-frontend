@@ -1,12 +1,12 @@
 import DealerStatsRow from "./components/DealerStatsRow";
 import DealerSchemesRow from "./components/DealerSchemesRow";
-import TopDealersMarquee from "./components/TopDealersMarquee";
+import DealerRankingTable from "./components/DealerRankingTable";
 
 const DealersDashboard = () => {
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-4 h-full flex flex-col">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 flex flex-col pb-12 sm:pb-16">
       {/* Page Heading - Bilingual, Compact */}
-      <div className="mb-2">
+      <div className="mb-4 sm:mb-5">
         <h1 className="text-xl sm:text-2xl font-bold text-black">
           Dealer Dashboard
         </h1>
@@ -19,7 +19,7 @@ const DealersDashboard = () => {
       <DealerStatsRow />
 
       {/* Divider */}
-      <div className="border-t border-gray-100 my-2 sm:my-3" />
+      <div className="border-t border-gray-100 my-4 sm:my-6" />
 
       {/* Schemes Row */}
       <div className="flex-shrink-0">
@@ -27,10 +27,11 @@ const DealersDashboard = () => {
       </div>
 
       {/* Divider */}
-      <div className="border-t border-gray-100 my-2 sm:my-3" />
+      <div className="border-t border-gray-100 my-4 sm:my-6" />
 
-      {/* Top Dealers Marquee */}
-      <TopDealersMarquee />
+      {/* Dealer Rankings Table */}
+      <DealerRankingTable />
+
     </div>
   );
 };
