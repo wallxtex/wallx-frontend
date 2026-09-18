@@ -8,10 +8,16 @@ const generateMockOrders = () => {
   const products = ["Luxury Emulsion", "Premium Texture", "Primer Base", "Mixed Batch", "Exterior Weatherproof"];
   const orders = [];
   
+  const getSecureRandom = () => {
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return array[0] / (0xffffffff + 1);
+  };
+  
   for (let i = 1; i <= 150; i++) {
-    const status = statuses[Math.floor(Math.random() * statuses.length)];
-    const product = products[Math.floor(Math.random() * products.length)];
-    const units = Math.floor(Math.random() * 200) + 20;
+    const status = statuses[Math.floor(getSecureRandom() * statuses.length)];
+    const product = products[Math.floor(getSecureRandom() * products.length)];
+    const units = Math.floor(getSecureRandom() * 200) + 20;
     const total = units * 3000;
     
     // Generate dates working backwards from today

@@ -2,19 +2,25 @@ import React from 'react';
 import { Search } from 'lucide-react';
 import RankingTableLayout from '../../../components/shared/RankingTableLayout';
 
+const getSecureRandom = () => {
+  const array = new Uint32Array(1);
+  window.crypto.getRandomValues(array);
+  return array[0] / (0xffffffff + 1);
+};
+
 const MOCK_PAINTERS = Array.from({ length: 45 }, (_, i) => {
-  const totalRedeems = Math.floor(Math.random() * 200) + 10;
+  const totalRedeems = Math.floor(getSecureRandom() * 200) + 10;
   return {
     id: i + 1,
     name: `Painter ${String.fromCharCode(65 + (i % 26))}${i + 1}`,
-    mobileNumber: '+91 ' + Math.floor(Math.random() * 9000000000 + 1000000000).toString(),
+    mobileNumber: '+91 ' + Math.floor(getSecureRandom() * 9000000000 + 1000000000).toString(),
     upiId: `painter${i + 1}@upi`,
     address: ['Andheri, Mumbai', 'Connaught Place, Delhi', 'Indiranagar, Bangalore', 'T Nagar, Chennai', 'Salt Lake, Kolkata'][i % 5],
     totalRedeems: totalRedeems,
-    totalRedeemedAmount: totalRedeems * (Math.floor(Math.random() * 500) + 100),
+    totalRedeemedAmount: totalRedeems * (Math.floor(getSecureRandom() * 500) + 100),
     role: "painter",
-    razorpayContactId: `cont_${Math.random().toString(36).substr(2, 14)}`,
-    razorpayFundAccountId: `fa_${Math.random().toString(36).substr(2, 14)}`,
+    razorpayContactId: `cont_${getSecureRandom().toString(36).substr(2, 14)}`,
+    razorpayFundAccountId: `fa_${getSecureRandom().toString(36).substr(2, 14)}`,
   };
 }).sort((a, b) => b.totalRedeemedAmount - a.totalRedeemedAmount);
 

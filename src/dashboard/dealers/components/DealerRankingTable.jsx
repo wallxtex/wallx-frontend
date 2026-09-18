@@ -2,8 +2,14 @@ import React from 'react';
 import { Search } from 'lucide-react';
 import RankingTableLayout from '../../../components/shared/RankingTableLayout';
 
+const getSecureRandom = () => {
+  const array = new Uint32Array(1);
+  window.crypto.getRandomValues(array);
+  return array[0] / (0xffffffff + 1);
+};
+
 const MOCK_DEALERS = Array.from({ length: 45 }, (_, i) => {
-  const totalOrders = Math.floor(Math.random() * 500) + 50;
+  const totalOrders = Math.floor(getSecureRandom() * 500) + 50;
   return {
     id: i + 1,
     name: `Dealer ${String.fromCharCode(65 + (i % 26))}${i + 1}`,
@@ -11,12 +17,12 @@ const MOCK_DEALERS = Array.from({ length: 45 }, (_, i) => {
     location: ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata'][i % 5],
     state: ['Maharashtra', 'Delhi', 'Karnataka', 'Tamil Nadu', 'West Bengal'][i % 5],
     area: ['Andheri', 'Connaught Place', 'Indiranagar', 'T Nagar', 'Salt Lake'][i % 5],
-    pinCode: Math.floor(Math.random() * 900000 + 100000).toString(),
-    mobile: '+91 ' + Math.floor(Math.random() * 9000000000 + 1000000000).toString(),
+    pinCode: Math.floor(getSecureRandom() * 900000 + 100000).toString(),
+    mobile: '+91 ' + Math.floor(getSecureRandom() * 9000000000 + 1000000000).toString(),
     email: `dealer${i + 1}@example.com`,
     totalOrders: totalOrders,
-    totalAmountPaid: totalOrders * (Math.floor(Math.random() * 5000) + 2000),
-    amountLeftToPay: Math.floor(Math.random() * 50000),
+    totalAmountPaid: totalOrders * (Math.floor(getSecureRandom() * 5000) + 2000),
+    amountLeftToPay: Math.floor(getSecureRandom() * 50000),
   };
 }).sort((a, b) => b.totalOrders - a.totalOrders);
 
