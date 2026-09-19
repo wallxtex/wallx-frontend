@@ -43,7 +43,7 @@ const RedeemPage = () => {
                     }
                 }, 1000);
 
-            } catch (err) {
+            } catch {
                 setStatus("error");
                 setMessage("Connection failed. Try again.");
             }
