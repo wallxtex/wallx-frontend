@@ -310,9 +310,10 @@ const AdminDealerDetails = () => {
                   <td className="px-6 py-4 text-amber-600 font-medium">{formatCurrency(order.remainingAmount)}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                      order.paymentStatus === 'Paid' ? 'bg-emerald-100 text-emerald-800' :
-                      order.paymentStatus === 'Partial' ? 'bg-blue-100 text-blue-800' :
-                      'bg-amber-100 text-amber-800'
+                      {
+                        'Paid': 'bg-emerald-100 text-emerald-800',
+                        'Partial': 'bg-blue-100 text-blue-800'
+                      }[order.paymentStatus] || 'bg-amber-100 text-amber-800'
                     }`}>
                       {order.paymentStatus}
                     </span>

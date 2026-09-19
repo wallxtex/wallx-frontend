@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import AuthBanner from './AuthBanner';
 import AuthBackButton from './AuthBackButton';
 

@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  IoTrophy, 
-  IoRibbonOutline, 
-  IoLocationOutline, 
   IoSearchOutline, 
-  IoCheckmarkCircle, 
-  IoStar, 
   IoFilterOutline 
 } from 'react-icons/io5';
 import { INDIAN_STATES } from '../../../constants/states';

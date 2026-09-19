@@ -3,7 +3,6 @@ import { IoShieldCheckmarkOutline, IoLeafOutline, IoColorPaletteOutline } from '
 import wallxImage from '../../assets/webp/wallx-removebg-preview.webp';
 import wallBucketImage from '../../assets/webp/wall-bucket.webp';
 import ProductModal from './ProductModal';
-import FooterSection from '../../components/landing-pages/FooterSection';
 import productsVideo from '../../assets/products-video.mp4';
 
 // --- Product Data Array ---

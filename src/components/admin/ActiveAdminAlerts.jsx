@@ -38,12 +38,9 @@ const mockAlerts = [
 ];
 
 const ActiveAdminAlerts = () => {
-  const [alerts, setAlerts] = React.useState(mockAlerts);
+  const [alerts] = React.useState(mockAlerts);
   const [showError, setShowError] = React.useState(true);
 
-  const handleDismissAlert = (id) => {
-    setAlerts(alerts.filter((alert) => alert.id !== id));
-  };
 
   return (
     <div>

@@ -113,13 +113,18 @@ const DesktopSidebar = ({ className, children, ...props }) => {
     if (!isTouch && !pinned) setOpen(false);
   };
 
+  let sidebarWidth = "280px";
+  if (animate) {
+    sidebarWidth = open ? "280px" : "88px";
+  }
+
   return (
     <motion.div
       className={cn(
         "hidden md:flex md:flex-col md:relative h-[calc(100vh-80px)] bg-white border-r border-gray-200 shadow-sm overflow-hidden shrink-0",
         className
       )}
-      animate={{ width: animate ? (open ? "280px" : "88px") : "280px" }}
+      animate={{ width: sidebarWidth }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

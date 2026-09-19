@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { services } from "../../constants/services";
-import FooterSection from "../../components/landing-pages/FooterSection";
 import SharedCTA from "../../common/components/Shared/SharedCTA";
 import SidebarForm from "../../components/landing-pages/SidebarForm";
 import servicesVideo from "../../assets/services-video.mp4";

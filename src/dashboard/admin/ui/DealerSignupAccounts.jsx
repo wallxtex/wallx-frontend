@@ -141,9 +141,10 @@ const DealerSignupAccounts = () => {
                   {/* Status */}
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                      dealer.status === 'pending' ? 'bg-amber-100 text-amber-800' :
-                      dealer.status === 'approved' ? 'bg-emerald-100 text-emerald-800' :
-                      'bg-red-100 text-[#d82b2b]'
+                      {
+                        'pending': 'bg-amber-100 text-amber-800',
+                        'approved': 'bg-emerald-100 text-emerald-800'
+                      }[dealer.status] || 'bg-red-100 text-[#d82b2b]'
                     }`}>
                       {dealer.status}
                     </span>
