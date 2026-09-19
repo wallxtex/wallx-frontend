@@ -4,6 +4,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, Plus, Search, Calendar, Package, Wallet, Banknote, CreditCard, Check, X, MapPin, Phone, Mail, Store } from 'lucide-react';
 import { toast } from 'react-toastify';
 
+const PAYMENT_STATUS_COLORS = {
+  'Paid': 'bg-emerald-100 text-emerald-800',
+  'Partial': 'bg-blue-100 text-blue-800'
+};
+
 const MOCK_ORDERS = [
   {
     id: 'ORD-001',
@@ -172,7 +177,7 @@ const AdminDealerDetails = () => {
       
       {/* Header & Back Navigation */}
       <div className="flex items-center gap-4 mb-8">
-        <button 
+        <button type="button" 
           onClick={() => navigate('/admin/dealer-page')}
           className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 transition-colors shadow-sm"
         >
@@ -269,7 +274,7 @@ const AdminDealerDetails = () => {
                 className="pl-9 pr-4 py-2 w-full border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#d82b2b]/20 focus:border-[#d82b2b]"
               />
             </div>
-            <button 
+            <button type="button" 
               onClick={() => setIsModalOpen(true)}
               className="bg-[#d82b2b] hover:bg-[#b92525] text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 whitespace-nowrap transition-colors shadow-sm"
             >
@@ -310,10 +315,7 @@ const AdminDealerDetails = () => {
                   <td className="px-6 py-4 text-amber-600 font-medium">{formatCurrency(order.remainingAmount)}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                      {
-                        'Paid': 'bg-emerald-100 text-emerald-800',
-                        'Partial': 'bg-blue-100 text-blue-800'
-                      }[order.paymentStatus] || 'bg-amber-100 text-amber-800'
+                      PAYMENT_STATUS_COLORS[order.paymentStatus] || 'bg-amber-100 text-amber-800'
                     }`}>
                       {order.paymentStatus}
                     </span>
@@ -321,7 +323,7 @@ const AdminDealerDetails = () => {
                   <td className="px-6 py-4 text-gray-500">{order.lastPaymentDate}</td>
                   <td className="px-6 py-4 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <button 
+                      <button type="button" 
                         onClick={() => {
                           setSelectedOrder(order);
                           setPaymentAmount('');
@@ -366,7 +368,7 @@ const AdminDealerDetails = () => {
                   <CreditCard className="w-5 h-5 text-[#d82b2b]" />
                   Create New Order
                 </h2>
-                <button onClick={() => setIsModalOpen(false)} className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -459,7 +461,7 @@ const AdminDealerDetails = () => {
                   <Banknote className="w-5 h-5 text-emerald-600" />
                   Record Payment
                 </h2>
-                <button 
+                <button type="button" 
                   onClick={() => {
                     setRecordPaymentModalOpen(false);
                     setSelectedOrder(null);

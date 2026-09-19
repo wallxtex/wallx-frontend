@@ -12,8 +12,8 @@ const RedeemPage = () => {
 
     const isUrl = (str) => {
         try {
-            new URL(str);
-            return true;
+            const parsed = new URL(str);
+            return !!parsed;
         } catch (error) {
             console.debug("Invalid URL string:", error);
             return false;
@@ -28,12 +28,13 @@ const RedeemPage = () => {
             return;
         }
 
+        let timer;
         const verifyCode = async () => {
             try {
                 console.log(`Verifying code format: ${code}`);
 
                 // Initial quick verification
-                setTimeout(() => {
+                timer = setTimeout(() => {
                     if (code.startsWith("WALLX-")) {
                         setStatus("ready");
                         setAmount(90);
@@ -52,6 +53,7 @@ const RedeemPage = () => {
         };
 
         verifyCode();
+        return () => clearTimeout(timer);
     }, [code, isCodeUrl]);
 
     const handleRedeem = () => {
@@ -89,7 +91,7 @@ const RedeemPage = () => {
                             <span className="text-6xl font-extrabold text-white leading-none">{amount}</span>
                         </div>
                         <p className="bg-black/30 px-3 py-2 rounded-lg font-mono text-sm text-gray-400 inline-block mt-2 break-all w-full box-border">Ref: {code}</p>
-                        <button
+                        <button type="button"
                             className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-none py-3 px-6 rounded-full text-base font-semibold cursor-pointer w-full mt-5 transition-transform active:scale-95 shadow-[0_4px_15px_rgba(33,150,243,0.3)]"
                             onClick={handleRedeem}>
                             Redeem Now
@@ -106,7 +108,7 @@ const RedeemPage = () => {
                             <span className="text-2xl mt-1 mr-1 text-green-500">₹</span>
                             <span className="text-6xl font-extrabold text-white leading-none">{amount}</span>
                         </div>
-                        <button
+                        <button type="button"
                             className="bg-gradient-to-br from-[#333] to-[#444] text-white border-none py-3 px-6 rounded-full text-base font-semibold cursor-pointer w-full mt-5 transition-transform active:scale-95 shadow-[0_4px_15px_rgba(0,0,0,0.3)]"
                             onClick={() => navigate("/painter/scan")}>
                             Scan Another
@@ -131,7 +133,7 @@ const RedeemPage = () => {
                                 )}
                             </div>
                         )}
-                        <button
+                        <button type="button"
                             className="bg-gradient-to-br from-red-500 to-red-600 text-white border-none py-3 px-6 rounded-full text-base font-semibold cursor-pointer w-full mt-5 transition-transform active:scale-95 shadow-[0_4px_15px_rgba(244,67,54,0.3)]"
                             onClick={() => navigate("/painter/scan")}>
                             Try Again

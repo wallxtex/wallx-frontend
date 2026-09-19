@@ -51,8 +51,9 @@ const QRScanner = () => {
               } else {
                 throw new Error("Missing code parameter");
               }
-            } catch {
+            } catch (error) {
               // Not a valid URL or missing code param
+              console.debug("Invalid QR Data:", error);
               setScanStatus("error");
               
               // Reset back to scanning after 2 seconds
@@ -63,7 +64,7 @@ const QRScanner = () => {
               }, 2000);
             }
           },
-          () => { /* Ignore */ }
+          (errorMessage) => { console.debug("QR Scan error:", errorMessage); }
         );
 
 
