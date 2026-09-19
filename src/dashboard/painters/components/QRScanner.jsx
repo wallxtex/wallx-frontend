@@ -4,7 +4,6 @@ import { Html5Qrcode } from "html5-qrcode";
 
 const QRScanner = () => {
   const navigate = useNavigate();
-  const scannerRef = useRef(null);
   const hasScanned = useRef(false);
   const [scanStatus, setScanStatus] = useState("scanning"); // 'scanning', 'success', 'error'
 
@@ -52,7 +51,7 @@ const QRScanner = () => {
               } else {
                 throw new Error("Missing code parameter");
               }
-            } catch (err) {
+            } catch {
               // Not a valid URL or missing code param
               setScanStatus("error");
               
@@ -64,7 +63,7 @@ const QRScanner = () => {
               }, 2000);
             }
           },
-          (errorMessage) => { /* Ignore */ }
+          () => { /* Ignore */ }
         );
 
 

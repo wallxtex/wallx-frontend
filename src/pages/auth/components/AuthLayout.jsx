@@ -10,7 +10,6 @@ const AuthLayout = ({
     backPath = '/',
     children
 }) => {
-    const navigate = useNavigate();
 
     return (
         <div className="h-[100dvh] max-h-[100dvh] overflow-hidden bg-white flex flex-col md:flex-row">

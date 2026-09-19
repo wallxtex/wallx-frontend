@@ -30,9 +30,7 @@ const MOCK_DEALERS = Array.from({ length: 45 }, (_, i) => {
 const DealerRankingTable = () => {
   const navigate = useNavigate();
   
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
-  };
+
 
   const filterFn = (dealer, searchTerm) => 
     dealer.name.toLowerCase().includes(searchTerm.toLowerCase()) || 

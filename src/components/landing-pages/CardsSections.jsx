@@ -5,6 +5,7 @@ const CardsSections = () => {
   const cardsRef = useRef([])
 
   useEffect(() => {
+    const currentCards = cardsRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -17,12 +18,12 @@ const CardsSections = () => {
       { threshold: 0.1 }
     )
 
-    cardsRef.current.forEach((card) => {
+    currentCards.forEach((card) => {
       if (card) observer.observe(card)
     })
 
     return () => {
-      cardsRef.current.forEach((card) => {
+      currentCards.forEach((card) => {
         if (card) observer.unobserve(card)
       })
     }

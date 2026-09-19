@@ -15,6 +15,7 @@ const RedeemPage = () => {
             new URL(str);
             return true;
         } catch (e) {
+            // Invalid URL string throws exception, we just return false
             return false;
         }
     };
