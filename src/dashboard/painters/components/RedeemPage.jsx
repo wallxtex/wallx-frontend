@@ -14,8 +14,8 @@ const RedeemPage = () => {
         try {
             new URL(str);
             return true;
-        } catch (e) {
-            // Invalid URL string throws exception, we just return false
+        } catch (error) {
+            console.debug("Invalid URL string:", error);
             return false;
         }
     };
@@ -44,7 +44,8 @@ const RedeemPage = () => {
                     }
                 }, 1000);
 
-            } catch {
+            } catch (error) {
+                console.error("Verification failed:", error);
                 setStatus("error");
                 setMessage("Connection failed. Try again.");
             }
