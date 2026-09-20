@@ -18,7 +18,7 @@ const StatsRow = () => {
       iconColor: "text-purple-600",
     },
     {
-      label: "Total Earned",
+      label: "Total Redeemed Amount",
       value: "₹48,500",
       icon: Wallet,
       bgColor: "bg-green-100",

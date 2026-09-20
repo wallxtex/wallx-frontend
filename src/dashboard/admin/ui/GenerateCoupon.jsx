@@ -10,6 +10,8 @@ import CouponFooter from "./GenerateCoupon/CouponFooter";
 
 const GenerateCoupon = () => {
   const [scannerCount, setScannerCount] = useState("");
+  const [amount, setAmount] = useState("");
+  const [validityDate, setValidityDate] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedCoupons, setGeneratedCoupons] = useState([]);
   const [error, setError] = useState(null);
@@ -41,6 +43,16 @@ const GenerateCoupon = () => {
       setError("Please enter a valid number of scanners (minimum 1)");
       return;
     }
+    
+    if (!amount || isNaN(amount) || amount <= 0) {
+      setError("Please enter a valid amount");
+      return;
+    }
+
+    if (!validityDate) {
+      setError("Please select a validity date");
+      return;
+    }
 
     setIsGenerating(true);
     setError(null);
@@ -51,6 +63,8 @@ const GenerateCoupon = () => {
       // Call backend API
       const response = await PrivateApi.post("/api/coupons/generate", {
         scannerCount: count,
+        amount: Number(amount),
+        validityDate,
       });
 
       // Assuming backend returns: { success: true, data: [{ id, token, code }, ...] }
@@ -133,6 +147,10 @@ const GenerateCoupon = () => {
       <GenerateForm
         scannerCount={scannerCount}
         setScannerCount={setScannerCount}
+        amount={amount}
+        setAmount={setAmount}
+        validityDate={validityDate}
+        setValidityDate={setValidityDate}
         isGenerating={isGenerating}
         handleGenerateCoupons={handleGenerateCoupons}
       />

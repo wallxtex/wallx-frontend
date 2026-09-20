@@ -1,6 +1,6 @@
 import { IoTrophy, IoQrCodeOutline } from 'react-icons/io5';
 import { TOP_PAINTERS_DATA } from './painterData';
-import SharedLeaderboard, { getRankBadgeStyle } from '../../../common/components/Shared/SharedLeaderboard';
+import SharedLeaderboard from '../../../common/components/Shared/SharedLeaderboard';
 
 const formatINR = (val) => {
   return new Intl.NumberFormat('en-IN', {

@@ -4,7 +4,6 @@ import { Html5Qrcode } from "html5-qrcode";
 
 const QRScanner = () => {
   const navigate = useNavigate();
-  const scannerRef = useRef(null);
   const hasScanned = useRef(false);
   const [scanStatus, setScanStatus] = useState("scanning"); // 'scanning', 'success', 'error'
 
@@ -52,8 +51,9 @@ const QRScanner = () => {
               } else {
                 throw new Error("Missing code parameter");
               }
-            } catch (err) {
+            } catch (error) {
               // Not a valid URL or missing code param
+              console.debug("Invalid QR Data:", error);
               setScanStatus("error");
               
               // Reset back to scanning after 2 seconds
@@ -64,7 +64,7 @@ const QRScanner = () => {
               }, 2000);
             }
           },
-          (errorMessage) => { /* Ignore */ }
+          (errorMessage) => { console.debug("QR Scan error:", errorMessage); }
         );
 
 
@@ -111,12 +111,16 @@ const QRScanner = () => {
       <div className="absolute bottom-12 w-full text-center z-20">
         <div className="inline-flex items-center justify-center gap-3 bg-[#2a2a2a]/80 backdrop-blur-md px-5 py-3 rounded-full border border-white/5 shadow-lg">
           <span className={`w-2.5 h-2.5 rounded-full transition-colors ${
-            scanStatus === 'success' ? 'bg-green-500' : 
-            scanStatus === 'error' ? 'bg-red-500' : 'bg-blue-500 animate-[pulse_1.5s_infinite]'
+            {
+              'success': 'bg-green-500',
+              'error': 'bg-red-500'
+            }[scanStatus] || 'bg-blue-500 animate-[pulse_1.5s_infinite]'
           }`}></span>
           <p className="text-[0.9rem] font-medium text-[#e0e0e0] m-0">
-            {scanStatus === 'success' ? "Code Verified!" : 
-             scanStatus === 'error' ? "Invalid QR Code" : "Looking for a valid Wallx code"}
+            {{
+              'success': "Code Verified!",
+              'error': "Invalid QR Code"
+            }[scanStatus] || "Looking for a valid Wallx code"}
           </p>
         </div>
       </div>

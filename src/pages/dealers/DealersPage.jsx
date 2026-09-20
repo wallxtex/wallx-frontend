@@ -10,7 +10,6 @@ import {
 import SharedSchemes from '../../common/components/Shared/SharedSchemes';
 import SharedLeaderboard from '../../common/components/Shared/SharedLeaderboard';
 import SharedCTA from '../../common/components/Shared/SharedCTA';
-import FooterSection from '../../components/landing-pages/FooterSection';
 import { DEALER_SCHEMES, TOP_DEALERS_DATA } from './dealerData';
 
 const DealersPage = () => {

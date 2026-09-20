@@ -6,8 +6,8 @@ import PodiumCard from '../../common/components/Shared/PodiumCard';
 import { TOP_PAINTERS_DATA } from '../../pages/painter/component/painterData';
 
 const PainterCard = ({ person, metricsConfig }) => (
-  <div className="min-w-[280px] w-[280px] md:min-w-[310px] md:w-[310px] h-[325px] md:h-[355px] bg-red-50 border-2 border-red-100 rounded-3xl p-6 hover:shadow-lg transition-all duration-300 relative text-center flex flex-col items-center mx-4">
-    <div className="w-12 h-12 -mt-12 rounded-full flex items-center justify-center bg-white border border-red-200 shadow-sm text-red-600 font-black text-xl z-10">
+  <div className="min-w-[230px] w-[230px] sm:min-w-[280px] sm:w-[280px] md:min-w-[310px] md:w-[310px] h-[325px] md:h-[355px] bg-red-50 border-2 border-red-100 rounded-3xl p-5 sm:p-6 hover:shadow-lg transition-all duration-300 relative text-center flex flex-col items-center mx-3 sm:mx-4">
+    <div className="w-12 h-12 -mt-11 sm:-mt-12 rounded-full flex items-center justify-center bg-white border border-red-200 shadow-sm text-red-600 font-black text-xl z-10">
       {person.rank}
     </div>
 

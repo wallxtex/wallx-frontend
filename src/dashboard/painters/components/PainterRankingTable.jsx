@@ -55,10 +55,11 @@ const PainterRankingTable = () => {
             <td className="px-6 py-4">
               <div className="flex items-center justify-center gap-2">
                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                  startIndex + idx === 0 ? 'bg-amber-100 text-amber-700 shadow-sm' :
-                  startIndex + idx === 1 ? 'bg-gray-200 text-gray-700 shadow-sm' :
-                  startIndex + idx === 2 ? 'bg-orange-100 text-orange-700 shadow-sm' :
-                  'bg-gray-100 text-gray-600'
+                  {
+                    0: 'bg-amber-100 text-amber-700 shadow-sm',
+                    1: 'bg-gray-200 text-gray-700 shadow-sm',
+                    2: 'bg-orange-100 text-orange-700 shadow-sm'
+                  }[startIndex + idx] || 'bg-gray-100 text-gray-600'
                 }`}>
                   {startIndex + idx + 1}
                 </span>
