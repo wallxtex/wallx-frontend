@@ -1,4 +1,3 @@
-"use client";
 import { cn } from "../../utils/lib/util";
 import { useState, useEffect, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "motion/react";
@@ -34,48 +33,31 @@ const MOBILE_BREAKPOINT = 768;
 const SidebarProvider = ({ children, animate = true }) => {
   const [open, setOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [isTouch, setIsTouch] = useState(false);
-  // "pinned" = the user explicitly clicked to set this state, so hover
-  // should not silently override it. Only relevant on tablet/desktop.
-  const [pinned, setPinned] = useState(true);
 
   useEffect(() => {
     const mobileQuery = window.matchMedia(
-      `(max-width: ${MOBILE_BREAKPOINT - 1}px)`
+      `(max-width: ${MOBILE_BREAKPOINT - 1}px)`,
     );
-    const touchQuery = window.matchMedia("(hover: none), (pointer: coarse)");
 
     const applyMobile = (matches) => {
       setIsMobile(matches);
       // Sidebar starts open on tablet/desktop, closed (drawer) on mobile.
       setOpen(!matches);
-      setPinned(!matches);
     };
 
     applyMobile(mobileQuery.matches);
-    setIsTouch(touchQuery.matches);
 
     const handleMobileChange = (e) => applyMobile(e.matches);
-    const handleTouchChange = (e) => setIsTouch(e.matches);
 
     mobileQuery.addEventListener("change", handleMobileChange);
-    touchQuery.addEventListener("change", handleTouchChange);
 
     return () => {
       mobileQuery.removeEventListener("change", handleMobileChange);
-      touchQuery.removeEventListener("change", handleTouchChange);
     };
   }, []);
 
-  // Explicit toggle (click). On desktop/tablet this also "pins" the new
-  // state so hover no longer fights with it until the user hovers away
-  // from a collapsed sidebar again.
   const toggleSidebar = () => {
-    setOpen((prev) => {
-      const next = !prev;
-      if (!isMobile) setPinned(next);
-      return next;
-    });
+    setOpen((prev) => !prev);
   };
 
   return (
@@ -85,8 +67,6 @@ const SidebarProvider = ({ children, animate = true }) => {
         setOpen,
         animate,
         isMobile,
-        isTouch,
-        pinned,
         toggleSidebar,
       }}
     >
@@ -100,18 +80,7 @@ const SidebarProvider = ({ children, animate = true }) => {
 // ============================================================================
 
 const DesktopSidebar = ({ className, children, ...props }) => {
-  const { open, setOpen, animate, isTouch, pinned, toggleSidebar } =
-    useSidebar();
-
-  const handleMouseEnter = () => {
-    // Only auto-preview-expand for real mouse users, and only when the
-    // sidebar isn't explicitly pinned collapsed/open by a click.
-    if (!isTouch && !pinned) setOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    if (!isTouch && !pinned) setOpen(false);
-  };
+  const { open, animate, toggleSidebar } = useSidebar();
 
   let sidebarWidth = "280px";
   if (animate) {
@@ -122,19 +91,17 @@ const DesktopSidebar = ({ className, children, ...props }) => {
     <motion.div
       className={cn(
         "hidden md:flex md:flex-col md:relative h-[calc(100vh-80px)] bg-white border-r border-gray-200 shadow-sm overflow-hidden shrink-0",
-        className
+        className,
       )}
       animate={{ width: sidebarWidth }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
       {...props}
     >
-      {/* Desktop/Tablet toggle — different icon from mobile, tap/click friendly */}
+      {/* Desktop/Tablet toggle button */}
       <div
         className={cn(
           "flex items-center px-2 pt-4 pb-2",
-          open ? "justify-end" : "justify-center"
+          open ? "justify-end" : "justify-center",
         )}
       >
         <motion.button
@@ -160,17 +127,10 @@ const DesktopSidebar = ({ className, children, ...props }) => {
 // ============================================================================
 // MOBILE SIDEBAR
 // ============================================================================
-
 const MobileSidebar = ({ className, children, ...props }) => {
   const { open, setOpen } = useSidebar();
-
   return (
     <>
-      {/* Mobile Menu Button — hamburger/X, distinct from the desktop toggle.
-          The navbar is a fixed 80px (h-20) sticky header, so this is
-          vertically centered against that 80px band and layered above it
-          (z-[60] > navbar's z-50). The navbar itself reserves left space
-          (pl-14) so the two never overlap. */}
       <div
         className="md:hidden fixed left-3 z-[60]"
         style={{
@@ -213,7 +173,7 @@ const MobileSidebar = ({ className, children, ...props }) => {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className={cn(
                 "fixed left-0 w-72 bg-white border-r border-gray-200 shadow-lg z-40 flex flex-col overflow-y-auto md:hidden",
-                className
+                className,
               )}
               style={{
                 top: "calc(env(safe-area-inset-top, 0px) + 80px)",
@@ -261,7 +221,7 @@ const SidebarBody = ({ children }) => {
 // ============================================================================
 
 const SidebarLink = ({ item }) => {
-  const { open, setOpen, isMobile, isTouch, pinned } = useSidebar();
+  const { open, setOpen, isMobile } = useSidebar();
   const { pathname } = useLocation();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -275,7 +235,8 @@ const SidebarLink = ({ item }) => {
 
   // Is active if the main path matches OR any subItem path matches
   const isActive = hasSubItems
-    ? pathname === item.path || item.subItems.some((sub) => pathname === sub.path)
+    ? pathname === item.path ||
+      item.subItems.some((sub) => pathname === sub.path)
     : pathname === item.path;
 
   const IconComponent = item.icon;
@@ -286,7 +247,6 @@ const SidebarLink = ({ item }) => {
         e.preventDefault();
       }
       setIsExpanded(!isExpanded);
-      if (!open) setOpen(true);
     } else {
       if (isMobile) setOpen(false);
     }
@@ -295,12 +255,8 @@ const SidebarLink = ({ item }) => {
   return (
     <>
       <motion.div
-        whileHover={!open ? { x: 0 } : { x: 4 }}
+        whileHover={open ? { x: 4 } : { x: 0 }}
         whileTap={{ scale: 0.98 }}
-        onMouseEnter={() => {
-          // Auto-expand on hover when collapsed — real mouse only.
-          if (!isMobile && !isTouch && !pinned && !open) setOpen(true);
-        }}
       >
         <Link
           to={item.path || "#"}
@@ -310,7 +266,7 @@ const SidebarLink = ({ item }) => {
             open ? "justify-start" : "justify-center",
             isActive
               ? "bg-[#d82b2b]/10 text-[#ff5c5c]"
-              : "text-gray-700 hover:bg-gray-50 hover:text-black"
+              : "text-gray-700 hover:bg-gray-50 hover:text-black",
           )}
         >
           {/* Active Indicator Bar */}
@@ -328,7 +284,9 @@ const SidebarLink = ({ item }) => {
             transition={{ duration: 0.2 }}
             className={cn(
               "flex-shrink-0 transition-colors duration-200",
-              isActive ? "text-[#ff5c5c]" : "text-gray-500 group-hover:text-black"
+              isActive
+                ? "text-[#ff5c5c]"
+                : "text-gray-500 group-hover:text-black",
             )}
           >
             <IconComponent className="w-5 h-5" />
@@ -382,14 +340,14 @@ const SidebarLink = ({ item }) => {
                     "flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-xs sm:text-sm transition-all duration-200",
                     isSubActive
                       ? "bg-[#d82b2b]/10 text-[#ff5c5c]"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-black"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-black",
                   )}
                 >
                   {/* Subtle dot for sub-item */}
                   <span
                     className={cn(
                       "w-1.5 h-1.5 rounded-full flex-shrink-0",
-                      isSubActive ? "bg-[#d82b2b]" : "bg-gray-300"
+                      isSubActive ? "bg-[#d82b2b]" : "bg-gray-300",
                     )}
                   />
                   <span className="truncate">{sub.label}</span>
@@ -415,7 +373,7 @@ const SidebarFooter = () => {
       <div
         className={cn(
           "flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer group",
-          !open && "justify-center"
+          !open && "justify-center",
         )}
       >
         {/* Avatar */}
@@ -434,9 +392,7 @@ const SidebarFooter = () => {
               className="flex-1 min-w-0 flex items-center gap-2"
             >
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-black truncate">
-                  Sagar
-                </p>
+                <p className="text-sm font-medium text-black truncate">Sagar</p>
                 <p className="text-xs text-gray-500 truncate">Painter</p>
               </div>
 
