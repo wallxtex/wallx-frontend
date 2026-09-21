@@ -1,11 +1,8 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { ChevronRight, X, CheckCircle2, Plus } from "lucide-react";
-import CreateSchemeModal from "../admin/CreateSchemeModal";
-
-const SharedSchemesRow = ({ title, subtitle, schemes, type, hideCreateButton = false }) => {
+const SharedSchemesRow = ({ title, subtitle, schemes, type }) => {
   const [selectedScheme, setSelectedScheme] = useState(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   return (
     <div className="w-full">
@@ -17,72 +14,75 @@ const SharedSchemesRow = ({ title, subtitle, schemes, type, hideCreateButton = f
             {subtitle}
           </p>
         </div>
-        {!hideCreateButton && (
-          <button
-            type="button"
-            onClick={() => setIsCreateModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-[#d82b2b] hover:bg-[#b82222] text-white text-xs sm:text-sm font-semibold rounded-lg shadow-md shadow-red-500/20 transition-colors cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">New Scheme</span>
-            <span className="sm:hidden">New</span>
-          </button>
-        )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 w-full">
-        {schemes.slice(0, 3).map((scheme) => (
-          <motion.div
-            key={scheme.id}
-            whileHover={{ y: -4 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.2 }}
-            className="bg-white border border-gray-100 rounded-2xl p-5 sm:p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:shadow-gray-200/50 flex flex-col justify-between relative overflow-hidden group transition-all"
-          >
-            {/* Decorative Background Element */}
-            <div className="absolute -right-8 -top-8 w-32 h-32 bg-gray-50 rounded-full opacity-50 group-hover:scale-[2] transition-transform duration-700 ease-out z-0" />
-            
-            <div className="relative z-10">
-              {/* Badge */}
-              <div className="mb-4 flex items-center justify-between">
-                <span className={`inline-flex items-center px-3 py-1 rounded-md text-[10px] sm:text-xs font-black uppercase tracking-widest shadow-sm ${scheme.badgeColor}`}>
-                  {scheme.badge || scheme.tag}
-                </span>
-                {scheme.badge && scheme.tag && (
-                  <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{scheme.tag}</span>
-                )}
+        {schemes.slice(0, 3).map((rawScheme, idx) => {
+          // Adapt raw backend fields to UI requirements
+          const scheme = {
+            id: rawScheme._id || rawScheme.id || idx,
+            title: rawScheme.title || "Special Offer",
+            description: rawScheme.description || "No description available.",
+            badgeColor: rawScheme.badgeColor || "bg-blue-100 text-blue-800",
+            badge: rawScheme.targetAudience || rawScheme.badge || "OFFER",
+            tag: rawScheme.tag || (rawScheme.isActive ? "ACTIVE" : ""),
+            highlight: rawScheme.highlight || (rawScheme.validUntil ? `Valid until ${new Date(rawScheme.validUntil).toLocaleDateString()}` : "Limited Time"),
+            cashback: rawScheme.cashback || "Exclusive Rewards",
+            features: rawScheme.features || [rawScheme.description || "Terms apply.", "Valid for eligible users only."]
+          };
+
+          return (
+            <motion.div
+              key={scheme.id}
+              whileHover={{ y: -4 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white border border-gray-100 rounded-2xl p-5 sm:p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:shadow-gray-200/50 flex flex-col justify-between relative overflow-hidden group transition-all min-h-[240px]"
+            >
+              {/* Decorative Background Element */}
+              <div className="absolute -right-8 -top-8 w-32 h-32 bg-gray-50 rounded-full opacity-50 group-hover:scale-[2] transition-transform duration-700 ease-out z-0" />
+              
+              <div className="relative z-10">
+                {/* Badge */}
+                <div className="mb-4 flex items-center justify-between">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-md text-[10px] sm:text-xs font-black uppercase tracking-widest shadow-sm ${scheme.badgeColor}`}>
+                    {scheme.badge}
+                  </span>
+                  {scheme.tag && (
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">{scheme.tag}</span>
+                  )}
+                </div>
+
+                {/* Title */}
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 leading-tight group-hover:text-[#d82b2b] transition-colors">
+                  {scheme.title}
+                </h3>
+                
+
+
+                {/* Description - Line clamped for mobile */}
+                <p className="text-xs sm:text-sm text-gray-500 mb-2 line-clamp-3 leading-loose">
+                  {scheme.description}
+                </p>
               </div>
 
-              {/* Title */}
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 leading-tight group-hover:text-[#d82b2b] transition-colors">
-                {scheme.title}
-              </h3>
-              
-              {/* Highlight */}
-              <p className="text-sm font-semibold text-[#d82b2b] mb-3 bg-red-50/80 inline-block px-2.5 py-1 rounded">
-                {scheme.highlight}
-              </p>
-
-              {/* Description - Line clamped for mobile */}
-              <p className="text-xs sm:text-sm text-gray-500 mb-2 line-clamp-3 leading-relaxed">
-                {scheme.description}
-              </p>
-            </div>
-
-            {/* View Details Button - Pushed to bottom */}
-            <div className="relative z-10 mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-              <span className="text-[10px] sm:text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded uppercase tracking-wider">Active</span>
-              <button
-                type="button"
-                onClick={() => setSelectedScheme(scheme)}
-                className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#d82b2b] group-hover:translate-x-1 transition-transform cursor-pointer bg-transparent border-none p-0 m-0"
-              >
-                View Scheme
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </motion.div>
-        ))}
+              {/* View Details Button - Pushed to bottom */}
+              <div className="relative z-10 mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+                <span className="text-[10px] sm:text-xs font-semibold text-[#d82b2b] bg-red-50/80 px-2 py-0.5 rounded">
+                  {scheme.highlight}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedScheme(scheme)}
+                  className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#d82b2b] group-hover:translate-x-1 transition-transform cursor-pointer bg-transparent border-none p-0 m-0"
+                >
+                  View Scheme
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Modal for Scheme Details */}
@@ -137,12 +137,6 @@ const SharedSchemesRow = ({ title, subtitle, schemes, type, hideCreateButton = f
         </div>
       )}
 
-      {/* Create Scheme Modal */}
-      <CreateSchemeModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        type={type}
-      />
     </div>
   );
 };

@@ -4,6 +4,7 @@ import {
     PaintBucket,
     Ticket,
     MessageSquareMore,
+    Package,
 } from "lucide-react";
 
 export const adminMenu = [
@@ -31,6 +32,11 @@ export const adminMenu = [
         label: "Painter",
         path: "/admin/painter-page",
         icon: PaintBucket,
+    },
+    {
+        label: "Services & Products",
+        path: "/admin/services-products",
+        icon: Package,
     },
     {
         label: "Generate Coupons",

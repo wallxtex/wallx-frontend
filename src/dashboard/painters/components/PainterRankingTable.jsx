@@ -1,4 +1,5 @@
-import React from 'react';
+import { useEffect, useState } from "react";
+import { formatCurrency } from "../../../utils/helpers/formatCurrency";
 import { Search } from 'lucide-react';
 import RankingTableLayout from '../../../components/shared/RankingTableLayout';
 
@@ -25,9 +26,6 @@ const MOCK_PAINTERS = Array.from({ length: 45 }, (_, i) => {
 }).sort((a, b) => b.totalRedeemedAmount - a.totalRedeemedAmount);
 
 const PainterRankingTable = () => {
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
-  };
 
   const filterFn = (painter, searchTerm) => 
     painter.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
