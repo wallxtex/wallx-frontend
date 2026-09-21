@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Trophy, Medal, Award, Store, Loader2 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { getDealerDashboardData } from "../../../services/dealers/dealers.services";
+import { formatCurrency } from "../../../utils/helpers/formatCurrency";
 
 const TopDealersRankingTable = () => {
   const [dealers, setDealers] = useState([]);
@@ -70,9 +71,6 @@ const TopDealersRankingTable = () => {
     }
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
-  };
 
   return (
     <div className="w-full bg-white border border-gray-100 rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] overflow-hidden mt-6">

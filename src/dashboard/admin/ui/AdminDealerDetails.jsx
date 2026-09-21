@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, Plus, Search, Calendar, Package, Wallet, Banknote, CreditCard, Check, X, MapPin, Phone, Mail, Store } from 'lucide-react';
+import { formatCurrency } from '../../../utils/helpers/formatCurrency';
 import { toast } from 'react-toastify';
 
 const PAYMENT_STATUS_COLORS = {
@@ -154,9 +155,6 @@ const AdminDealerDetails = () => {
     toast.success('Payment recorded successfully!');
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
-  };
 
   const filteredOrders = orders.filter(o => 
     o.id.toLowerCase().includes(searchTerm.toLowerCase()) || 

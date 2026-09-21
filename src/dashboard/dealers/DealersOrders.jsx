@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Package, Search, Calendar, ChevronLeft, ChevronRight, Download, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getDealerOrders } from "../../services/dealers/dealers.services";
+import { formatCurrency } from "../../utils/helpers/formatCurrency";
 
 const DealersOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -70,9 +71,6 @@ const DealersOrders = () => {
     }
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
-  };
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 flex flex-col pb-12 sm:pb-16">

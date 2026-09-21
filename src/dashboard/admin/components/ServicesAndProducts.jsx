@@ -2,6 +2,72 @@ import React, { useState } from 'react';
 import { services } from '../../../constants/services';
 import { PRODUCTS } from '../../../constants/products';
 
+const ItemCard = ({ item, type }) => {
+  const isService = type === 'service';
+  const title = isService ? item.title : item.name;
+  const description = isService 
+    ? (item.description || "Description not available.") 
+    : (item.features && item.features[0] ? item.features[0].description : "Premium quality product for your walls.");
+  const imageWrapperClass = isService 
+    ? "h-80 w-full bg-gray-100 overflow-hidden" 
+    : "h-64 w-full p-4 flex items-center justify-center bg-gray-50 overflow-hidden";
+  const imageClass = isService 
+    ? "w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+    : "h-full object-contain drop-shadow-sm transition-transform duration-300 group-hover:scale-105";
+
+  return (
+    <div className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-md cursor-pointer h-full">
+      {/* Base View */}
+      <div className={imageWrapperClass}>
+        {item.image ? (
+          <img src={item.image} alt={title} className={imageClass} />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
+        )}
+      </div>
+      
+      <div className="p-5 flex-1 flex flex-col justify-between">
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="text-lg font-bold text-gray-900 pr-2">{title}</h3>
+          {!isService && item.category && (
+            <span className="text-xs font-medium px-2 py-1 bg-gray-100 text-gray-600 rounded whitespace-nowrap">
+              {item.category}
+            </span>
+          )}
+        </div>
+        
+        <div className="flex justify-between items-center mt-2">
+          <span className="text-xs font-semibold px-2.5 py-1 bg-red-50 text-red-600 rounded-full">
+            Active
+          </span>
+          <span className="inline-flex items-center gap-1 text-xs font-semibold text-gray-700 transition-colors">
+            View details
+            <span aria-hidden="true" className="transition-transform duration-200 ease-out group-hover:translate-x-1">→</span>
+          </span>
+        </div>
+      </div>
+
+      {/* Hover Overlay (Slides from Right to Left) */}
+      <div className="absolute inset-0 bg-white/95 backdrop-blur-sm p-6 flex flex-col transition-transform duration-500 ease-in-out z-10 border border-gray-200 translate-x-full group-hover:translate-x-0">
+        <div className="flex flex-col h-full items-center text-center">
+          <div className="flex-1 flex flex-col justify-center items-center w-full overflow-y-auto">
+            <h3 className="text-base font-bold text-gray-900 uppercase tracking-wider mb-3 leading-snug">{title}</h3>
+            <p className="text-gray-600 text-sm leading-relaxed">
+              {description}
+            </p>
+          </div>
+          
+          {!isService && (
+            <button className="w-full py-2.5 border border-red-600 text-red-600 font-bold text-sm uppercase tracking-wider hover:bg-red-600 hover:text-white transition-colors duration-300 mt-4 shrink-0 rounded-md">
+              Edit Product
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ServicesAndProducts = () => {
   const [activeTab, setActiveTab] = useState('services');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -77,99 +143,22 @@ const ServicesAndProducts = () => {
 
       {/* Content */}
       <div className="mt-6">
-        {activeTab === 'services' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service) => (
-              <div key={service.id} className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-md cursor-pointer h-full">
-                {/* Base View */}
-                <div className="h-80 w-full bg-gray-100 overflow-hidden">
-                  {service.image ? (
-                    <img src={service.image} alt={service.alt} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
-                  )}
-                </div>
-                
-                <div className="p-5 flex-1 flex flex-col justify-between">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{service.title}</h3>
-                  <div className="flex justify-between items-center mt-2">
-                    <span className="text-xs font-semibold px-2.5 py-1 bg-red-50 text-red-600 rounded-full">
-                      Active
-                    </span>
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-gray-700 transition-colors">
-                      View details
-                      <span aria-hidden="true" className="transition-transform duration-200 ease-out group-hover:translate-x-1">→</span>
-                    </span>
-                  </div>
-                </div>
-
-                {/* Hover Overlay (Slides from Right to Left) */}
-                <div className="absolute inset-0 bg-white/95 backdrop-blur-sm p-6 flex flex-col transition-transform duration-500 ease-in-out z-10 border border-gray-200 translate-x-full group-hover:translate-x-0">
-                  <div className="flex flex-col h-full items-center text-center">
-                    <div className="flex-1 flex flex-col justify-center items-center w-full overflow-y-auto">
-                      <h3 className="text-base font-bold text-gray-900 uppercase tracking-wider mb-3 leading-snug">{service.title}</h3>
-                      <p className="text-gray-600 text-sm leading-relaxed">
-                        {service.description || "Description not available."}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {activeTab === 'products' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {PRODUCTS.map((product) => (
-              <div key={product.id} className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-md cursor-pointer h-full">
-                {/* Base View */}
-                <div className="h-64 w-full p-4 flex items-center justify-center bg-gray-50 overflow-hidden">
-                  {product.image ? (
-                    <img src={product.image} alt={product.name} className="h-full object-contain drop-shadow-sm transition-transform duration-300 group-hover:scale-105" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
-                  )}
-                </div>
-                
-                <div className="p-5 flex-1 flex flex-col justify-between">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-bold text-gray-900 pr-2">{product.name}</h3>
-                    <span className="text-xs font-medium px-2 py-1 bg-gray-100 text-gray-600 rounded whitespace-nowrap">
-                      {product.category}
-                    </span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center mt-2">
-                    <span className="text-xs font-semibold px-2.5 py-1 bg-red-50 text-red-600 rounded-full">
-                      Active
-                    </span>
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-gray-700 transition-colors">
-                      View details
-                      <span aria-hidden="true" className="transition-transform duration-200 ease-out group-hover:translate-x-1">→</span>
-                    </span>
-                  </div>
-                </div>
-
-                {/* Hover Overlay (Slides from Right to Left) */}
-                <div className="absolute inset-0 bg-white/95 backdrop-blur-sm p-6 flex flex-col transition-transform duration-500 ease-in-out z-10 border border-gray-200 translate-x-full group-hover:translate-x-0">
-                  <div className="flex flex-col h-full items-center text-center">
-                    <div className="flex-1 flex flex-col justify-center items-center w-full overflow-y-auto">
-                      <h3 className="text-base font-bold text-gray-900 uppercase tracking-wider mb-3 leading-snug">{product.name}</h3>
-                      <p className="text-gray-600 text-sm leading-relaxed">
-                        {product.features && product.features[0] ? product.features[0].description : "Premium quality product for your walls."}
-                      </p>
-                    </div>
-                    
-                    <button className="w-full py-2.5 border border-red-600 text-red-600 font-bold text-sm uppercase tracking-wider hover:bg-red-600 hover:text-white transition-colors duration-300 mt-4 shrink-0 rounded-md">
-                      Edit Product
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {activeTab === 'services' && services.map((service) => (
+            <ItemCard 
+              key={service.id}
+              item={service} 
+              type="service" 
+            />
+          ))}
+          {activeTab === 'products' && PRODUCTS.map((product) => (
+            <ItemCard 
+              key={product.id}
+              item={product} 
+              type="product" 
+            />
+          ))}
+        </div>
       </div>
 
       {/* Add Product Modal */}
