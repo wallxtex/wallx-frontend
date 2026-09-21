@@ -50,6 +50,9 @@ const DealerSignupAccounts = lazy(
 const AdminDealerDetails = lazy(
   () => import("../dashboard/admin/ui/AdminDealerDetails"),
 );
+const ServicesAndProducts = lazy(
+  () => import("../dashboard/admin/components/ServicesAndProducts"),
+);
 
 // Dealer Pages
 const DealersDashboard = lazy(
@@ -127,6 +130,7 @@ export const routeConfig = [
       { path: "/admin/dealer-page", element: AdminDealersDashboard },
       { path: "/admin/dealer-details/:id", element: AdminDealerDetails },
       { path: "/admin/painter-page", element: AdminPainterDashboard },
+      { path: "/admin/services-products", element: ServicesAndProducts },
       { path: "/admin/dealer-signup", element: DealerSignupAccounts },
       { path: "/admin/generate-coupon", element: GenerateCoupon },
       { path: "/admin/visit-enquiry", element: VisitEnquiry },

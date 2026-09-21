@@ -15,9 +15,4 @@ export const dealerMenu = [
         path: "/dealer/orders",
         icon: User,
     },
-    {
-        label: "Settings",
-        path: "/dealer/settings",
-        icon: Wrench,
-    },
 ];
