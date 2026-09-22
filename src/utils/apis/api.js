@@ -1,6 +1,6 @@
 import axios from "axios";
 import handleApiError from "../helpers/handlers/globalHandleApiError";
-import { getApiToken } from "../helpers/constants/getApiToken";
+import { getApiToken } from "../helpers/constants/getapiToken";
 // import { getApiToken } from "../helpers/constants/getApiToken";
 
 const API = axios.create({
