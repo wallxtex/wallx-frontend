@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import signupImg from "../../assets/webp/painter.webp";
 import {
@@ -12,6 +13,8 @@ import {
   validateRequiredText,
 } from "./utils/validation";
 import { useAuthForm } from "./utils/useAuthForm";
+import { painterSignupHandler } from "../../services/global-auth/painter";
+import toast from "react-hot-toast";
 
 const PAINTER_CONSTRAINTS = {
   name: { regex: /^[A-Za-z\s]*$/, max: 40 },
@@ -95,13 +98,15 @@ const PAINTER_FIELDS = [
 
 const PainterSignup = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  
   const authForm = useAuthForm(
     INITIAL_PAINTER_STATE,
     PAINTER_VALIDATORS,
     PAINTER_CONSTRAINTS,
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!authForm.validateAll()) return;
 
@@ -110,10 +115,36 @@ const PainterSignup = () => {
       return;
     }
 
-    console.log("Painter form submitted:", authForm.formData);
-    navigate("/painter-verification", {
-      state: { mobile: authForm.formData.mobile },
-    });
+    setIsLoading(true);
+
+    try {
+      const signupData = {
+        name: authForm.formData.name,
+        mobileNumber: authForm.formData.mobile,
+        upiId: authForm.formData.upi,
+        address: authForm.formData.address,
+        password: authForm.formData.pin,
+      };
+
+      const response = await painterSignupHandler(signupData);
+
+      if (response.success) {
+        toast.success(response.message || "OTP sent successfully!");
+        navigate("/painter-verification", {
+          state: { 
+            mobile: authForm.formData.mobile,
+            signupData: authForm.formData 
+          },
+        });
+      } else {
+        toast.error(response.message || "Signup failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Painter signup error:", error);
+      toast.error("An error occurred during signup. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
 
@@ -167,12 +198,13 @@ const PainterSignup = () => {
           .
         </p>
 
-        {/* testing */}
+        {/* Register Button */}
         <button
           type="submit"
-          className="w-full h-11 sm:h-12 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-sm sm:text-base rounded-lg shadow-sm hover:shadow transition-all duration-200 cursor-pointer flex items-center justify-center tracking-wide"
+          disabled={isLoading}
+          className="w-full h-11 sm:h-12 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-sm sm:text-base rounded-lg shadow-sm hover:shadow transition-all duration-200 cursor-pointer flex items-center justify-center tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Register
+          {isLoading ? "Registering..." : "Register"}
         </button>
       </form>
 

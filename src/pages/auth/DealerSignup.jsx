@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dealerBannerImg from '../../assets/webp/dealer.webp';
 import {
@@ -7,7 +8,6 @@ import {
     AuthFormField,
     INDIAN_STATES
 } from './components';
-
 import {
     validateName,
     validateMobile,
@@ -16,6 +16,8 @@ import {
     validateRequiredText
 } from './utils/validation';
 import { useAuthForm } from './utils/useAuthForm';
+import { dealerSignupHandler } from '../../services/global-auth/dealer';
+import toast from 'react-hot-toast';
 
 const DEALER_CONSTRAINTS = {
     dealerName: { regex: /^[A-Za-z\s]*$/, max: 50 },
@@ -88,24 +90,55 @@ const DEALER_ROW_FIELDS = [
 
 const DealerSignup = () => {
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
     const authForm = useAuthForm(INITIAL_DEALER_STATE, DEALER_VALIDATORS, DEALER_CONSTRAINTS);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!authForm.validateAll()) return;
 
-        const { formData } = authForm;
-        console.log('Dealer form submitted:', formData);
-        navigate('/dealer-verification', {
-            state: {
-                mobile: formData.mobile,
-                email: formData.email,
+        setIsLoading(true);
+
+        try {
+            const { formData } = authForm;
+            
+            // Map frontend field names to backend expected structure
+            const signupData = {
                 dealerName: formData.dealerName,
                 shopName: formData.shopName,
-                city: formData.city,
-                state: formData.state
+                location: {
+                    state: formData.state,
+                    area: formData.area,
+                    pinCode: formData.pincode
+                },
+                phone: formData.mobile,
+                email: formData.email,
+                password: formData.pin
+            };
+
+            const response = await dealerSignupHandler(signupData);
+
+            if (response.success) {
+                toast.success(response.data.message || response.message || "OTP sent successfully!");
+                navigate('/dealer-verification', {
+                    state: {
+                        mobile: formData.mobile,
+                        email: formData.email,
+                        dealerName: formData.dealerName,
+                        shopName: formData.shopName,
+                        city: formData.city,
+                        state: formData.state
+                    }
+                });
+            } else {
+                toast.error(response.message || "Signup failed. Please try again.");
             }
-        });
+        } catch (error) {
+            console.error("Dealer signup error:", error);
+            toast.error("An error occurred during signup. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -136,9 +169,10 @@ const DealerSignup = () => {
                 <div className="pt-3 sm:pt-4 lg:pt-3.5 xl:pt-5">
                     <button
                         type="submit"
-                        className="w-full h-11 sm:h-12 bg-[#d82b2b] hover:bg-[#b92525] active:scale-[0.99] text-white font-semibold text-sm sm:text-base rounded-lg transition-all shadow-md shadow-[#d82b2b]/20 flex items-center justify-center cursor-pointer"
+                        disabled={isLoading}
+                        className="w-full h-11 sm:h-12 bg-[#d82b2b] hover:bg-[#b92525] active:scale-[0.99] text-white font-semibold text-sm sm:text-base rounded-lg transition-all shadow-md shadow-[#d82b2b]/20 flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Register Dealer Account
+                        {isLoading ? "Registering..." : "Register Dealer Account"}
                     </button>
                 </div>
             </form>

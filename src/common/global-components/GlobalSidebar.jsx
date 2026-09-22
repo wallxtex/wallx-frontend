@@ -1,4 +1,4 @@
-import { cn } from "../../utils/lib/util";
+import { cn } from "../../utils/common/util";
 import { useState, useEffect, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {

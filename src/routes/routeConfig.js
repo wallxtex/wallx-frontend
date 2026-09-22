@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import { ROLES } from "../auth/roles";
+import { ROLES } from "../utils/common/roles";
 
 // ==================== LAYOUTS ====================
 import PublicLayouts from "../layout/PublicLayout";
@@ -27,6 +27,9 @@ const DealerVerification = lazy(
   () => import("../pages/auth/DealerVerification"),
 );
 const DealerLogin = lazy(() => import("../pages/auth/DealerLogin"));
+const DealerPendingApproval = lazy(
+  () => import("../pages/auth/DealerPendingApproval"),
+);
 
 // Admin Pages
 const AdminDashboard = lazy(
@@ -41,9 +44,7 @@ const AdminPainterDashboard = lazy(
 const GenerateCoupon = lazy(
   () => import("../dashboard/admin/ui/GenerateCoupon"),
 );
-const VisitEnquiry = lazy(
-  () => import("../dashboard/admin/ui/Visit-Enquiry"),
-);
+const VisitEnquiry = lazy(() => import("../dashboard/admin/ui/Visit-Enquiry"));
 const DealerSignupAccounts = lazy(
   () => import("../dashboard/admin/ui/DealerSignupAccounts"),
 );
@@ -115,6 +116,11 @@ export const routeConfig = [
     element: DealerVerification,
     protected: false,
   },
+  {
+    path: "/dealer-pending-approval",
+    element: DealerPendingApproval,
+    protected: false,
+  },
 
   // Generic login route (can redirect based on context)
   { path: "/login", element: PainterLogin, protected: false },
@@ -152,7 +158,7 @@ export const routeConfig = [
   // ==================== PAINTER PROTECTED ROUTES ====================
   {
     path: "/painter",
-    protected: false,
+    protected: true,
     allowedRoles: [ROLES.PAINTER],
     children: [
       {
@@ -167,8 +173,8 @@ export const routeConfig = [
   },
 
   // ==================== SPECIAL ROUTES ====================
-  { path: "/unauthorized", element: Unauthorized, protected: false },
-  { path: "*", element: NotFound, protected: false },
+  { path: "/unauthorized", element: Unauthorized, protected: true },
+  { path: "*", element: NotFound, protected: true },
 ];
 
 /**
