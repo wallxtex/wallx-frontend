@@ -65,7 +65,7 @@ jobs:
 
           # Pass Vite environment variable during Docker build
           build-args: |
-            VITE_BACKEND_URL=${{ vars.VITE_BACKEND_URL }}
+            VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}
 
           tags: |
             sagarchaurasia176/wallx-f:latest
