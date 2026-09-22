@@ -2,7 +2,8 @@ import { motion } from "motion/react";
 import { Trophy, Medal, Award, Store, Loader2 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { getDealerDashboardData } from "../../../services/dealers/dealers.services";
-import { formatCurrency } from "../../../utils/helpers/formatCurrency";
+import { formatCurrency } from "../../../utils/helpers/constants/formatCurrency";
+// import { formatCurrency } from "../../../utils/helpers/formatCurrency";
 
 const TopDealersRankingTable = () => {
   const [dealers, setDealers] = useState([]);

@@ -1,4 +1,5 @@
-import PrivateApi from "../../utils/privateApi";
+import PrivateApi from "../../utils/apis/privateApi";
+
 
 async function fetchDealerData(endpoint, errorMessage) {
     try {
