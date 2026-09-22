@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import { Package, Search, Calendar, ChevronLeft, ChevronRight, Download, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getDealerOrders } from "../../services/dealers/dealers.services";
-import { formatCurrency } from "../../utils/helpers/formatCurrency";
+import { formatCurrency } from "../../utils/helpers/constants/formatCurrency";
 
 const DealersOrders = () => {
   const [orders, setOrders] = useState([]);
