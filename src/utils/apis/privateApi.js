@@ -1,6 +1,6 @@
 import axios from "axios";
 import handleApiError from "../helpers/handlers/globalHandleApiError";
-import { getApiToken } from "../helpers/constants/getApiToken";
+import { getApiToken } from "../helpers/constants/getapiToken";
 
 const PrivateApi = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
