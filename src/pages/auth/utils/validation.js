@@ -39,7 +39,7 @@ export const isInputAllowed = (name, value, constraints = {}) => {
     return true;
 };
 
-export const validateWithMap = (name, value, validatorMap) => {
+export const validateWithMap = (name, value, validatorMap, formState = {}) => {
     const validator = validatorMap[name];
-    return validator ? validator(value) : '';
+    return validator ? validator(value, formState) : '';
 };

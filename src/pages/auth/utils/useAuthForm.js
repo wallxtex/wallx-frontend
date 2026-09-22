@@ -5,7 +5,7 @@ export const useAuthForm = (initialState, validators, constraints) => {
     const [formData, setFormData] = useState(initialState);
     const [errors, setErrors] = useState(initialState);
 
-    const validate = (name, value) => validateWithMap(name, value, validators);
+    const validate = (name, value) => validateWithMap(name, value, validators, formData);
 
     const handleChange = (e) => {
         const { name, value } = e.target;

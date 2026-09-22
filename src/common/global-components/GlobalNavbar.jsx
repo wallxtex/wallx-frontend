@@ -1,22 +1,20 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import {
-  Bell,
-  User,
-  Settings,
-  HelpCircle,
-  LogOut,
-  ChevronDown,
-} from "lucide-react";
+import { Bell, LogOut, ChevronDown } from "lucide-react";
 import logo from "../../assets/webp/wallx_final.webp";
 import NotificationsData from "./data/NotificationData";
+import { useAuth } from "../../auth/AuthContext";
+import toast from "react-hot-toast";
+
 // Mock data — replace with real user/notification data once available.
 const painter = { name: "Sagar", initials: "S" };
 
 const GlobalNavbar = () => {
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const notifRef = useRef(null);
   const profileRef = useRef(null);
@@ -37,6 +35,12 @@ const GlobalNavbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleLogout = () => {
+    logout();
+    toast.success("Logged out successfully!");
+    navigate("/painter-login");
+  };
+
   return (
     <nav className="sticky top-0 z-50 h-20 w-full bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 flex justify-center items-center">
       <div className="flex justify-between items-center w-11/12 mx-auto max-w-screen-2xl pl-14 md:pl-0">
@@ -56,7 +60,6 @@ const GlobalNavbar = () => {
 
         {/* Right: actions */}
         <div className="flex items-center gap-1 sm:gap-2">
-
           {/* Notifications */}
           <div className="relative" ref={notifRef}>
             <motion.button
@@ -147,6 +150,7 @@ const GlobalNavbar = () => {
                   transition={{ duration: 0.15 }}
                   className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden"
                 >
+                  {/* User Info - shown on small screens */}
                   <div className="px-4 py-3 border-b border-gray-100 sm:hidden">
                     <p className="text-sm font-medium text-black">
                       Hi, {painter.name}
@@ -154,28 +158,11 @@ const GlobalNavbar = () => {
                     <p className="text-xs text-gray-400">Painter</p>
                   </div>
 
-                  <Link
-                    to="/painter/profile"
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50"
+                  {/* Logout Button */}
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-[#d82b2b] hover:bg-red-50"
                   >
-                    <User className="w-4 h-4 text-gray-500" />
-                    Profile
-                  </Link>
-                  <Link
-                    to="/painter/settings"
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50"
-                  >
-                    <Settings className="w-4 h-4 text-gray-500" />
-                    Settings
-                  </Link>
-                  <Link
-                    to="/painter/help"
-                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50"
-                  >
-                    <HelpCircle className="w-4 h-4 text-gray-500" />
-                    Help
-                  </Link>
-                  <button className="w-full flex items-center gap-3 px-4 py-3 text-sm text-[#d82b2b] hover:bg-red-50 border-t border-gray-100">
                     <LogOut className="w-4 h-4" />
                     Logout
                   </button>

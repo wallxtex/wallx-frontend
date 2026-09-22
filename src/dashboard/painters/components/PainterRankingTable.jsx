@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { formatCurrency } from "../../../utils/helpers/formatCurrency";
+import {formatCurrency} from '../../../utils/helpers/constants/formatCurrency'
 import { Search } from 'lucide-react';
 import RankingTableLayout from '../../../components/shared/RankingTableLayout';
 

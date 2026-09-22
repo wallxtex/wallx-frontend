@@ -7,13 +7,17 @@ export const createVerificationPage = (config) => {
         const state = location.state || {};
         const mobile = state.mobile || config.defaultMobile;
 
+        // Use the hook if provided, otherwise use the static onVerify
+        const verifyHandler = config.useVerificationHook 
+            ? config.useVerificationHook() 
+            : config.onVerify;
+
         const handleVerify = (fullOtp) => {
             console.log(`Verifying ${config.role} OTP:`, fullOtp, state);
-            if (config.onVerify) {
-                config.onVerify(fullOtp, state);
+            if (verifyHandler) {
+                verifyHandler(fullOtp, state);
             }
         };
-
         return (
             <AuthVerification
                 title={config.title}

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import { ROLE_HOME_ROUTES } from '../auth/roles';
+import { ROLE_HOME_ROUTES } from '../utils/common/roles';
 
 /**
  * Unauthorized Page

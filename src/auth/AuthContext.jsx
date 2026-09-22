@@ -5,31 +5,18 @@ import {
   useCallback,
   useEffect,
 } from "react";
-import { getRoleFromToken, isValidSession } from "./tokenUtils";
+import { getRoleFromToken, isValidSession, getCurrentToken, storeToken, clearToken } from "../utils/common/tokenUtils";
 
 const AuthContext = createContext(null);
-
-const TOKEN_KEY = "authToken";
 
 /**
  * Initialize auth state from localStorage
  * This runs synchronously to prevent flicker on page load
  */
 const initializeAuth = () => {
-  const token = localStorage.getItem(TOKEN_KEY);
+  const token = getCurrentToken();
 
   if (!token) {
-    return {
-      token: null,
-      role: null,
-      isAuthenticated: false,
-    };
-  }
-
-  // Validate the token
-  if (!isValidSession(token)) {
-    // Token is invalid/expired - clear it immediately
-    localStorage.removeItem(TOKEN_KEY);
     return {
       token: null,
       role: null,
@@ -55,7 +42,7 @@ export const AuthProvider = ({ children }) => {
   // Lazy initialization - runs only once on mount, synchronously
   const [authState, setAuthState] = useState(() => ({
     ...initializeAuth(),
-    isLoading: false, // Future-proof for async token validation
+    isLoading: false,
   }));
 
   /**
@@ -68,9 +55,9 @@ export const AuthProvider = ({ children }) => {
       return;
     }
 
-    // Validate token before storing
-    if (!isValidSession(token)) {
-      console.error("Attempted to login with invalid/expired token");
+    // Validate and store token
+    if (!storeToken(token)) {
+      console.error("Failed to store invalid/expired token");
       return;
     }
 
@@ -78,11 +65,9 @@ export const AuthProvider = ({ children }) => {
 
     if (!role) {
       console.error("Token has no valid role claim");
+      clearToken();
       return;
     }
-
-    // Store token
-    localStorage.setItem(TOKEN_KEY, token);
 
     // Update state
     setAuthState({
@@ -95,11 +80,10 @@ export const AuthProvider = ({ children }) => {
 
   /**
    * Logout function - clears token and resets state
-   * Note: Caller is responsible for navigation to /login
    */
   const logout = useCallback(() => {
-    // Clear storage
-    localStorage.removeItem(TOKEN_KEY);
+    // Clear storage using tokenUtils
+    clearToken();
 
     // Reset state
     setAuthState({
@@ -112,12 +96,11 @@ export const AuthProvider = ({ children }) => {
 
   /**
    * Listen for storage events to sync auth state across tabs
-   * When user logs out in one tab, all tabs should reflect that
    */
   useEffect(() => {
     const handleStorageChange = (event) => {
       // Only respond to changes to our token key
-      if (event.key !== TOKEN_KEY) {
+      if (event.key !== "token") {
         return;
       }
 
@@ -145,7 +128,7 @@ export const AuthProvider = ({ children }) => {
         });
       } else {
         // Invalid token was stored - clear it
-        localStorage.removeItem(TOKEN_KEY);
+        clearToken();
         setAuthState({
           token: null,
           role: null,
@@ -176,7 +159,6 @@ export const AuthProvider = ({ children }) => {
 
 /**
  * useAuth hook - Access authentication context
- * Throws error if used outside AuthProvider
  */
 export const useAuth = () => {
   const context = useContext(AuthContext);
