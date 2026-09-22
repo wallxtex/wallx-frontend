@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import QRCode from "qrcode";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-// import PrivateApi from "../../../utils/privateApi";
 import CouponStats from "./GenerateCoupon/CouponStats";
 import GenerateForm from "./GenerateCoupon/GenerateForm";
 import AlertMessage from "./GenerateCoupon/AlertMessage";
 import CouponFooter from "./GenerateCoupon/CouponFooter";
 import PrivateApi from "../../../utils/apis/privateApi";
 
+// coupone
 const GenerateCoupon = () => {
   const [scannerCount, setScannerCount] = useState("");
   const [amount, setAmount] = useState("");
