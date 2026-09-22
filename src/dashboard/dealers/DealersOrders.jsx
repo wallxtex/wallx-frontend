@@ -3,7 +3,7 @@ import { Package, Search, Calendar, ChevronLeft, ChevronRight, Download, Loader2
 import { useState, useEffect } from "react";
 import { getDealerOrders } from "../../services/dealers/dealers.services";
 import { formatCurrency } from "../../utils/helpers/constants/formatCurrency";
-
+//dealer order
 const DealersOrders = () => {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
