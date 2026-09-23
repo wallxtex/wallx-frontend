@@ -17,6 +17,13 @@ async function painterSignupHandler(signupData) {
 async function painterVerifyOtpHandler(otpData) {
   try {
     const response = await API.post(painterApis.verifyOtp, otpData);
+    
+    // Store refresh token if provided in response
+    if (response.data?.data?.refreshToken) {
+      console.log('[AUTH] Storing refresh token from OTP verification response');
+      localStorage.setItem('refreshToken', response.data.data.refreshToken);
+    }
+    
     return ApiResponseMessage.success(response.data);
   } catch (error) {
     return ApiResponseMessage.err(error);
@@ -27,6 +34,13 @@ async function painterVerifyOtpHandler(otpData) {
 async function painterLoginHandler(loginData) {
   try {
     const response = await API.post(painterApis.login, loginData);
+    
+    // Store refresh token if provided in response
+    if (response.data?.data?.refreshToken) {
+      console.log('[AUTH] Storing refresh token from login response');
+      localStorage.setItem('refreshToken', response.data.data.refreshToken);
+    }
+    
     return ApiResponseMessage.success(response.data);
   } catch (error) {
     return ApiResponseMessage.err(error);
@@ -37,8 +51,15 @@ async function painterLoginHandler(loginData) {
 async function painterLogoutHandler() {
   try {
     const response = await PrivateApi.post(painterApis.logout);
+    
+    // Clear refresh token on logout
+    console.log('[AUTH] Clearing refresh token on logout');
+    localStorage.removeItem('refreshToken');
+    
     return ApiResponseMessage.success(response.data);
   } catch (error) {
+    // Clear refresh token even if logout request fails
+    localStorage.removeItem('refreshToken');
     return ApiResponseMessage.err(error);
   }
 }

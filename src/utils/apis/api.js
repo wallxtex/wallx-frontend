@@ -11,21 +11,21 @@ API.interceptors.request.use(
   async (config) => {
     // Try to get valid token (with auto-refresh if expired)
     const { data, success } = await getApiToken();
-    
+
     config.headers = config.headers || {};
-    config.headers["x-timezone"] = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    
+    config.headers["x-timezone"] =
+      Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     if (success && data?.token) {
       config.headers["Authorization"] = `Bearer ${data.token}`;
     }
-   
+
     return config;
   },
   (error) => {
     return Promise.reject(error);
   },
 );
-
 // Setup automatic toast notifications
 setupInterceptors(API, {
   dedupeWindow: 3000,
@@ -33,8 +33,11 @@ setupInterceptors(API, {
   toastOnMutationSuccess: true,
   toastOnMutationError: true,
   onUnauthorized: async (error) => {
-    console.log('401 detected:', error);
-    // Handle token refresh here if needed
+    console.error('[API] 401 Unauthorized detected:', error.message);
+    console.warn('[API] Token refresh handled by getApiToken, not retrying');
+    
+    // Don't retry - getApiToken already attempted refresh
+    // Return false to prevent retry loop
     return false;
   },
 });

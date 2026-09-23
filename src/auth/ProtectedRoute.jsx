@@ -15,25 +15,6 @@ const AuthLoadingScreen = () => {
   );
 };
 
-/**
- * ProtectedRoute Component
- * Guards routes based on authentication and role authorization
- *
- * @param {Array<string>} allowedRoles - Array of role strings that can access this route
- *                                       If omitted, any authenticated user can access
- * @param {ReactNode} children - Child components to render if authorized
- *
- * @example
- * <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
- *   <AdminDashboard />
- * </ProtectedRoute>
- *
- * @example
- * // Any authenticated user
- * <ProtectedRoute>
- *   <ProfilePage />
- * </ProtectedRoute>
- */
 const ProtectedRoute = ({ allowedRoles, children }) => {
   const { isAuthenticated, isLoading, role } = useAuth();
   const location = useLocation();
