@@ -166,11 +166,27 @@ export const routeConfig = [
       {
         path: "/painter",
         layout: PainterLayout,
-        children: [{ path: "/painter/dashboard", element: PainterDashboard }],
+        children: [
+          { path: "/painter/dashboard", element: PainterDashboard },
+          { path: "/painter/scan", element: QRScanner },
+          { path: "/painter/redeem", element: RedeemPage },
+          { path: "/painter/redeem/:code", element: RedeemPage },
+        ],
       },
-      // These routes don't use the layout
-      { path: "/painter/scan", element: QRScanner },
-      { path: "/painter/redeem", element: RedeemPage },
+    ],
+  },
+  {
+    path: "/painters",
+    protected: true,
+    allowedRoles: [ROLES.PAINTER],
+    children: [
+      {
+        path: "/painters",
+        layout: PainterLayout,
+        children: [
+          { path: "/painters/redeem/:code", element: RedeemPage },
+        ],
+      },
     ],
   },
 

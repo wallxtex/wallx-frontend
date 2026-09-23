@@ -10,9 +10,10 @@ const PainterRoutes = () => {
       {/* if the layout not created then it directly access the db */}
       <Route element={<PainterLayout />}>
         <Route path="/dashboard" element={<PainterDashboard />} />
+        <Route path="/scan" element={<QRScanner/>} />
+        <Route path="/redeem" element={<RedeemPage />} />
+        <Route path="/redeem/:code" element={<RedeemPage />} />
       </Route>
-      <Route path="/scan" element={<QRScanner/>} />
-      <Route path="/redeem" element={<RedeemPage />} />
     </Routes>
   );
 };
