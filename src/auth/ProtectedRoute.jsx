@@ -29,7 +29,7 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
     // Redirect to login, preserving the attempted location
     return (
       <Navigate
-        to="/login"
+        to="/"
         replace
         state={{ from: location.pathname + location.search }}
       />

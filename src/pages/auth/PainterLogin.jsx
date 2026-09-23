@@ -71,7 +71,7 @@ const PainterLogin = () => {
       const response = await painterLoginHandler(loginData);
       if (response.success && response.data) {
         const { accessToken } = response.data.data || response.data;
-        
+
         if (accessToken) {
           login(accessToken);
           navigate("/painter/dashboard");
