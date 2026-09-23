@@ -8,14 +8,10 @@ let refreshPromise = null;
 
 function getRoleFromTokenPayload(token) {
   if (!token) return null;
-
   const { valid, payload } = tokenStorage.getPayload(token);
-
   if (!valid || !payload) return null;
-
   // Extract role from JWT payload
   const role = payload.role || payload.userRole || payload.type;
-
   return role || null;
 }
 

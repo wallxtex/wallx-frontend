@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-const AuthSwitchLink = ({ prompt, linkText, to = '/login', className = 'mt-4 sm:mt-6 text-center text-xs sm:text-sm text-gray-600' }) => {
+const AuthSwitchLink = ({ prompt, linkText, to = '/', className = 'mt-4 sm:mt-6 text-center text-xs sm:text-sm text-gray-600' }) => {
     return (
         <div className={className}>
             {prompt}{' '}
