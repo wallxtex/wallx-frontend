@@ -3,20 +3,14 @@ import { tokenStorage } from "../helpers/handlers/tokenStorage";
 
 export const getRoleFromToken = (token) => {
   if (!token) return null;
-
-  const { valid, expired, payload } = tokenStorage.getPayload(token);
-
-  if (!valid || expired || !payload) {
+  const { valid, payload } = tokenStorage.getPayload(token);
+  if (!valid || !payload) {
     return null;
   }
-
-  // Check for role claim (adjust property name if your JWT uses different claim)
   const role = payload.role || payload.userRole || payload.type;
-
   if (!role || typeof role !== "string") {
     return null;
   }
-
   return role;
 };
 
@@ -25,54 +19,51 @@ export const isValidSession = (token) => {
     return false;
   }
 
-  const { valid, expired, payload } = tokenStorage.getPayload(token);
-
-  if (!valid || expired || !payload) {
+  const { valid, payload } = tokenStorage.getPayload(token);
+  if (!valid || !payload) {
     return false;
   }
-
   const role = payload.role || payload.userRole || payload.type;
-
   if (!role) {
     return false;
   }
-
-  // Verify role is one of our recognized roles
   const validRoles = Object.values(ROLES);
   return validRoles.includes(role);
 };
-
 export const getTokenExpiry = (token) => {
   if (!token) return null;
-
   const { valid, payload } = tokenStorage.getPayload(token);
-
   if (!valid || !payload || !payload.exp) {
     return null;
   }
-
   return new Date(payload.exp * 1000);
 };
 
 export const getCurrentToken = () => {
   const token = tokenStorage.getToken();
-  
   if (!token) {
     return null;
   }
-
-  if (!isValidSession(token)) {
-    // Token is invalid/expired - clear it
+  // Check if token structure is valid (not checking expiry)
+  const { valid, payload } = tokenStorage.getPayload(token);
+  if (!valid || !payload) {
+    console.warn('[TokenUtils] Invalid token structure, clearing');
     tokenStorage.removeToken();
+    localStorage.removeItem('refreshToken');
     return null;
   }
-
   return token;
 };
 
 export const storeToken = (token) => {
-  if (!token || !isValidSession(token)) {
-    console.error("Attempted to store invalid token");
+  if (!token) {
+    console.error("Attempted to store null/undefined token");
+    return false;
+  }
+  const { valid, payload } = tokenStorage.getPayload(token);
+  
+  if (!valid || !payload) {
+    console.error("Attempted to store invalid/corrupted token");
     return false;
   }
 
@@ -82,4 +73,5 @@ export const storeToken = (token) => {
 
 export const clearToken = () => {
   tokenStorage.removeToken();
+  localStorage.removeItem('refreshToken');
 };

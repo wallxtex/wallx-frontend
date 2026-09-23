@@ -3,7 +3,7 @@
  * Can be used OUTSIDE React (interceptors, utils) and inside components.
  */
 
-import { toastAdapter } from './adapter';
+import { toastAdapter } from "./adapter";
 
 /**
  * Sanitize message: strip HTML, limit length, handle non-strings
@@ -12,20 +12,19 @@ import { toastAdapter } from './adapter';
  * @returns {string}
  */
 const sanitizeMessage = (message, maxLength = 200) => {
-  if (!message) return 'An error occurred';
-  
+  if (!message) return "An error occurred";
   let str = String(message);
-  
+
   // Strip HTML tags (basic protection)
-  str = str.replace(/<[^>]*>/g, '');
-  
+  str = str.replace(/<[^>]*>/g, "");
+
   // Trim and limit length
   str = str.trim();
   if (str.length > maxLength) {
-    str = str.substring(0, maxLength) + '...';
+    str = str.substring(0, maxLength) + "...";
   }
-  
-  return str || 'An error occurred';
+
+  return str || "An error occurred";
 };
 
 /**
@@ -35,13 +34,13 @@ const sanitizeMessage = (message, maxLength = 200) => {
  */
 const isValidToastOptions = (options) => {
   if (options === false) return true;
-  if (!options || typeof options !== 'object') return false;
-  
+  if (!options || typeof options !== "object") return false;
+
   // Optional properties validation
-  const validKeys = ['success', 'error', 'loading', 'duration', 'id', 'silent'];
+  const validKeys = ["success", "error", "loading", "duration", "id", "silent"];
   const keys = Object.keys(options);
-  
-  return keys.every(key => validKeys.includes(key));
+
+  return keys.every((key) => validKeys.includes(key));
 };
 
 /**
@@ -106,7 +105,7 @@ export const notify = {
    * @param {import('./types').PromiseMessages} messages - Messages for each state
    * @param {Object} [options] - Toast options
    * @returns {Promise<any>} Original promise
-   * 
+   *
    * @example
    * notify.promise(
    *   uploadFile(file),
@@ -122,11 +121,12 @@ export const notify = {
     const sanitizedMessages = {
       loading: sanitizeMessage(messages.loading),
       success: sanitizeMessage(messages.success),
-      error: typeof messages.error === 'function'
-        ? (err) => sanitizeMessage(messages.error(err))
-        : sanitizeMessage(messages.error),
+      error:
+        typeof messages.error === "function"
+          ? (err) => sanitizeMessage(messages.error(err))
+          : sanitizeMessage(messages.error),
     };
-    
+
     return toastAdapter.promise(promise, sanitizedMessages, options);
   },
 
