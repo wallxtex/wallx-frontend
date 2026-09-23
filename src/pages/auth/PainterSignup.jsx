@@ -14,7 +14,6 @@ import {
 } from "./utils/validation";
 import { useAuthForm } from "./utils/useAuthForm";
 import { painterSignupHandler } from "../../services/global-auth/painter";
-import toast from "react-hot-toast";
 
 const PAINTER_CONSTRAINTS = {
   name: { regex: /^[A-Za-z\s]*$/, max: 40 },
@@ -129,19 +128,17 @@ const PainterSignup = () => {
       const response = await painterSignupHandler(signupData);
 
       if (response.success) {
-        toast.success(response.message || "OTP sent successfully!");
         navigate("/painter-verification", {
           state: { 
             mobile: authForm.formData.mobile,
             signupData: authForm.formData 
           },
         });
-      } else {
-        toast.error(response.message || "Signup failed. Please try again.");
+        // Toast is automatically shown by API interceptor ✅
       }
     } catch (error) {
       console.error("Painter signup error:", error);
-      toast.error("An error occurred during signup. Please try again.");
+      // Error toast is automatically shown by API interceptor ✅
     } finally {
       setIsLoading(false);
     }

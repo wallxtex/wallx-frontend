@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import logo from "../../assets/webp/wallx_final.webp";
+import { NeedHelpHandler } from "../../services/publicforms/publicForms";
 
 const SidebarForm = ({ isOpen, onClose }) => {
   const [showSuccess, setShowSuccess] = useState(false);
@@ -16,13 +17,34 @@ const SidebarForm = ({ isOpen, onClose }) => {
     };
   }, [isOpen]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
-    console.log("Sidebar Form Details:", data);
-    setShowSuccess(true);
-    e.target.reset();
+    
+    // Prepare data for API call
+    const enquiryData = {
+      name: data.name,
+      mobile: data.mobile,
+      address: data.address,
+      enquiry: data.query || "Need help enquiry from sidebar form",
+      role: data.user_type.toUpperCase() // Convert to uppercase for backend enum
+    };
+
+    try {
+      const response = await NeedHelpHandler(enquiryData);
+      
+      if (response.success) {
+        setShowSuccess(true);
+        e.target.reset();
+      } else {
+        console.error("Failed to submit enquiry:", response.error);
+        alert("Failed to submit enquiry. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting enquiry:", error);
+      alert("An error occurred. Please try again later.");
+    }
   };
 
   return (

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { toast } from 'react-toastify';
 import { Check, X, MapPin, Phone, Mail, Store, User, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { INITIAL_DEALERS } from './data/dealerSignupMockData';
+import toast from 'react-hot-toast';
 
 const DealerSignupAccounts = () => {
   const [dealers, setDealers] = useState(INITIAL_DEALERS);
