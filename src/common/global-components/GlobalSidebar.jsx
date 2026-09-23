@@ -365,52 +365,52 @@ const SidebarLink = ({ item }) => {
 // SIDEBAR FOOTER (USER PROFILE)
 // ============================================================================
 
-const SidebarFooter = () => {
-  const { open } = useSidebar();
+// const SidebarFooter = () => {
+//   const { open } = useSidebar();
 
-  return (
-    <motion.div className="mt-auto border-t border-gray-100 px-2 py-4">
-      <div
-        className={cn(
-          "flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer group",
-          !open && "justify-center",
-        )}
-      >
-        {/* Avatar */}
-        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
-          JD
-        </div>
+//   return (
+//     <motion.div className="mt-auto border-t border-gray-100 px-2 py-4">
+//       <div
+//         className={cn(
+//           "flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer group",
+//           !open && "justify-center",
+//         )}
+//       >
+//         {/* Avatar */}
+//         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+//           JD
+//         </div>
 
-        {/* User Info - Show only when open */}
-        <AnimatePresence initial={false}>
-          {open && (
-            <motion.div
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: "auto" }}
-              exit={{ opacity: 0, width: 0 }}
-              transition={{ duration: 0.2 }}
-              className="flex-1 min-w-0 flex items-center gap-2"
-            >
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-black truncate">Sagar</p>
-                <p className="text-xs text-gray-500 truncate">Painter</p>
-              </div>
+//         {/* User Info - Show only when open */}
+//         <AnimatePresence initial={false}>
+//           {open && (
+//             <motion.div
+//               initial={{ opacity: 0, width: 0 }}
+//               animate={{ opacity: 1, width: "auto" }}
+//               exit={{ opacity: 0, width: 0 }}
+//               transition={{ duration: 0.2 }}
+//               className="flex-1 min-w-0 flex items-center gap-2"
+//             >
+//               <div className="min-w-0 flex-1">
+//                 <p className="text-sm font-medium text-black truncate">Sagar</p>
+//                 <p className="text-xs text-gray-500 truncate">Painter</p>
+//               </div>
 
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-1 rounded hover:bg-gray-200 transition-colors duration-200 flex-shrink-0"
-                aria-label="Logout"
-              >
-                <LogOut className="w-4 h-4 text-gray-500" />
-              </motion.button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
-  );
-};
+//               <motion.button
+//                 whileHover={{ scale: 1.1 }}
+//                 whileTap={{ scale: 0.95 }}
+//                 className="p-1 rounded hover:bg-gray-200 transition-colors duration-200 flex-shrink-0"
+//                 aria-label="Logout"
+//               >
+//                 <LogOut className="w-4 h-4 text-gray-500" />
+//               </motion.button>
+//             </motion.div>
+//           )}
+//         </AnimatePresence>
+//       </div>
+//     </motion.div>
+//   );
+// };
 
 // ============================================================================
 // MAIN SIDEBAR COMPONENT
@@ -428,7 +428,7 @@ const GlobalSidebar = ({ Menu }) => {
         </nav>
 
         {/* Sidebar Footer */}
-        <SidebarFooter />
+        {/* <SidebarFooter /> */}
       </SidebarBody>
     </SidebarProvider>
   );

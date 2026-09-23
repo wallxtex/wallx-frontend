@@ -1,7 +1,6 @@
 import axios from "axios";
-import handleApiError from "../helpers/handlers/globalHandleApiError";
+import { setupInterceptors } from "../../lib/notify";
 import { getApiToken } from "../helpers/constants/getapiToken";
-// import { getApiToken } from "../helpers/constants/getApiToken";
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -27,19 +26,17 @@ API.interceptors.request.use(
   },
 );
 
-// Error handling
-API.interceptors.response.use(
-  (response) => {
-    return response;
+// Setup automatic toast notifications
+setupInterceptors(API, {
+  dedupeWindow: 3000,
+  toastOnQueryError: true,
+  toastOnMutationSuccess: true,
+  toastOnMutationError: true,
+  onUnauthorized: async (error) => {
+    console.log('401 detected:', error);
+    // Handle token refresh here if needed
+    return false;
   },
-  (error) => {
-    // Use global error handler for all API errors
-    handleApiError(error, {
-      showToast: true,
-      logError: true,
-    });
-    return Promise.reject(error);
-  },
-);
+});
 
 export default API;

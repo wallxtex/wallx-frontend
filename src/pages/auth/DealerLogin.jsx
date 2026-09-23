@@ -12,7 +12,6 @@ import { validateMobile } from "./utils/validation";
 import { useAuthForm } from "./utils/useAuthForm";
 import { dealerLoginHandler } from "../../services/global-auth/dealer";
 import { useAuth } from "../../auth/AuthContext";
-import toast from "react-hot-toast";
 
 const DEALER_LOGIN_CONSTRAINTS = {
   mobile: { regex: /^\d*$/, max: 10 },
@@ -69,48 +68,37 @@ const DealerLogin = () => {
 
     try {
       const loginData = {
-        identifier: authForm.formData.mobile, // Can be email or phone
+        identifier: authForm.formData.mobile,
         password: authForm.formData.pin,
       };
 
       const response = await dealerLoginHandler(loginData);
 
-      console.log("Dealer login response:", response);
-
       if (response.success && response.data) {
-        // Backend wraps data in: { statusCode, data: { accessToken, dealer }, message, success }
         const { accessToken } = response.data.data || response.data;
 
         if (accessToken) {
-          // Store token in AuthContext and localStorage
           login(accessToken);
-          toast.success(
-            response.data.message || response.message || "Login successful!",
-          );
           navigate("/dealer/dashboard");
+          // Toast is automatically shown by API interceptor ✅
         } else {
           console.error("No accessToken found in response:", response);
-          toast.error("Login failed - no token received");
         }
       } else {
         // Check if it's a pending approval error (403)
         if (response.error?.status === 403 || 
             response.message?.includes("pending admin approval")) {
-          // Redirect to pending approval page
           navigate("/dealer-pending-approval", {
             state: {
               mobile: authForm.formData.mobile,
             }
           });
-        } else {
-          toast.error(
-            response.message || "Invalid credentials. Please try again.",
-          );
         }
+        // Error toast is automatically shown by API interceptor ✅
       }
     } catch (error) {
       console.error("Dealer login error:", error);
-      toast.error("An error occurred during login. Please try again.");
+      // Error toast is automatically shown by API interceptor ✅
     } finally {
       setIsLoading(false);
     }

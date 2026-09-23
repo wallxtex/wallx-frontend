@@ -152,6 +152,8 @@ export const routeConfig = [
     children: [
       { path: "/dealer/dashboard", element: DealersDashboard },
       { path: "/dealer/orders", element: DealersOrders },
+
+
     ],
   },
 
