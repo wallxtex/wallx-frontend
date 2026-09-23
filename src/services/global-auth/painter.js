@@ -43,16 +43,6 @@ async function painterLogoutHandler() {
   }
 }
 
-//forgot pin
-// async function painterForgotPinHandler(){
-//   try{
-//     const response = await API.post()
-
-//   }catch(er){
-//     return ApiResponseMessage.err(er);
-//   }
-// }
-
 // Refresh Token - Use private API (auth required)
 async function painterRefreshTokenHandler() {
   try {
@@ -68,6 +58,5 @@ export {
   painterVerifyOtpHandler,
   painterLoginHandler,
   painterLogoutHandler,
-  // painterForgotPinHandler,
   painterRefreshTokenHandler,
 };

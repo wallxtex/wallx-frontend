@@ -3,7 +3,6 @@ import signupImg from "../../assets/webp/painter.webp";
 import { createVerificationPage } from "./utils/createVerificationPage";
 import { painterVerifyOtpHandler } from "../../services/global-auth/painter";
 import { useAuth } from "../../auth/AuthContext";
-import toast from "react-hot-toast";
 
 const usePainterVerification = () => {
   const navigate = useNavigate();
@@ -16,27 +15,20 @@ const usePainterVerification = () => {
         otp: otp,
       });
 
-      console.log("Verification response:", response); // Debug log
-
       if (response.success && response.data) {
-        // Backend wraps data in: { statusCode, data: { accessToken, painter }, message, success }
         const { accessToken } = response.data.data || response.data;
 
         if (accessToken) {
-          // Store token in AuthContext and localStorage
           login(accessToken);
-          toast.success(response.data.message || response.message || "Account created successfully!");
           navigate("/painter/dashboard");
+          // Toast is automatically shown by API interceptor ✅
         } else {
           console.error("No accessToken found in response:", response);
-          toast.error("Verification failed - no token received");
         }
-      } else {
-        toast.error(response.message || "Invalid OTP. Please try again.");
       }
     } catch (error) {
       console.error("OTP verification error:", error);
-      toast.error("Failed to verify OTP. Please try again.");
+      // Error toast is automatically shown by API interceptor ✅
     }
   };
 

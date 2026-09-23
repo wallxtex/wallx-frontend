@@ -12,7 +12,6 @@ import { validateMobile } from "./utils/validation";
 import { useAuthForm } from "./utils/useAuthForm";
 import { painterLoginHandler } from "../../services/global-auth/painter";
 import { useAuth } from "../../auth/AuthContext";
-import toast from "react-hot-toast";
 
 const PAINTER_LOGIN_CONSTRAINTS = {
   mobile: { regex: /^\d*$/, max: 10 },
@@ -60,46 +59,28 @@ const PainterLogin = () => {
     PAINTER_LOGIN_VALIDATORS,
     PAINTER_LOGIN_CONSTRAINTS,
   );
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!authForm.validateAll()) return;
-
     setIsLoading(true);
-
     try {
       const loginData = {
         mobileNumber: authForm.formData.mobile,
         password: authForm.formData.pin,
       };
-
       const response = await painterLoginHandler(loginData);
-
-      console.log("Login response:", response); // Debug log
-
       if (response.success && response.data) {
-        // Backend wraps data in: { statusCode, data: { accessToken, painter }, message, success }
         const { accessToken } = response.data.data || response.data;
 
         if (accessToken) {
-          // Store token in AuthContext and localStorage
           login(accessToken);
-          toast.success(
-            response.data.message || response.message || "Login successful!",
-          );
           navigate("/painter/dashboard");
         } else {
           console.error("No accessToken found in response:", response);
-          toast.error("Login failed - no token received");
         }
-      } else {
-        toast.error(
-          response.message || "Invalid credentials. Please try again.",
-        );
       }
     } catch (error) {
       console.error("Painter login error:", error);
-      toast.error("An error occurred during login. Please try again.");
     } finally {
       setIsLoading(false);
     }

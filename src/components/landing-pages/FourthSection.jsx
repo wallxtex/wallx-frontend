@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { IoChevronDown as ChevronDown } from "react-icons/io5";
 import fullWidthVideo from "../../assets/see_provide_me_a_video_where_w.mp4";
+import { VisitSiteHandler } from "../../services/publicforms/publicForms";
 
 const FourthSection = () => {
   const headerRef = useRef(null);
@@ -132,13 +133,34 @@ const FourthSection = () => {
 
           <div className="p-2.5 sm:p-4 md:p-6">
             <h2 className="text-base sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Let our experts help you!</h2>
-            <form className="flex flex-col gap-2 sm:gap-3" onSubmit={(e) => {
+            <form className="flex flex-col gap-2 sm:gap-3" onSubmit={async (e) => {
               e.preventDefault();
               const formData = new FormData(e.target);
               const data = Object.fromEntries(formData.entries());
-              console.log("Form Details:", data);
-              setShowSuccessModal(true);
-              e.target.reset();
+              
+              // Prepare data for API call
+              const enquiryData = {
+                name: data.name,
+                mobile: data.mobile,
+                address: data.address,
+                enquiry: data.query || "Book Free Site Visit request",
+                role: data.user_type.toUpperCase() // Convert to uppercase for backend enum
+              };
+
+              try {
+                const response = await VisitSiteHandler(enquiryData);
+                
+                if (response.success) {
+                  setShowSuccessModal(true);
+                  e.target.reset();
+                } else {
+                  console.error("Failed to submit enquiry:", response.error);
+                  alert("Failed to submit enquiry. Please try again.");
+                }
+              } catch (error) {
+                console.error("Error submitting enquiry:", error);
+                alert("An error occurred. Please try again later.");
+              }
             }}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                 <input type="text" name="name" required pattern="[A-Za-z ]+" title="Only letters and spaces are allowed" onInput={(e) => { e.target.value = e.target.value.replace(/[^A-Za-z\s]/g, ''); }} placeholder="Enter your name" className="w-full bg-white border border-gray-300 rounded-sm px-2.5 sm:px-3 py-1.5 sm:py-2 text-[11px] sm:text-sm text-gray-900 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 placeholder-gray-500 transition-all shadow-sm" />
