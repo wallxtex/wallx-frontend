@@ -32,6 +32,7 @@ const DealerPendingApproval = lazy(
 );
 
 // Admin Pages
+const AdminLogin = lazy(() => import("../dashboard/admin/components/AdminLogin"));
 const AdminDashboard = lazy(
   () => import("../dashboard/admin/components/Dashboard"),
 );
@@ -124,6 +125,9 @@ export const routeConfig = [
 
   // Generic login route (can redirect based on context)
   { path: "/login", element: PainterLogin, protected: false },
+
+  // ==================== ADMIN AUTH ROUTE ====================
+  { path: "/admin/login", element: AdminLogin, protected: false },
 
   // ==================== ADMIN PROTECTED ROUTES ====================
   {
