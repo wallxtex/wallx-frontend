@@ -24,6 +24,7 @@ const adminApis = {
   login: `${admin}/login`,
   logout: `${admin}/logout`,
   refreshToken: `${admin}/refresh-token`,
+  addSchemes: 'admin/schemes'
 };
 
 export { painterApis, dealerApis, adminApis };

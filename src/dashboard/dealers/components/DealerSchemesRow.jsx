@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import SharedSchemesRow from "../../../components/shared/SharedSchemesRow";
-import { getDealerDashboardData } from "../../../services/dealers/dealers.services";
+import { getPublicData } from "../../../services/dealers/dealers.services";
 import { Loader2 } from "lucide-react";
 
 // Static mock scheme based strictly on the exact backend fields
@@ -26,7 +26,7 @@ const DealerSchemesRow = () => {
   useEffect(() => {
     const fetchSchemes = async () => {
       try {
-        const response = await getDealerDashboardData();
+        const response = await getPublicData();
         if (response && response.data && response.data.activeSchemes && response.data.activeSchemes.length > 0) {
           // Pass the exact backend fields directly without modifying them
           setSchemes(response.data.activeSchemes);

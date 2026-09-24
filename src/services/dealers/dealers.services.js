@@ -20,3 +20,7 @@ export async function getDealerOrders() {
 export async function getDealerDashboardData() {
     return fetchDealerData("/dealers/dashboard", "Failed to fetch dealer dashboard data");
 }
+
+export async function getPublicData() {
+    return fetchDealerData("/public/home", "Failed to fetch public data");
+}
