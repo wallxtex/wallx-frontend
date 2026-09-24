@@ -15,6 +15,7 @@ async function DealerSignupDetails() {
     throw error;
   }
 }
+
 async function DealersPendingStatus() {
   try {
     const response = await PrivateApi.get(adminApis.DealersPendingStatus);
@@ -26,6 +27,7 @@ async function DealersPendingStatus() {
     throw error;
   }
 }
+
 async function DealersRejected() {
   try {
     const response = await PrivateApi.get(adminApis.DealersRejected);
@@ -40,18 +42,8 @@ async function DealersRejected() {
 
 async function DealerApproval(dealerId, approvalData) {
   try {
-    // Replace :id in the URL template with actual dealerId
     const url = adminApis.DealerApproval.replace(":id", dealerId);
     const response = await PrivateApi.patch(url, approvalData);
-
-    // Show success toast
-    const successMessage =
-      response.data?.message ||
-      (approvalData.status === "approved"
-        ? "Dealer approved successfully"
-        : "Dealer rejected successfully");
-    notify.success(successMessage);
-
     return ApiResponseMessage.success(response.data);
   } catch (error) {
     const errorMessage =
@@ -60,6 +52,12 @@ async function DealerApproval(dealerId, approvalData) {
     throw error;
   }
 }
+/**
+ * Get detailed information for a specific dealer
+ * @param {string} dealerId - The dealer's MongoDB ID
+ * @returns {Promise<ApiResponseMessage>}
+ * API Endpoint: GET /admin/dealers/:id
+ */
 async function DealerParticularDetails(dealerId) {
   try {
     // Replace :id in the URL template with actual dealerId
