@@ -28,7 +28,7 @@ const adminApis = {
   login: `${admin}/login`,
   logout: `${admin}/logout`,
   refreshToken: `${admin}/refresh-token`,
-  addSchemes: 'admin/schemes'
+  addSchemes: 'admin/schemes',
   DealerSignupDetails: adminDashboardApis,
   DealersPendingStatus: `${adminDashboardApis}/pending`,
   DealersRejected: `${adminDashboardApis}/rejected`,
