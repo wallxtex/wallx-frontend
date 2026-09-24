@@ -8,6 +8,7 @@ import {
   AuthFormField,
   ForgotPinModal,
 } from "./components";
+
 import { validateMobile } from "./utils/validation";
 import { useAuthForm } from "./utils/useAuthForm";
 import { dealerLoginHandler } from "../../services/global-auth/dealer";
@@ -63,9 +64,7 @@ const DealerLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!authForm.validateAll()) return;
-
     setIsLoading(true);
-
     try {
       const loginData = {
         identifier: authForm.formData.mobile,
@@ -74,31 +73,29 @@ const DealerLogin = () => {
 
       const response = await dealerLoginHandler(loginData);
 
-      if (response.success && response.data) {
-        const { accessToken } = response.data.data || response.data;
+      // If we get here, login was successful
+      const { accessToken } = response.data.data || response.data;
 
-        if (accessToken) {
-          login(accessToken);
-          navigate("/dealer/dashboard");
-          // Toast is automatically shown by API interceptor ✅
-        } else {
-          console.error("No accessToken found in response:", response);
-        }
+      if (accessToken) {
+        login(accessToken);
+        navigate("/dealer/dashboard");
       } else {
-        // Check if it's a pending approval error (403)
-        if (response.error?.status === 403 || 
-            response.message?.includes("pending admin approval")) {
-          navigate("/dealer-pending-approval", {
-            state: {
-              mobile: authForm.formData.mobile,
-            }
-          });
-        }
-        // Error toast is automatically shown by API interceptor ✅
+        console.error("No accessToken found in response:", response);
       }
     } catch (error) {
+      // Error handled by global toast interceptor
+      // Check if it's a pending approval error (403)
+      if (
+        error.response?.status === 403 ||
+        error.response?.data?.message?.includes("pending admin approval")
+      ) {
+        navigate("/dealer-pending-approval", {
+          state: {
+            mobile: authForm.formData.mobile,
+          },
+        });
+      }
       console.error("Dealer login error:", error);
-      // Error toast is automatically shown by API interceptor ✅
     } finally {
       setIsLoading(false);
     }
@@ -158,6 +155,7 @@ const DealerLogin = () => {
         isOpen={isForgotPinOpen}
         onClose={() => setIsForgotPinOpen(false)}
         defaultMobile={authForm.formData.mobile}
+        userType="dealer"
       />
     </AuthLayout>
   );

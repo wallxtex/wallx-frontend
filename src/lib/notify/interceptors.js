@@ -6,16 +6,7 @@
 import { notify } from "./notify";
 import { normalizeApiResponse } from "./normalize";
 
-/**
- * Dedupe cache for preventing duplicate toasts
- * @type {Map<string, import('./types').ToastDedupeEntry>}
- */
 const dedupeCache = new Map();
-
-/**
- * Default configuration
- * @type {import('./types').InterceptorConfig}
- */
 const DEFAULT_CONFIG = {
   dedupeWindow: 3000,
   maxVisibleToasts: 3,
@@ -23,16 +14,10 @@ const DEFAULT_CONFIG = {
   toastOnMutationSuccess: true,
   toastOnMutationError: true,
 };
-
-/**
- * Network state tracking
- * @type {import('./types').NetworkState}
- */
 const networkState = {
   isOnline: typeof navigator !== "undefined" ? navigator.onLine : true,
   lastOfflineToast: 0,
 };
-
 /**
  * 401 handling queue to prevent multiple refresh attempts
  */
@@ -53,35 +38,19 @@ const generateDedupeKey = (method, url, status, message) => {
   return `${method}:${cleanUrl}:${status || "pending"}:${message}`;
 };
 
-/**
- * Check if toast should be shown (dedupe logic)
- * @param {string} key - Dedupe key
- * @param {number} dedupeWindow - Dedupe window in ms
- * @returns {boolean}
- */
 const shouldShowToast = (key, dedupeWindow) => {
   const now = Date.now();
   const cached = dedupeCache.get(key);
-
   if (cached && now - cached.timestamp < dedupeWindow) {
     return false; // Duplicate, skip
   }
-
-  // Clean up old entries
   for (const [cacheKey, entry] of dedupeCache.entries()) {
     if (now - entry.timestamp > dedupeWindow * 2) {
       dedupeCache.delete(cacheKey);
     }
   }
-
   return true;
 };
-
-/**
- * Record toast in dedupe cache
- * @param {string} key - Dedupe key
- * @param {string} toastId - Toast ID
- */
 const recordToast = (key, toastId) => {
   dedupeCache.set(key, {
     key,
@@ -89,56 +58,30 @@ const recordToast = (key, toastId) => {
     toastId,
   });
 };
-
-/**
- * Extract toast config from request
- * @param {Object} config - Axios config
- * @returns {false | import('./types').ToastConfig | null}
- */
 const getToastConfig = (config) => {
   // Check direct config.toast
   if (config.toast !== undefined) {
     return config.toast;
   }
-
   // Check meta.toast (TanStack Query compat)
   if (config.meta?.toast !== undefined) {
     return config.meta.toast;
   }
-
   return null;
 };
-
-/**
- * Determine if request is a mutation (POST/PUT/PATCH/DELETE)
- * @param {string} method
- * @returns {boolean}
- */
 const isMutation = (method) => {
   const mutationMethods = ["post", "put", "patch", "delete"];
   return mutationMethods.includes(method?.toLowerCase());
 };
 
-/**
- * Handle offline/network errors
- * @param {number} dedupeWindow
- */
 const handleOfflineToast = (dedupeWindow) => {
   const now = Date.now();
-
   // Only show one offline toast per dedupe window
   if (now - networkState.lastOfflineToast > dedupeWindow) {
     notify.error("No internet connection. Please check your network");
     networkState.lastOfflineToast = now;
   }
 };
-
-/**
- * Call auth handler for 401 responses (single-flight refresh)
- * @param {import('./types').AuthHandler} authHandler
- * @param {import('./types').NormalizedResponse} normalized
- * @returns {Promise<boolean>}
- */
 const handle401 = async (authHandler, normalized) => {
   if (!authHandler) return false;
 
@@ -147,7 +90,6 @@ const handle401 = async (authHandler, normalized) => {
 
     try {
       const success = await authHandler(normalized);
-
       // Notify all waiting requests
       refreshSubscribers.forEach((callback) => callback(success));
       refreshSubscribers.length = 0;
@@ -166,13 +108,6 @@ const handle401 = async (authHandler, normalized) => {
     refreshSubscribers.push(resolve);
   });
 };
-
-/**
- * Setup axios interceptors for automatic toast handling
- * @param {import('axios').AxiosInstance} axiosInstance - Axios instance
- * @param {import('./types').InterceptorConfig} [config] - Configuration
- * @returns {() => void} Teardown function
- */
 export const setupInterceptors = (axiosInstance, config = {}) => {
   const mergedConfig = { ...DEFAULT_CONFIG, ...config };
 
@@ -182,7 +117,6 @@ export const setupInterceptors = (axiosInstance, config = {}) => {
       // Add request timestamp for timeout tracking
       requestConfig.meta = requestConfig.meta || {};
       requestConfig.meta._startTime = Date.now();
-
       return requestConfig;
     },
     (error) => Promise.reject(error),
@@ -193,7 +127,6 @@ export const setupInterceptors = (axiosInstance, config = {}) => {
     (response) => {
       const { config: requestConfig, status, data } = response;
       const toastConfig = getToastConfig(requestConfig);
-
       // Toast explicitly disabled
       if (toastConfig === false) {
         return response;
@@ -248,16 +181,23 @@ export const setupInterceptors = (axiosInstance, config = {}) => {
       return response;
     },
     async (error) => {
+      console.log("[INTERCEPTOR] ====== ERROR INTERCEPTOR TRIGGERED ======");
+      console.log("[INTERCEPTOR] Error:", error);
+      console.log("[INTERCEPTOR] Error response:", error.response);
+      console.log("[INTERCEPTOR] Error config:", error.config);
+      
       const { config: requestConfig, response } = error;
       const toastConfig = getToastConfig(requestConfig);
 
       // Toast explicitly disabled
       if (toastConfig === false) {
+        console.log("[INTERCEPTOR] Toast explicitly disabled");
         return Promise.reject(error);
       }
 
       // Normalize error
       const normalized = normalizeApiResponse(error);
+      console.log("[INTERCEPTOR] Normalized error:", normalized);
 
       // Handle network offline
       if (normalized.code === "NETWORK_ERROR" && !networkState.isOnline) {
@@ -272,32 +212,59 @@ export const setupInterceptors = (axiosInstance, config = {}) => {
 
       // Handle 401 (auth handler)
       if (normalized.status === 401 && mergedConfig.onUnauthorized) {
-        // Check if this is already a retry attempt to prevent infinite loops
-        if (requestConfig._retryAttempted) {
-          console.error(
-            "[INTERCEPTOR] 401 on retry attempt, aborting to prevent loop",
-          );
-          return Promise.reject(error);
-        }
+        // Check if this is a public auth endpoint (should show error toast, not refresh)
+        const url = requestConfig?.url || "";
+        const isPublicAuthEndpoint =
+          url.includes("/forgot-pin") ||
+          url.includes("/reset-pin") ||
+          url.includes("/login") ||
+          url.includes("/signup-initiate") ||
+          url.includes("/verify-otp");
 
-        const refreshSuccess = await handle401(
-          mergedConfig.onUnauthorized,
-          normalized,
+        console.log(
+          "[INTERCEPTOR] 401 detected - URL:",
+          url,
+          "isPublicAuthEndpoint:",
+          isPublicAuthEndpoint,
+          "normalized.message:",
+          normalized.message,
         );
 
-        if (refreshSuccess && requestConfig) {
+        // Skip auth handler for public endpoints, let normal error handling continue
+        if (isPublicAuthEndpoint) {
           console.log(
-            "[INTERCEPTOR] Token refresh successful, retrying original request",
+            "[INTERCEPTOR] 401 on public auth endpoint, skipping refresh logic, continuing to toast",
           );
-          // Mark this as a retry to prevent infinite loops
-          requestConfig._retryAttempted = true;
-          // Retry the original request
-          return axiosInstance.request(requestConfig);
-        }
+          // Continue to normal error toast handling below
+        } else {
+          console.log("[INTERCEPTOR] 401 on protected endpoint, attempting token refresh");
+          // Check if this is already a retry attempt to prevent infinite loops
+          if (requestConfig._retryAttempted) {
+            console.error(
+              "[INTERCEPTOR] 401 on retry attempt, aborting to prevent loop",
+            );
+            return Promise.reject(error);
+          }
 
-        // Refresh failed, reject without toast (auth handler deals with it)
-        console.warn("[INTERCEPTOR] Token refresh failed, rejecting request");
-        return Promise.reject(error);
+          const refreshSuccess = await handle401(
+            mergedConfig.onUnauthorized,
+            normalized,
+          );
+
+          if (refreshSuccess && requestConfig) {
+            console.log(
+              "[INTERCEPTOR] Token refresh successful, retrying original request",
+            );
+            // Mark this as a retry to prevent infinite loops
+            requestConfig._retryAttempted = true;
+            // Retry the original request
+            return axiosInstance.request(requestConfig);
+          }
+
+          // Refresh failed, reject without toast (auth handler deals with it)
+          console.warn("[INTERCEPTOR] Token refresh failed, rejecting request");
+          return Promise.reject(error);
+        }
       }
 
       // Handle 404 on queries (silent by default)
@@ -312,7 +279,19 @@ export const setupInterceptors = (axiosInstance, config = {}) => {
         ? mergedConfig.toastOnMutationError
         : mergedConfig.toastOnQueryError;
 
+      console.log(
+        "[INTERCEPTOR] Should toast check - method:",
+        requestConfig?.method,
+        "isMutation:",
+        isMutation(requestConfig?.method),
+        "shouldToast:",
+        shouldToast,
+        "toastConfig:",
+        toastConfig,
+      );
+
       if (!shouldToast && !toastConfig) {
+        console.log("[INTERCEPTOR] Skipping toast - shouldToast is false");
         return Promise.reject(error);
       }
 
@@ -342,12 +321,26 @@ export const setupInterceptors = (axiosInstance, config = {}) => {
         message,
       );
 
+      console.log(
+        "[INTERCEPTOR] About to check dedupe - key:",
+        dedupeKey,
+        "message:",
+        message,
+      );
+
       if (!shouldShowToast(dedupeKey, mergedConfig.dedupeWindow)) {
+        console.log("[INTERCEPTOR] Skipping toast - dedupe blocked");
         return Promise.reject(error);
       }
 
       // Show toast based on type
       const toastMethod = normalized.type === "warning" ? "warning" : "error";
+      console.log(
+        "[INTERCEPTOR] SHOWING TOAST - method:",
+        toastMethod,
+        "message:",
+        message,
+      );
       const toastId = notify[toastMethod](message, {
         duration: toastConfig?.duration,
         id: toastConfig?.id,
