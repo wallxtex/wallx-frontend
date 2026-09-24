@@ -78,7 +78,7 @@ const DealerSignupAccounts = () => {
 
   const handleApprove = async (dealerId, name) => {
     try {
-      await DealerApproval(dealerId, { status: "approved" });
+      await DealerApproval(dealerId, { action: "approve" });
       // Success toast is shown by the API function
       setSelectedDealer(null);
       fetchDealers(); // Refresh the list
@@ -91,8 +91,7 @@ const DealerSignupAccounts = () => {
   const handleReject = async (dealerId, name) => {
     try {
       await DealerApproval(dealerId, {
-        status: "rejected",
-        rejectionReason: "Rejected by admin",
+        action: "reject",
       });
       // Success toast is shown by the API function
       setSelectedDealer(null);
