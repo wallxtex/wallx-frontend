@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, Plus, Search, Calendar, Package, Wallet, Banknote, CreditCard, Check, X, MapPin, Phone, Mail, Store, TrendingUp, Activity } from 'lucide-react';
-import { formatCurrency } from '../../../utils/helpers/formatCurrency';
+import { formatCurrency } from '../../../utils/helpers/constants/formatCurrency';
 import { toast } from 'react-toastify';
 
 const PAYMENT_STATUS_COLORS = {
