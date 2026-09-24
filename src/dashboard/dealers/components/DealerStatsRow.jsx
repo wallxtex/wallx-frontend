@@ -1,44 +1,80 @@
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Trophy, Package, Wallet } from "lucide-react";
+import { Trophy, Package, Wallet, Loader2 } from "lucide-react";
+import { getDealerDashboardData } from "../../../services/dealers/dealers.services";
 
 const DealerStatsRow = () => {
+  const [statsData, setStatsData] = useState({
+    totalOrderCount: 0,
+    totalOrderAmount: 0,
+    totalQuantity: 0,
+    totalAmountPaid: 0,
+    remainingAmount: 0
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await getDealerDashboardData();
+        if (response && response.data && response.data.myStats) {
+          setStatsData(response.data.myStats);
+        }
+      } catch (error) {
+        console.error("Error fetching dealer stats:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   const stats = [
     {
       label: "Total Deals",
-      value: "145",
+      value: statsData.totalOrderCount,
       icon: Trophy,
       bgColor: "bg-amber-100",
       iconColor: "text-amber-600",
     },
     {
       label: "Quantity Ordered",
-      value: "3,280",
+      value: statsData.totalQuantity,
       icon: Package,
       bgColor: "bg-blue-100",
       iconColor: "text-blue-600",
     },
     {
       label: "Total Amount",
-      value: "₹4,85,000",
+      value: `₹${statsData.totalOrderAmount.toLocaleString()}`,
       icon: Wallet,
       bgColor: "bg-green-100",
       iconColor: "text-green-600",
     },
     {
       label: "Total Payed Amount",
-      value: "₹2,85,000",
+      value: `₹${statsData.totalAmountPaid.toLocaleString()}`,
       icon: Wallet,
       bgColor: "bg-pink-100",
       iconColor: "text-pink-600",
     },
     {
       label: "Total Remaining Amount",
-      value: "₹2,00,000",
+      value: `₹${statsData.remainingAmount.toLocaleString()}`,
       icon: Wallet,
       bgColor: "bg-red-100",
       iconColor: "text-red-600",
     },
   ];
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-24 flex items-center justify-center bg-white border border-gray-100 rounded-2xl">
+        <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-8 w-full">

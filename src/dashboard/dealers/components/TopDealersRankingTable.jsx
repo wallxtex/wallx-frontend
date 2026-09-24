@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { Trophy, Medal, Award, Store, Loader2 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
-import { getDealerDashboardData } from "../../../services/dealers/dealers.services";
+import { getDealerDashboardData, getPublicData } from "../../../services/dealers/dealers.services";
 import { formatCurrency } from "../../../utils/helpers/constants/formatCurrency";
 //top 
 const TopDealersRankingTable = () => {
@@ -14,16 +14,23 @@ const TopDealersRankingTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getDealerDashboardData();
-        if (data && data.data) {
-          const fetchedDealers = data.data.topDealers || [];
+        const [publicDataRes, dashboardDataRes] = await Promise.all([
+          getPublicData(),
+          getDealerDashboardData()
+        ]);
+
+        if (publicDataRes && publicDataRes.data) {
+          const fetchedDealers = publicDataRes.data.topDealers || [];
           // Sort by totalOrderVolume descending to ensure ranking is correct
           const sortedDealers = [...fetchedDealers].sort((a, b) => (b.totalOrderVolume || 0) - (a.totalOrderVolume || 0));
           setDealers(sortedDealers);
-          setMyStats(data.data.myStats);
+        }
+
+        if (dashboardDataRes && dashboardDataRes.data) {
+          setMyStats(dashboardDataRes.data.myStats);
         }
       } catch (error) {
-        console.error("Failed to fetch top dealers:", error);
+        console.error("Failed to fetch data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -48,6 +55,7 @@ const TopDealersRankingTable = () => {
         dealerName: "You", 
         shopName: "-", 
         totalOrderVolume: myStats.totalOrderAmount || 0,
+        totalOrders: myStats.totalOrderCount || 0,
         isAppended: true,
         actualRank: "-" // Rank is unknown if outside top 10 from API
       });
@@ -135,18 +143,17 @@ const TopDealersRankingTable = () => {
                   </td>
                   <td className="py-4 px-6">
                     <div className={`flex items-center justify-center gap-1.5 text-sm font-medium ${isCurrentUser ? 'text-red-600' : 'text-gray-600'}`}>
-                      <Store className={`w-3.5 h-3.5 ${isCurrentUser ? 'text-red-500' : 'text-gray-400'}`} />
                       {dealer.shopName}
                     </div>
                   </td>
                   <td className="py-4 px-6">
                     <div className="flex justify-center">
-                      <div className={`inline-flex items-center px-2.5 py-1 rounded-md text-sm font-bold border ${
+                      <div className={`inline-flex items-center text-sm font-bold ${
                         isCurrentUser 
-                          ? 'bg-red-100 text-red-700 border-red-200' 
-                          : 'bg-blue-50 text-blue-700 border-blue-100'
+                          ? 'text-red-700' 
+                          : 'text-gray-900'
                       }`}>
-                        N/A
+                        {dealer.totalOrders ?? 'N/A'}
                       </div>
                     </div>
                   </td>

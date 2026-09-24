@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { ChevronRight, X, CheckCircle2, Plus } from "lucide-react";
-const SharedSchemesRow = ({ title, subtitle, schemes, type }) => {
+import { ChevronRight, X, CheckCircle2, Edit, Trash2 } from "lucide-react";
+
+const SharedSchemesRow = ({ title, subtitle, schemes, type, isAdmin = false }) => {
   const [selectedScheme, setSelectedScheme] = useState(null);
 
   return (
@@ -41,7 +42,7 @@ const SharedSchemesRow = ({ title, subtitle, schemes, type }) => {
             >
               {/* Decorative Background Element */}
               <div className="absolute -right-8 -top-8 w-32 h-32 bg-gray-50 rounded-full opacity-50 group-hover:scale-[2] transition-transform duration-700 ease-out z-0" />
-              
+
               <div className="relative z-10">
                 {/* Badge */}
                 <div className="mb-4 flex items-center justify-between">
@@ -57,7 +58,7 @@ const SharedSchemesRow = ({ title, subtitle, schemes, type }) => {
                 <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 leading-tight group-hover:text-[#d82b2b] transition-colors">
                   {scheme.title}
                 </h3>
-                
+
 
 
                 {/* Description - Line clamped for mobile */}
@@ -124,14 +125,33 @@ const SharedSchemesRow = ({ title, subtitle, schemes, type }) => {
               </ul>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-gray-100">
-               <button
-                  type="button"
-                  className="w-full block text-center py-3 bg-[#d82b2b] hover:bg-[#b82222] text-white rounded-xl text-sm font-semibold shadow-md shadow-red-500/20 hover:shadow-lg transition-all cursor-pointer"
-                  onClick={() => setSelectedScheme(null)}
-               >
-                 Got it
-               </button>
+            <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between gap-4">
+              {isAdmin ? (
+                <>
+                  <button
+                    type="button"
+                    className="w-1/2 flex items-center justify-center gap-2 py-3 bg-white border border-red-200 text-red-600 hover:bg-red-50 rounded-xl text-sm font-semibold transition-all cursor-pointer"
+                    onClick={() => {
+                      // Implement delete logic here later
+                      console.log("Delete scheme:", selectedScheme.id);
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Delete
+                  </button>
+                  <button
+                    type="button"
+                    className="w-1/2 flex items-center justify-center gap-2 py-3 bg-[#d82b2b] hover:bg-[#b82222] text-white rounded-xl text-sm font-semibold shadow-md shadow-red-500/20 hover:shadow-lg transition-all cursor-pointer"
+                    onClick={() => {
+                      // Implement update logic here later
+                      console.log("Update scheme:", selectedScheme.id);
+                    }}
+                  >
+                    <Edit className="w-4 h-4" />
+                    Update Scheme
+                  </button>
+                </>
+              ) : ""}
             </div>
           </div>
         </div>

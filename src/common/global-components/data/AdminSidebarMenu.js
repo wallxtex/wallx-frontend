@@ -39,6 +39,11 @@ export const adminMenu = [
         icon: Package,
     },
     {
+        label: "Schemes",
+        path: "/admin/schemes-offers",
+        icon: Package,
+    },
+    {
         label: "Generate Coupons",
         path: "/admin/generate-coupon",
         icon: Ticket,

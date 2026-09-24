@@ -1,5 +1,5 @@
 import React from "react";
-import { Store, PaintBucket, Ticket, MessageSquareMore } from "lucide-react";
+import { Store, PaintBucket, Ticket, MessageSquareMore, Banknote, Wallet } from "lucide-react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
@@ -54,18 +54,48 @@ const metricsData = [
     iconColor: "text-purple-600",
     iconBg: "bg-purple-100",
     chartColor: "rgb(168, 85, 247)",
+    showInChart: true,
+  },
+  {
+    id: 5,
+    label: "Total Redeemed Amount",
+    sublabel: "Coupons Redeemed",
+    value: "₹5,40,000",
+    rawValue: 540000,
+    icon: Banknote,
+    bgColor: "bg-teal-50",
+    iconColor: "text-teal-600",
+    iconBg: "bg-teal-100",
+    chartColor: "rgb(20, 184, 166)",
+    showInChart: false,
+  },
+  {
+    id: 6,
+    label: "Total Ordered Amount",
+    sublabel: "Dealer Orders",
+    value: "₹12,50,000",
+    rawValue: 1250000,
+    icon: Wallet,
+    bgColor: "bg-indigo-50",
+    iconColor: "text-indigo-600",
+    iconBg: "bg-indigo-100",
+    chartColor: "rgb(99, 102, 241)",
+    showInChart: false,
   },
 ];
 
 const KeyPerformanceMetrics = () => {
+  // Filter out monetary values so they don't skew the count-based pie chart
+  const chartMetrics = metricsData.filter(m => m.showInChart !== false);
+
   // Prepare chart data
   const chartData = {
-    labels: metricsData.map((metric) => metric.label),
+    labels: chartMetrics.map((metric) => metric.label),
     datasets: [
       {
         label: "Count",
-        data: metricsData.map((metric) => metric.rawValue),
-        backgroundColor: metricsData.map((metric) => metric.chartColor),
+        data: chartMetrics.map((metric) => metric.rawValue),
+        backgroundColor: chartMetrics.map((metric) => metric.chartColor),
         borderColor: "#ffffff",
         borderWidth: 3,
         hoverOffset: 8,
@@ -125,30 +155,30 @@ const KeyPerformanceMetrics = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left side - Stats cards (2 columns within) */}
         <div className="lg:col-span-2">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 xl:gap-8">
             {metricsData.map((metric) => (
               <div
                 key={metric.id}
-                className={`${metric.bgColor} rounded-xl p-6 transition-all duration-200 hover:shadow-md`}
+                className={`${metric.bgColor} rounded-xl overflow-hidden transition-all duration-200 hover:shadow-md flex items-stretch`}
               >
-                {/* Icon and Label */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className={`${metric.iconBg} p-2.5 rounded-lg`}>
-                    <metric.icon className={`w-5 h-5 ${metric.iconColor}`} />
-                  </div>
-                  <div>
-                    <div className="text-sm font-semibold text-gray-900">
-                      {metric.label}
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      {metric.sublabel}
-                    </div>
-                  </div>
+                {/* Icon on the Left covering full height */}
+                <div className={`w-24 flex items-center justify-center shrink-0 opacity-80`}>
+                  <metric.icon className={`w-12 h-12 ${metric.iconColor}`} />
                 </div>
+                
+                {/* Details on the Right */}
+                <div className="p-5 flex flex-col justify-center flex-1">
+                  <div className="text-base font-bold text-gray-900 leading-tight">
+                    {metric.label}
+                  </div>
+                  <div className="text-sm text-gray-500 mt-0.5 mb-3">
+                    {metric.sublabel}
+                  </div>
 
-                {/* Large Value */}
-                <div className="text-4xl font-bold text-gray-900">
-                  {metric.value}
+                  {/* Large Value */}
+                  <div className="text-3xl font-black text-gray-900 tracking-tight">
+                    {metric.value}
+                  </div>
                 </div>
               </div>
             ))}

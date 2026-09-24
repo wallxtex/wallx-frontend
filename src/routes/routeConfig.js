@@ -37,7 +37,7 @@ const AdminDashboard = lazy(
   () => import("../dashboard/admin/components/Dashboard"),
 );
 const AdminDealersDashboard = lazy(
-  () => import("../dashboard/dealers/DealersDashboard"),
+  () => import("../dashboard/admin/components/Dealer"),
 );
 const AdminPainterDashboard = lazy(
   () => import("../dashboard/painters/PaintersDashboard"),
@@ -49,12 +49,14 @@ const VisitEnquiry = lazy(() => import("../dashboard/admin/ui/Visit-Enquiry"));
 const DealerSignupAccounts = lazy(
   () => import("../dashboard/admin/ui/DealerSignupAccounts"),
 );
-const AdminDealerDetails = lazy(
-  () => import("../dashboard/admin/ui/AdminDealerDetails"),
+const DealerDetails = lazy(
+  () => import("../dashboard/admin/ui/DealerDetails"),
 );
 const ServicesAndProducts = lazy(
   () => import("../dashboard/admin/components/ServicesAndProducts"),
 );
+
+const AllSchemes=lazy(()=>import("../dashboard/admin/components/AllSchemes"))
 
 // Dealer Pages
 const DealersDashboard = lazy(
@@ -138,9 +140,10 @@ export const routeConfig = [
     children: [
       { path: "/admin/dashboard", element: AdminDashboard },
       { path: "/admin/dealer-page", element: AdminDealersDashboard },
-      { path: "/admin/dealer-details/:id", element: AdminDealerDetails },
+      { path: "/admin/dealer-details/:id", element: DealerDetails },
       { path: "/admin/painter-page", element: AdminPainterDashboard },
       { path: "/admin/services-products", element: ServicesAndProducts },
+      { path: "/admin/schemes-offers", element: AllSchemes },
       { path: "/admin/dealer-signup", element: DealerSignupAccounts },
       { path: "/admin/generate-coupon", element: GenerateCoupon },
       { path: "/admin/visit-enquiry", element: VisitEnquiry },

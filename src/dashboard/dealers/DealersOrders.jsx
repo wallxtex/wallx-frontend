@@ -15,8 +15,8 @@ const DealersOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const data = await getDealerOrders();
-        setOrders(Array.isArray(data) ? data : data.orders || []);
+        const response = await getDealerOrders();
+        setOrders(response?.data?.orders || []);
       } catch (error) {
         console.error("Error fetching dealer orders:", error);
       } finally {
@@ -29,13 +29,13 @@ const DealersOrders = () => {
 
   const handleExportCSV = () => {
     setIsExporting(true);
-    
+        
     setTimeout(() => {
       const headers = ["Order ID", "Date", "Product Name", "Quantity", "Price", "Amount", "Amount Received", "Remaining Amount"];
       const csvData = [
         headers.join(","),
-        ...currentOrders.map(order => 
-          `"${order._id || order.id}","${new Date(order.date).toLocaleDateString('en-GB')}","${order.productName}","${order.quantity}","${order.price}","${order.amount}","${order.amountReceived}","${order.amount - order.amountReceived}"`
+        ...currentOrders.map(order =>  
+          `"${order._id || order.id}","${new Date(order.date).toLocaleDateString('en-GB')}","${order.productName}","${order.quantity}","${order.price}","${order.amount}","${order.amountReceived}","${order.pendingAmount ?? (order.amount - order.amountReceived)}"`
         )
       ].join("\n");
 
@@ -48,18 +48,18 @@ const DealersOrders = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+            
       setIsExporting(false);
     }, 800);
   };
 
-  const filteredOrders = orders.filter(o => 
+  const filteredOrders = orders.filter(o =>  
     (o._id && o._id.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (o.productName && o.productName.toLowerCase().includes(searchTerm.toLowerCase()))
   );
-  
+    
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
-  
+    
   const currentOrders = filteredOrders.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -102,7 +102,7 @@ const DealersOrders = () => {
               }}
             />
           </div>
-          
+                    
           <button
             onClick={handleExportCSV}
             disabled={isExporting || orders.length === 0}
@@ -126,11 +126,11 @@ const DealersOrders = () => {
         <>
           {/* Orders List Container */}
           <div className="pb-6">
-            
+                        
             {/* MOBILE VIEW: Cards */}
             <div className="grid grid-cols-1 gap-4 lg:hidden">
               {currentOrders.map((order, idx) => {
-                const remainingAmount = order.amount - (order.amountReceived || 0);
+                const remainingAmount = order.pendingAmount ?? (order.amount - (order.amountReceived || 0));
 
                 return (
                   <motion.div
@@ -185,7 +185,7 @@ const DealersOrders = () => {
                   </motion.div>
                 );
               })}
-              
+                            
               {/* Empty State Mobile */}
               {currentOrders.length === 0 && (
                 <div className="p-8 text-center text-gray-500 font-medium bg-white rounded-2xl border border-gray-100">
@@ -212,13 +212,13 @@ const DealersOrders = () => {
                   </thead>
                   <tbody>
                     {currentOrders.map((order, idx) => {
-                      const remainingAmount = order.amount - (order.amountReceived || 0);
+                      const remainingAmount = order.pendingAmount ?? (order.amount - (order.amountReceived || 0));
                       return (
-                        <motion.tr 
+                        <motion.tr  
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ delay: idx * 0.02 }}
-                          key={order._id || idx} 
+                          key={order._id || idx}  
                           className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
                         >
                           <td className="py-4 px-6">
@@ -256,7 +256,7 @@ const DealersOrders = () => {
                   </tbody>
                 </table>
               </div>
-              
+                            
               {/* Empty State Desktop */}
               {currentOrders.length === 0 && (
                 <div className="p-8 text-center text-gray-500 font-medium">
@@ -273,7 +273,7 @@ const DealersOrders = () => {
                 <p className="text-sm text-gray-500">
                   Showing <span className="font-medium text-gray-900">{filteredOrders.length === 0 ? 0 : ((currentPage - 1) * itemsPerPage) + 1}</span> to <span className="font-medium text-gray-900">{Math.min(currentPage * itemsPerPage, filteredOrders.length)}</span> of <span className="font-medium text-gray-900">{filteredOrders.length}</span> results
                 </p>
-                
+                                
                 {/* Items Per Page Dropdown */}
                 <div className="flex items-center gap-2 border-l border-gray-200 pl-4">
                   <span className="text-sm text-gray-500 hidden sm:inline whitespace-nowrap">Rows per page:</span>

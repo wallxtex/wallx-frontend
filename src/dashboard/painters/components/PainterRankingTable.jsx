@@ -2,11 +2,7 @@ import {formatCurrency} from '../../../utils/helpers/constants/formatCurrency'
 import { Search } from 'lucide-react';
 import RankingTableLayout from '../../../components/shared/RankingTableLayout';
 
-const getSecureRandom = () => {
-  const array = new Uint32Array(1);
-  window.crypto.getRandomValues(array);
-  return array[0] / (0xffffffff + 1);
-};
+import { getSecureRandom } from '../../../utils/helpers/constants/mockUtils';
 
 const MOCK_PAINTERS = Array.from({ length: 45 }, (_, i) => {
   const totalRedeems = Math.floor(getSecureRandom() * 200) + 10;
