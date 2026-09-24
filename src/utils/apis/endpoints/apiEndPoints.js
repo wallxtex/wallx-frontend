@@ -23,17 +23,16 @@ const dealerApis = {
   forgotPin: `${dealer}/forgot-pin`,
   resetPin: `${dealer}/reset-pin`,
 };
-
 const adminApis = {
   login: `${admin}/login`,
   logout: `${admin}/logout`,
   refreshToken: `${admin}/refresh-token`,
-  addSchemes: 'admin/schemes',
+  addSchemes: "admin/schemes",
   DealerSignupDetails: adminDashboardApis,
   DealersPendingStatus: `${adminDashboardApis}/pending`,
   DealersRejected: `${adminDashboardApis}/rejected`,
   DealerApproval: adminDashboardApis,
-  DealerParticularDetails:adminDashboardApis
+  DealerParticularDetails: adminDashboardApis,
 };
 
 export { painterApis, dealerApis, adminApis };
