@@ -115,58 +115,34 @@ const AllSchemes = () => {
             </div>
 
             <div className="flex flex-col gap-8">
-                {/* Dealer Schemes Section */}
-                <div>
-                    {dealerSchemes.length > 0 ? (
-                        <SharedSchemesRow
-                            title="Dealer Schemes"
-                            subtitle="डीलर योजनाएं"
-                            schemes={dealerSchemes}
-                            type="DEALER"
-                            isAdmin={true}
-                        />
-                    ) : (
-                        <div className="w-full bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-                            <div className="mb-4">
-                                <h2 className="text-base font-semibold text-black">Dealer Schemes</h2>
-                                <p className="text-sm text-gray-500" style={{ fontFamily: "'Noto Sans Devanagari', system-ui, sans-serif" }}>
-                                    डीलर योजनाएं
-                                </p>
+                {[ 
+                    { schemes: dealerSchemes, title: "Dealer Schemes", subtitle: "डीलर योजनाएं", type: "DEALER" },
+                    { schemes: painterSchemes, title: "Painter Schemes", subtitle: "पेंटर योजनाएं", type: "PAINTER" }
+                ].map((section, index) => (
+                    <div key={section.type} className={index > 0 ? "pt-8 border-t border-gray-100" : ""}>
+                        {section.schemes.length > 0 ? (
+                            <SharedSchemesRow
+                                title={section.title}
+                                subtitle={section.subtitle}
+                                schemes={section.schemes}
+                                type={section.type}
+                                isAdmin={true}
+                            />
+                        ) : (
+                            <div className="w-full bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+                                <div className="mb-4">
+                                    <h2 className="text-base font-semibold text-black">{section.title}</h2>
+                                    <p className="text-sm text-gray-500" style={{ fontFamily: "'Noto Sans Devanagari', system-ui, sans-serif" }}>
+                                        {section.subtitle}
+                                    </p>
+                                </div>
+                                <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                    No active {section.type.toLowerCase()} schemes available right now.
+                                </div>
                             </div>
-                            <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                                No active dealer schemes available right now.
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Divider */}
-                <div className="border-t border-gray-100" />
-
-                {/* Painter Schemes Section */}
-                <div>
-                    {painterSchemes.length > 0 ? (
-                        <SharedSchemesRow
-                            title="Painter Schemes"
-                            subtitle="पेंटर योजनाएं"
-                            schemes={painterSchemes}
-                            type="PAINTER"
-                            isAdmin={true}
-                        />
-                    ) : (
-                        <div className="w-full bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-                            <div className="mb-4">
-                                <h2 className="text-base font-semibold text-black">Painter Schemes</h2>
-                                <p className="text-sm text-gray-500" style={{ fontFamily: "'Noto Sans Devanagari', system-ui, sans-serif" }}>
-                                    पेंटर योजनाएं
-                                </p>
-                            </div>
-                            <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                                No active painter schemes available right now.
-                            </div>
-                        </div>
-                    )}
-                </div>
+                        )}
+                    </div>
+                ))}
             </div>
 
             {/* Add New Scheme Modal */}

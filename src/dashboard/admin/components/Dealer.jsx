@@ -4,11 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import RankingTableLayout from '../../../components/shared/RankingTableLayout';
 import StatCard from '../../../components/shared/StatCard';
 
-const getSecureRandom = () => {
-  const array = new Uint32Array(1);
-  window.crypto.getRandomValues(array);
-  return array[0] / (0xffffffff + 1);
-};
+import { getSecureRandom } from '../../../utils/helpers/constants/mockUtils';
 
 const MOCK_DEALERS = Array.from({ length: 45 }, (_, i) => {
   const totalOrders = Math.floor(getSecureRandom() * 500) + 50;
