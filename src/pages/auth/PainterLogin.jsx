@@ -69,17 +69,18 @@ const PainterLogin = () => {
         password: authForm.formData.pin,
       };
       const response = await painterLoginHandler(loginData);
-      if (response.success && response.data) {
-        const { accessToken } = response.data.data || response.data;
 
-        if (accessToken) {
-          login(accessToken);
-          navigate("/painter/dashboard");
-        } else {
-          console.error("No accessToken found in response:", response);
-        }
+      // If we get here, login was successful
+      const { accessToken } = response.data.data || response.data;
+
+      if (accessToken) {
+        login(accessToken);
+        navigate("/painter/dashboard");
+      } else {
+        console.error("No accessToken found in response:", response);
       }
     } catch (error) {
+      // Error handled by global toast interceptor
       console.error("Painter login error:", error);
     } finally {
       setIsLoading(false);
@@ -140,6 +141,7 @@ const PainterLogin = () => {
         isOpen={isForgotPinOpen}
         onClose={() => setIsForgotPinOpen(false)}
         defaultMobile={authForm.formData.mobile}
+        userType="painter"
       />
     </AuthLayout>
   );

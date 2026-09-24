@@ -1,7 +1,7 @@
-import { Suspense } from 'react';
-import { Routes, Route, Outlet } from 'react-router-dom';
-import ProtectedRoute from '../auth/ProtectedRoute';
-import { routeConfig } from './routeConfig';
+import { Suspense } from "react";
+import { Routes, Route, Outlet } from "react-router-dom";
+import ProtectedRoute from "../auth/ProtectedRoute";
+import { routeConfig } from "./routeConfig";
 
 /**
  * Global loading fallback for lazy-loaded components
@@ -35,8 +35,12 @@ const renderRoutes = (routes) => {
 
     // If route has children, it's a parent route
     if (children && children.length > 0) {
-      const parentElement = Layout ? <LayoutWrapper layout={Layout} /> : <Outlet />;
-      
+      const parentElement = Layout ? (
+        <LayoutWrapper layout={Layout} />
+      ) : (
+        <Outlet />
+      );
+
       return (
         <Route
           key={path || index}
@@ -89,9 +93,7 @@ const renderRoutes = (routes) => {
 const AppRoutes = () => {
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <Routes>
-        {renderRoutes(routeConfig)}
-      </Routes>
+      <Routes>{renderRoutes(routeConfig)}</Routes>
     </Suspense>
   );
 };

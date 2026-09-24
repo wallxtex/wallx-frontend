@@ -14,13 +14,15 @@ PrivateApi.interceptors.request.use(
     config.headers = config.headers || {};
     config.headers["x-timezone"] =
       Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (success) {
+    if (success && data?.token) {
       config.headers.Authorization = `Bearer ${data.token}`;
+      return config;
     } else {
-      window.location.replace("/");
-      throw new Error("No authentication token found");
+      // Token refresh failed - but don't redirect immediately
+      // Let the response interceptor handle it (might be transient failure)
+      console.error('[PrivateApi] Failed to get token');
+      throw new axios.Cancel('No valid token available');
     }
-    return config;
   },
   (error) => {
     throw error;
@@ -34,8 +36,21 @@ setupInterceptors(PrivateApi, {
   toastOnMutationSuccess: true,
   toastOnMutationError: true,
   onUnauthorized: async (error) => {
-    console.log('401 detected in PrivateApi:', error);
-    window.location.replace("/");
+    console.error('[PrivateApi] 401 Unauthorized - session expired');
+    
+    // Clear tokens
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    
+    // Show user-friendly message
+    console.log('[PrivateApi] Redirecting to login page');
+    
+    // Small delay to allow console logs to show
+    setTimeout(() => {
+      window.location.replace("/");
+    }, 100);
+    
+    // Return false to indicate refresh failed (don't retry)
     return false;
   },
 });
