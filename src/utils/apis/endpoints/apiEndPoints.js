@@ -33,5 +33,9 @@ const adminApis = {
   DealersRejected: `${adminDashboardApis}/rejected`,
   DealerApproval: `${adminDashboardApis}/:id/approval`,
   DealerParticularDetails: `${adminDashboardApis}/:id`,
+  // Enquiry endpoints
+  getEnquiries: "/admin/enquiries",
+  getEnquiryStats: "/admin/enquiries/stats",
 };
+
 export { painterApis, dealerApis, adminApis };

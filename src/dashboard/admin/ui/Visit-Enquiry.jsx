@@ -1,36 +1,113 @@
-import React from "react";
-import { mockVisitors } from "../../admin/ui/data/MockDataOfVisitor";
+import React, { useState, useEffect } from "react";
+import { getEnquiries, getEnquiryStats } from "../../../services/publicforms/Enquiry";
 import PageHeader from "./VisitorUi/PageHeader";
 import FilterCards from "./VisitorUi/FilterCards";
 import SearchFilters from "./VisitorUi/SearchFilters";
 import VisitorTable from "./VisitorUi/VisitorTable";
-import useVisitorFilters from "./VisitorUi/useVisitorFilters";
 import { createFilterCards } from "./VisitorUi/filterCardsConfig";
 
 const VisitEnquiry = () => {
   const itemsPerPage = 10;
 
-  const {
-    selectedType,
-    setSelectedType,
-    searchQuery,
-    setSearchQuery,
-    selectedDate,
-    setSelectedDate,
-    currentPage,
-    setCurrentPage,
-    counts,
-    filteredVisitors,
-    paginatedVisitors,
-    totalPages,
-    clearFilters,
-  } = useVisitorFilters(mockVisitors, itemsPerPage);
+  // State for enquiries and stats
+  const [enquiries, setEnquiries] = useState([]);
+  const [stats, setStats] = useState({
+    totalEnquiries: 0,
+    dealers: 0,
+    painters: 0,
+    customers: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  
+  // State for filters and pagination
+  const [selectedType, setSelectedType] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Fetch data on component mount
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      // Fetch stats
+      const statsResult = await getEnquiryStats();
+      if (statsResult.success) {
+        setStats(statsResult.data.data);
+      }
+
+      // Fetch all enquiries (adjust limit if needed)
+      const enquiriesResult = await getEnquiries(1, 1000);
+      if (enquiriesResult.success) {
+        const enquiriesData = enquiriesResult.data.data.enquiries || [];
+        // Transform backend data to match frontend format
+        const transformedEnquiries = enquiriesData.map((enquiry) => ({
+          id: enquiry._id,
+          name: enquiry.name || "N/A",
+          type: enquiry.role || "CUSTOMER", // DEALER, PAINTER, CUSTOMER
+          phone: enquiry.phone || enquiry.mobile || "N/A",
+          email: enquiry.email || "N/A",
+          visitDate: enquiry.date || enquiry.createdAt || new Date().toISOString(),
+          status: "Pending", // Backend doesn't have status field
+          location: enquiry.location || "N/A",
+          message: enquiry.message || "",
+        }));
+        setEnquiries(transformedEnquiries);
+      }
+    } catch (error) {
+      console.error("Failed to fetch enquiry data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter enquiries
+  const filteredEnquiries = enquiries.filter((enquiry) => {
+    const matchesType =
+      selectedType === "all" || enquiry.type.toLowerCase() === selectedType.toLowerCase();
+    const matchesSearch =
+      searchQuery === "" ||
+      enquiry.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      enquiry.phone.includes(searchQuery) ||
+      enquiry.email.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDate =
+      selectedDate === "" ||
+      new Date(enquiry.visitDate).toISOString().split("T")[0] === selectedDate;
+    return matchesType && matchesSearch && matchesDate;
+  });
+
+  // Pagination
+  const totalPages = Math.ceil(filteredEnquiries.length / itemsPerPage);
+  const paginatedEnquiries = filteredEnquiries.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Counts for filter cards
+  const counts = {
+    all: enquiries.length,
+    dealer: stats.dealers,
+    painter: stats.painters,
+    customer: stats.customers,
+  };
 
   const filterCards = createFilterCards(counts);
 
+  // Clear filters
+  const clearFilters = () => {
+    setSelectedType("all");
+    setSearchQuery("");
+    setSelectedDate("");
+    setCurrentPage(1);
+  };
+
+  // Export to CSV function
   // Export to CSV function
   const exportToCSV = () => {
-    if (filteredVisitors.length === 0) {
+    if (filteredEnquiries.length === 0) {
       alert("No data to export");
       return;
     }
@@ -39,18 +116,18 @@ const VisitEnquiry = () => {
     const headers = ["Name", "Type", "Phone", "Email", "Visit Date", "Status", "Location"];
     
     // CSV Rows
-    const rows = filteredVisitors.map(visitor => [
-      visitor.name,
-      visitor.type,
-      visitor.phone,
-      visitor.email,
-      new Date(visitor.visitDate).toLocaleDateString("en-IN", {
+    const rows = filteredEnquiries.map(enquiry => [
+      enquiry.name,
+      enquiry.type,
+      enquiry.phone,
+      enquiry.email,
+      new Date(enquiry.visitDate).toLocaleDateString("en-IN", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
       }),
-      visitor.status,
-      visitor.location
+      enquiry.status,
+      enquiry.location
     ]);
 
     // Combine headers and rows
@@ -78,6 +155,18 @@ const VisitEnquiry = () => {
     document.body.removeChild(link);
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-3 sm:p-4 md:p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#d82b2b] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading enquiries...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-3 sm:p-4 md:p-6">
       <PageHeader />
@@ -91,21 +180,20 @@ const VisitEnquiry = () => {
         onSearchChange={setSearchQuery}
         selectedDate={selectedDate}
         onDateChange={setSelectedDate}
-        filteredCount={filteredVisitors.length}
+        filteredCount={filteredEnquiries.length}
         onClearFilters={clearFilters}
         onExport={exportToCSV}
         selectedType={selectedType}
       />
       <VisitorTable
-        visitors={paginatedVisitors}
+        visitors={paginatedEnquiries}
         currentPage={currentPage}
         totalPages={totalPages}
         itemsPerPage={itemsPerPage}
-        totalItems={filteredVisitors.length}
+        totalItems={filteredEnquiries.length}
         onPageChange={setCurrentPage}
       />
     </div>
   );
 };
-
 export default VisitEnquiry;
