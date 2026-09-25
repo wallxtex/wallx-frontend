@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { getAdminDashboardData } from "../../services/admin/admin.services";
 import { Store, PaintBucket, Ticket, MessageSquareMore, Banknote, Wallet } from "lucide-react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -6,13 +7,13 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const metricsData = [
+const getMetricsData = (data) => [
   {
     id: 1,
     label: "Total Painters",
     sublabel: "PaintBucket",
-    value: "1,280",
-    rawValue: 1280,
+    value: (data?.totalPainters || 0).toLocaleString(),
+    rawValue: data?.totalPainters || 0,
     icon: PaintBucket,
     bgColor: "bg-orange-50",
     iconColor: "text-orange-600",
@@ -23,8 +24,8 @@ const metricsData = [
     id: 2,
     label: "Total Dealers",
     sublabel: "Store",
-    value: "47",
-    rawValue: 47,
+    value: (data?.totalDealers || 0).toLocaleString(),
+    rawValue: data?.totalDealers || 0,
     icon: Store,
     bgColor: "bg-blue-50",
     iconColor: "text-blue-600",
@@ -35,8 +36,8 @@ const metricsData = [
     id: 3,
     label: "Total Coupons",
     sublabel: "Ticket",
-    value: "3,120",
-    rawValue: 3120,
+    value: (data?.totalCouponsRedeemed || 0).toLocaleString(),
+    rawValue: data?.totalCouponsRedeemed || 0,
     icon: Ticket,
     bgColor: "bg-green-50",
     iconColor: "text-green-600",
@@ -47,8 +48,8 @@ const metricsData = [
     id: 4,
     label: "Visit Enquiries",
     sublabel: "MessageSquareMore",
-    value: "19",
-    rawValue: 19,
+    value: (data?.visitEnquiries || 0).toLocaleString(),
+    rawValue: data?.visitEnquiries || 0,
     icon: MessageSquareMore,
     bgColor: "bg-purple-50",
     iconColor: "text-purple-600",
@@ -60,8 +61,8 @@ const metricsData = [
     id: 5,
     label: "Total Redeemed Amount",
     sublabel: "Coupons Redeemed",
-    value: "₹5,40,000",
-    rawValue: 540000,
+    value: (data?.totalCouponAmount || 0).toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }),
+    rawValue: data?.totalCouponAmount || 0,
     icon: Banknote,
     bgColor: "bg-teal-50",
     iconColor: "text-teal-600",
@@ -73,8 +74,8 @@ const metricsData = [
     id: 6,
     label: "Total Ordered Amount",
     sublabel: "Dealer Orders",
-    value: "₹12,50,000",
-    rawValue: 1250000,
+    value: (data?.totalOrderAmount || 0).toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }),
+    rawValue: data?.totalOrderAmount || 0,
     icon: Wallet,
     bgColor: "bg-indigo-50",
     iconColor: "text-indigo-600",
@@ -85,17 +86,43 @@ const metricsData = [
 ];
 
 const KeyPerformanceMetrics = () => {
-  // Filter out monetary values so they don't skew the count-based pie chart
-  const chartMetrics = metricsData.filter(m => m.showInChart !== false);
+  const [dashboardData, setDashboardData] = useState(null);
 
-  // Prepare chart data
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await getAdminDashboardData();
+        if (response?.success) {
+          // The response structure might be response.data.data depending on axios and your API response wrapper
+          const actualData = response.data?.data || response.data;
+          setDashboardData(actualData);
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  const metricsData = getMetricsData(dashboardData);
+
+  // Prepare pie chart data strictly for the three monetary fields requested
   const chartData = {
-    labels: chartMetrics.map((metric) => metric.label),
+    labels: ["Total Ordered Amount", "Total Received Amount", "Total Pending Amount"],
     datasets: [
       {
-        label: "Count",
-        data: chartMetrics.map((metric) => metric.rawValue),
-        backgroundColor: chartMetrics.map((metric) => metric.chartColor),
+        label: "Amount",
+        data: [
+          dashboardData?.totalOrderAmount || 0,
+          dashboardData?.totalReceivedAmount || 0,
+          dashboardData?.totalPendingAmount || 0
+        ],
+        backgroundColor: [
+          "rgb(99, 102, 241)", // Indigo (Ordered)
+          "rgb(16, 185, 129)", // Green (Received)
+          "rgb(249, 115, 22)"  // Orange (Pending)
+        ],
         borderColor: "#ffffff",
         borderWidth: 3,
         hoverOffset: 8,
@@ -133,9 +160,10 @@ const KeyPerformanceMetrics = () => {
           label: function (context) {
             const label = context.label || "";
             const value = context.parsed || 0;
+            const formattedValue = value.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
             const total = context.dataset.data.reduce((a, b) => a + b, 0);
-            const percentage = ((value / total) * 100).toFixed(1);
-            return `${label}: ${value.toLocaleString()} (${percentage}%)`;
+            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+            return `${label}: ${formattedValue} (${percentage}%)`;
           },
         },
       },
@@ -165,7 +193,7 @@ const KeyPerformanceMetrics = () => {
                 <div className={`w-24 flex items-center justify-center shrink-0 opacity-80`}>
                   <metric.icon className={`w-12 h-12 ${metric.iconColor}`} />
                 </div>
-                
+
                 {/* Details on the Right */}
                 <div className="p-5 flex flex-col justify-center flex-1">
                   <div className="text-base font-bold text-gray-900 leading-tight">
@@ -189,7 +217,7 @@ const KeyPerformanceMetrics = () => {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 h-full flex flex-col justify-center">
             <h3 className="text-sm font-semibold text-gray-900 mb-4 text-center">
-              Distribution Overview
+              Order Amount Breakdown
             </h3>
             <div className="w-full max-w-sm mx-auto">
               <Doughnut data={chartData} options={chartOptions} />

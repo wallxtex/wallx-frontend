@@ -2,8 +2,9 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { ChevronRight, X, CheckCircle2, Edit, Trash2 } from "lucide-react";
 
-const SharedSchemesRow = ({ title, subtitle, schemes, type, isAdmin = false }) => {
+const SharedSchemesRow = ({ title, subtitle, schemes, type, isAdmin = false, onDelete, onUpdate }) => {
   const [selectedScheme, setSelectedScheme] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   return (
     <div className="w-full">
@@ -99,7 +100,10 @@ const SharedSchemesRow = ({ title, subtitle, schemes, type, isAdmin = false }) =
               </div>
               <button
                 type="button"
-                onClick={() => setSelectedScheme(null)}
+                onClick={() => {
+                  setSelectedScheme(null);
+                  setShowDeleteConfirm(false);
+                }}
                 className="text-gray-400 hover:text-gray-700 font-semibold p-1.5 cursor-pointer rounded-lg hover:bg-gray-100 transition-colors"
                 aria-label="Close modal"
               >
@@ -125,33 +129,58 @@ const SharedSchemesRow = ({ title, subtitle, schemes, type, isAdmin = false }) =
               </ul>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between gap-4">
+            <div className="mt-6 pt-4 border-t border-gray-100">
               {isAdmin ? (
-                <>
-                  <button
-                    type="button"
-                    className="w-1/2 flex items-center justify-center gap-2 py-3 bg-white border border-red-200 text-red-600 hover:bg-red-50 rounded-xl text-sm font-semibold transition-all cursor-pointer"
-                    onClick={() => {
-                      // Implement delete logic here later
-                      console.log("Delete scheme:", selectedScheme.id);
-                    }}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Delete
-                  </button>
-                  <button
-                    type="button"
-                    className="w-1/2 flex items-center justify-center gap-2 py-3 bg-[#d82b2b] hover:bg-[#b82222] text-white rounded-xl text-sm font-semibold shadow-md shadow-red-500/20 hover:shadow-lg transition-all cursor-pointer"
-                    onClick={() => {
-                      // Implement update logic here later
-                      console.log("Update scheme:", selectedScheme.id);
-                    }}
-                  >
-                    <Edit className="w-4 h-4" />
-                    Update Scheme
-                  </button>
-                </>
-              ) : ""}
+                showDeleteConfirm ? (
+                  <div className="flex flex-col items-center gap-3 animate-in slide-in-from-bottom-2">
+                    <p className="text-sm font-semibold text-gray-900">Are you sure you want to delete this scheme?</p>
+                    <div className="flex items-center justify-between gap-4 w-full">
+                      <button
+                        type="button"
+                        className="w-1/2 py-2.5 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl text-sm font-semibold transition-all cursor-pointer"
+                        onClick={() => setShowDeleteConfirm(false)}
+                      >
+                        No, Cancel
+                      </button>
+                      <button
+                        type="button"
+                        className="w-1/2 flex items-center justify-center gap-2 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold shadow-md shadow-red-500/20 transition-all cursor-pointer"
+                        onClick={() => {
+                          if (onDelete) onDelete(selectedScheme.id);
+                          setSelectedScheme(null);
+                          setShowDeleteConfirm(false);
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Yes, Delete
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between gap-4">
+                    <button
+                      type="button"
+                      className="w-1/2 flex items-center justify-center gap-2 py-3 bg-white border border-red-200 text-red-600 hover:bg-red-50 rounded-xl text-sm font-semibold transition-all cursor-pointer"
+                      onClick={() => setShowDeleteConfirm(true)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete
+                    </button>
+                    <button
+                      type="button"
+                      className="w-1/2 flex items-center justify-center gap-2 py-3 bg-[#d82b2b] hover:bg-[#b82222] text-white rounded-xl text-sm font-semibold shadow-md shadow-red-500/20 hover:shadow-lg transition-all cursor-pointer"
+                      onClick={() => {
+                        if (onUpdate) onUpdate(selectedScheme);
+                        setSelectedScheme(null);
+                        setShowDeleteConfirm(false);
+                      }}
+                    >
+                      <Edit className="w-4 h-4" />
+                      Update Scheme
+                    </button>
+                  </div>
+                )
+              ) : null}
             </div>
           </div>
         </div>
