@@ -1,4 +1,3 @@
-//painter
 const painter = "/auth/painter";
 const dealer = "/auth/dealer";
 const admin = "/auth/admin";
@@ -28,14 +27,17 @@ const adminApis = {
   login: `${admin}/login`,
   logout: `${admin}/logout`,
   refreshToken: `${admin}/refresh-token`,
-  addSchemes: 'admin/schemes',
+  addSchemes: "/admin/schemes",
   adminDashboardData: "admin/dashboard",
   allPainters: "admin/painters",
   DealerSignupDetails: adminDashboardApis,
   DealersPendingStatus: `${adminDashboardApis}/pending`,
   DealersRejected: `${adminDashboardApis}/rejected`,
-  DealerApproval: adminDashboardApis,
-  DealerParticularDetails: adminDashboardApis
+  DealerApproval: `${adminDashboardApis}/:id/approval`,
+  DealerParticularDetails: `${adminDashboardApis}/:id`,
+  // Enquiry endpoints
+  getEnquiries: "/admin/enquiries",
+  getEnquiryStats: "/admin/enquiries/stats",
 };
 
 export { painterApis, dealerApis, adminApis };

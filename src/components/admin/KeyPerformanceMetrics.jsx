@@ -3,6 +3,7 @@ import { getAdminDashboardData } from "../../services/admin/admin.services";
 import { Store, PaintBucket, Ticket, MessageSquareMore, Banknote, Wallet } from "lucide-react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { getEnquiryStats } from "../../services/publicforms/Enquiry";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -87,6 +88,109 @@ const getMetricsData = (data) => [
 
 const KeyPerformanceMetrics = () => {
   const [dashboardData, setDashboardData] = useState(null);
+const KeyPerformanceMetrics = () => {
+  const [enquiryCount, setEnquiryCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch enquiry stats on mount
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const result = await getEnquiryStats();
+        if (result.success) {
+          const totalEnquiries = result.data.data.totalEnquiries || 0;
+          setEnquiryCount(totalEnquiries);
+        }
+      } catch (error) {
+        console.error("Failed to fetch enquiry stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  // Metrics data with dynamic enquiry count
+  const metricsData = [
+    {
+      id: 1,
+      label: "Total Painters",
+      sublabel: "PaintBucket",
+      value: "1,280",
+      rawValue: 1280,
+      icon: PaintBucket,
+      bgColor: "bg-orange-50",
+      iconColor: "text-orange-600",
+      iconBg: "bg-orange-100",
+      chartColor: "rgb(249, 115, 22)",
+    },
+    {
+      id: 2,
+      label: "Total Dealers",
+      sublabel: "Store",
+      value: "47",
+      rawValue: 47,
+      icon: Store,
+      bgColor: "bg-blue-50",
+      iconColor: "text-blue-600",
+      iconBg: "bg-blue-100",
+      chartColor: "rgb(59, 130, 246)",
+    },
+    {
+      id: 3,
+      label: "Total Coupons",
+      sublabel: "Ticket",
+      value: "3,120",
+      rawValue: 3120,
+      icon: Ticket,
+      bgColor: "bg-green-50",
+      iconColor: "text-green-600",
+      iconBg: "bg-green-100",
+      chartColor: "rgb(16, 185, 129)",
+    },
+    {
+      id: 4,
+      label: "Visit Enquiries",
+      sublabel: "MessageSquareMore",
+      value: loading ? "..." : enquiryCount.toLocaleString(),
+      rawValue: enquiryCount,
+      icon: MessageSquareMore,
+      bgColor: "bg-purple-50",
+      iconColor: "text-purple-600",
+      iconBg: "bg-purple-100",
+      chartColor: "rgb(168, 85, 247)",
+      showInChart: true,
+    },
+    {
+      id: 5,
+      label: "Total Redeemed Amount",
+      sublabel: "Coupons Redeemed",
+      value: "₹5,40,000",
+      rawValue: 540000,
+      icon: Banknote,
+      bgColor: "bg-teal-50",
+      iconColor: "text-teal-600",
+      iconBg: "bg-teal-100",
+      chartColor: "rgb(20, 184, 166)",
+      showInChart: false,
+    },
+    {
+      id: 6,
+      label: "Total Ordered Amount",
+      sublabel: "Dealer Orders",
+      value: "₹12,50,000",
+      rawValue: 1250000,
+      icon: Wallet,
+      bgColor: "bg-indigo-50",
+      iconColor: "text-indigo-600",
+      iconBg: "bg-indigo-100",
+      chartColor: "rgb(99, 102, 241)",
+      showInChart: false,
+    },
+  ];
+  
+  // Filter out monetary values so they don't skew the count-based pie chart
+  const chartMetrics = metricsData.filter(m => m.showInChart !== false);
 
   useEffect(() => {
     const fetchDashboardData = async () => {

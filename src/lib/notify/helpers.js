@@ -1,25 +1,4 @@
-/**
- * @fileoverview Helper utilities for forms and special use cases.
- */
-
 import { notify } from './notify';
-
-/**
- * Apply server validation errors to react-hook-form or similar form libraries
- * @param {Error | Object} error - Axios error or normalized error
- * @param {Function} setError - Form's setError function (e.g., from react-hook-form)
- * @param {Object} [options] - Options
- * @param {boolean} [options.showToast=true] - Show summary toast
- * @param {string} [options.summaryMessage] - Custom summary message
- * 
- * @example
- * // With react-hook-form
- * try {
- *   await updateProfile(data);
- * } catch (error) {
- *   applyServerErrors(error, setError);
- * }
- */
 export const applyServerErrors = (error, setError, options = {}) => {
   const { showToast = true, summaryMessage } = options;
   
