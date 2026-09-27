@@ -10,7 +10,7 @@ const ItemCard = ({ item, type, onDelete, onEdit }) => {
   
   const isService = type === 'service';
   const title = item.title || item.name || item.productName || item.serviceName || "Untitled";
-  const description = item.description || (item.features && item.features[0] ? item.features[0].description : "Description not available.");
+  const description = item.description ?? item.features?.[0]?.description ?? "Description not available.";
   const imageWrapperClass = isService 
     ? "h-80 w-full bg-gray-100 overflow-hidden" 
     : "h-64 w-full p-4 flex items-center justify-center bg-gray-50 overflow-hidden";
@@ -22,6 +22,14 @@ const ItemCard = ({ item, type, onDelete, onEdit }) => {
     <div 
       className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-md cursor-pointer h-full"
       onClick={() => setIsActive(!isActive)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          setIsActive(!isActive);
+        }
+      }}
     >
       {/* Base View */}
       <div className={imageWrapperClass}>
@@ -171,7 +179,7 @@ const ServicesAndProducts = () => {
   const fetchServicesData = useCallback(async () => {
     try {
       const response = await getAllServices();
-      if (response && response.success) {
+      if (response?.success) {
         let fetchedData = response.data;
         if (fetchedData?.data) fetchedData = fetchedData.data;
         if (fetchedData?.services) fetchedData = fetchedData.services;
@@ -186,7 +194,7 @@ const ServicesAndProducts = () => {
     setIsLoading(true);
     try {
       const response = await getAllProducts();
-      if (response && response.success) {
+      if (response?.success) {
         let fetchedData = response.data;
         if (fetchedData?.data) fetchedData = fetchedData.data;
         if (fetchedData?.products) fetchedData = fetchedData.products;
@@ -213,7 +221,7 @@ const ServicesAndProducts = () => {
         response = await deleteProduct(id);
       }
       
-      if (response && response.success !== false) {
+      if (response?.success !== false) {
         if (type === 'service') fetchServicesData();
         else fetchProducts();
       } else {
@@ -237,7 +245,7 @@ const ServicesAndProducts = () => {
     setFormData({
       productName: item.serviceName || item.productName || item.name || item.title || '',
       description: item.description || '',
-      keyFeatures: item.keyFeatures || (item.features && item.features[0] ? item.features[0].description : ''),
+      keyFeatures: item.keyFeatures ?? item.features?.[0]?.description ?? '',
       image: null
     });
     setIsModalOpen(true);
