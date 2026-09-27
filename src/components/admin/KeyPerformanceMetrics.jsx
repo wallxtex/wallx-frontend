@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { getAdminDashboardData } from "../../services/admin/admin.services";
 import { Store, PaintBucket, Ticket, MessageSquareMore, Banknote, Wallet } from "lucide-react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -7,118 +8,122 @@ import { getEnquiryStats } from "../../services/publicforms/Enquiry";
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const KeyPerformanceMetrics = () => {
-  const [enquiryCount, setEnquiryCount] = useState(0);
-  const [loading, setLoading] = useState(true);
+const getMetricsData = (data) => [
+  {
+    id: 1,
+    label: "Total Painters",
+    sublabel: "PaintBucket",
+    value: (data?.totalPainters || 0).toLocaleString(),
+    rawValue: data?.totalPainters || 0,
+    icon: PaintBucket,
+    bgColor: "bg-orange-50",
+    iconColor: "text-orange-600",
+    iconBg: "bg-orange-100",
+    chartColor: "rgb(249, 115, 22)",
+  },
+  {
+    id: 2,
+    label: "Total Dealers",
+    sublabel: "Store",
+    value: (data?.totalDealers || 0).toLocaleString(),
+    rawValue: data?.totalDealers || 0,
+    icon: Store,
+    bgColor: "bg-blue-50",
+    iconColor: "text-blue-600",
+    iconBg: "bg-blue-100",
+    chartColor: "rgb(59, 130, 246)",
+  },
+  {
+    id: 3,
+    label: "Total Coupons",
+    sublabel: "Ticket",
+    value: (data?.totalCouponsRedeemed || 0).toLocaleString(),
+    rawValue: data?.totalCouponsRedeemed || 0,
+    icon: Ticket,
+    bgColor: "bg-green-50",
+    iconColor: "text-green-600",
+    iconBg: "bg-green-100",
+    chartColor: "rgb(16, 185, 129)",
+  },
+  {
+    id: 4,
+    label: "Visit Enquiries",
+    sublabel: "MessageSquareMore",
+    value: (data?.visitEnquiries || 0).toLocaleString(),
+    rawValue: data?.visitEnquiries || 0,
+    icon: MessageSquareMore,
+    bgColor: "bg-purple-50",
+    iconColor: "text-purple-600",
+    iconBg: "bg-purple-100",
+    chartColor: "rgb(168, 85, 247)",
+    showInChart: true,
+  },
+  {
+    id: 5,
+    label: "Total Redeemed Amount",
+    sublabel: "Coupons Redeemed",
+    value: (data?.totalCouponAmount || 0).toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }),
+    rawValue: data?.totalCouponAmount || 0,
+    icon: Banknote,
+    bgColor: "bg-teal-50",
+    iconColor: "text-teal-600",
+    iconBg: "bg-teal-100",
+    chartColor: "rgb(20, 184, 166)",
+    showInChart: false,
+  },
+  {
+    id: 6,
+    label: "Total Ordered Amount",
+    sublabel: "Dealer Orders",
+    value: (data?.totalOrderAmount || 0).toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }),
+    rawValue: data?.totalOrderAmount || 0,
+    icon: Wallet,
+    bgColor: "bg-indigo-50",
+    iconColor: "text-indigo-600",
+    iconBg: "bg-indigo-100",
+    chartColor: "rgb(99, 102, 241)",
+    showInChart: false,
+  },
+];
 
-  // Fetch enquiry stats on mount
+const KeyPerformanceMetrics = () => {
+  const [dashboardData, setDashboardData] = useState(null);
+
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchDashboardData = async () => {
       try {
-        const result = await getEnquiryStats();
-        if (result.success) {
-          const totalEnquiries = result.data.data.totalEnquiries || 0;
-          setEnquiryCount(totalEnquiries);
+        const response = await getAdminDashboardData();
+        if (response?.success) {
+          // The response structure might be response.data.data depending on axios and your API response wrapper
+          const actualData = response.data?.data || response.data;
+          setDashboardData(actualData);
         }
       } catch (error) {
-        console.error("Failed to fetch enquiry stats:", error);
-      } finally {
-        setLoading(false);
+        console.error("Error fetching dashboard data:", error);
       }
     };
-    fetchStats();
+
+    fetchDashboardData();
   }, []);
 
-  // Metrics data with dynamic enquiry count
-  const metricsData = [
-    {
-      id: 1,
-      label: "Total Painters",
-      sublabel: "PaintBucket",
-      value: "1,280",
-      rawValue: 1280,
-      icon: PaintBucket,
-      bgColor: "bg-orange-50",
-      iconColor: "text-orange-600",
-      iconBg: "bg-orange-100",
-      chartColor: "rgb(249, 115, 22)",
-    },
-    {
-      id: 2,
-      label: "Total Dealers",
-      sublabel: "Store",
-      value: "47",
-      rawValue: 47,
-      icon: Store,
-      bgColor: "bg-blue-50",
-      iconColor: "text-blue-600",
-      iconBg: "bg-blue-100",
-      chartColor: "rgb(59, 130, 246)",
-    },
-    {
-      id: 3,
-      label: "Total Coupons",
-      sublabel: "Ticket",
-      value: "3,120",
-      rawValue: 3120,
-      icon: Ticket,
-      bgColor: "bg-green-50",
-      iconColor: "text-green-600",
-      iconBg: "bg-green-100",
-      chartColor: "rgb(16, 185, 129)",
-    },
-    {
-      id: 4,
-      label: "Visit Enquiries",
-      sublabel: "MessageSquareMore",
-      value: loading ? "..." : enquiryCount.toLocaleString(),
-      rawValue: enquiryCount,
-      icon: MessageSquareMore,
-      bgColor: "bg-purple-50",
-      iconColor: "text-purple-600",
-      iconBg: "bg-purple-100",
-      chartColor: "rgb(168, 85, 247)",
-      showInChart: true,
-    },
-    {
-      id: 5,
-      label: "Total Redeemed Amount",
-      sublabel: "Coupons Redeemed",
-      value: "₹5,40,000",
-      rawValue: 540000,
-      icon: Banknote,
-      bgColor: "bg-teal-50",
-      iconColor: "text-teal-600",
-      iconBg: "bg-teal-100",
-      chartColor: "rgb(20, 184, 166)",
-      showInChart: false,
-    },
-    {
-      id: 6,
-      label: "Total Ordered Amount",
-      sublabel: "Dealer Orders",
-      value: "₹12,50,000",
-      rawValue: 1250000,
-      icon: Wallet,
-      bgColor: "bg-indigo-50",
-      iconColor: "text-indigo-600",
-      iconBg: "bg-indigo-100",
-      chartColor: "rgb(99, 102, 241)",
-      showInChart: false,
-    },
-  ];
-  
-  // Filter out monetary values so they don't skew the count-based pie chart
-  const chartMetrics = metricsData.filter(m => m.showInChart !== false);
+  const metricsData = getMetricsData(dashboardData);
 
-  // Prepare chart data
+  // Prepare pie chart data strictly for the three monetary fields requested
   const chartData = {
-    labels: chartMetrics.map((metric) => metric.label),
+    labels: ["Total Ordered Amount", "Total Received Amount", "Total Pending Amount"],
     datasets: [
       {
-        label: "Count",
-        data: chartMetrics.map((metric) => metric.rawValue),
-        backgroundColor: chartMetrics.map((metric) => metric.chartColor),
+        label: "Amount",
+        data: [
+          dashboardData?.totalOrderAmount || 0,
+          dashboardData?.totalReceivedAmount || 0,
+          dashboardData?.totalPendingAmount || 0
+        ],
+        backgroundColor: [
+          "rgb(99, 102, 241)", // Indigo (Ordered)
+          "rgb(16, 185, 129)", // Green (Received)
+          "rgb(249, 115, 22)"  // Orange (Pending)
+        ],
         borderColor: "#ffffff",
         borderWidth: 3,
         hoverOffset: 8,
@@ -156,9 +161,10 @@ const KeyPerformanceMetrics = () => {
           label: function (context) {
             const label = context.label || "";
             const value = context.parsed || 0;
+            const formattedValue = value.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
             const total = context.dataset.data.reduce((a, b) => a + b, 0);
-            const percentage = ((value / total) * 100).toFixed(1);
-            return `${label}: ${value.toLocaleString()} (${percentage}%)`;
+            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+            return `${label}: ${formattedValue} (${percentage}%)`;
           },
         },
       },
@@ -188,7 +194,7 @@ const KeyPerformanceMetrics = () => {
                 <div className={`w-24 flex items-center justify-center shrink-0 opacity-80`}>
                   <metric.icon className={`w-12 h-12 ${metric.iconColor}`} />
                 </div>
-                
+
                 {/* Details on the Right */}
                 <div className="p-5 flex flex-col justify-center flex-1">
                   <div className="text-base font-bold text-gray-900 leading-tight">
@@ -212,7 +218,7 @@ const KeyPerformanceMetrics = () => {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 h-full flex flex-col justify-center">
             <h3 className="text-sm font-semibold text-gray-900 mb-4 text-center">
-              Distribution Overview
+              Order Amount Breakdown
             </h3>
             <div className="w-full max-w-sm mx-auto">
               <Doughnut data={chartData} options={chartOptions} />

@@ -46,6 +46,7 @@ const GenerateCoupon = lazy(
   () => import("../dashboard/admin/ui/GenerateCoupon"),
 );
 const VisitEnquiry = lazy(() => import("../dashboard/admin/ui/Visit-Enquiry"));
+const BatchCoupons = lazy(() => import("../dashboard/admin/ui/BatchCoupons"));
 const DealerSignupAccounts = lazy(
   () => import("../dashboard/admin/ui/DealerSignupAccounts"),
 );
@@ -134,7 +135,7 @@ export const routeConfig = [
   // ==================== ADMIN PROTECTED ROUTES ====================
   {
     path: "/admin",
-    protected: false,
+    protected: true,
     allowedRoles: [ROLES.ADMIN],
     layout: AdminLayout,
     children: [
@@ -146,6 +147,7 @@ export const routeConfig = [
       { path: "/admin/schemes-offers", element: AllSchemes },
       { path: "/admin/dealer-signup", element: DealerSignupAccounts },
       { path: "/admin/generate-coupon", element: GenerateCoupon },
+      { path: "/admin/coupons/batches/:batchId", element: BatchCoupons },
       { path: "/admin/visit-enquiry", element: VisitEnquiry },
     ],
   },

@@ -22,12 +22,13 @@ const dealerApis = {
   forgotPin: `${dealer}/forgot-pin`,
   resetPin: `${dealer}/reset-pin`,
 };
-
 const adminApis = {
   login: `${admin}/login`,
   logout: `${admin}/logout`,
   refreshToken: `${admin}/refresh-token`,
   addSchemes: "/admin/schemes",
+  adminDashboardData: "admin/dashboard",
+  allPainters: "admin/painters",
   DealerSignupDetails: adminDashboardApis,
   DealersPendingStatus: `${adminDashboardApis}/pending`,
   DealersRejected: `${adminDashboardApis}/rejected`,
@@ -38,5 +39,11 @@ const adminApis = {
   // Enquiry endpoints
   getEnquiries: "/admin/enquiries",
   getEnquiryStats: "/admin/enquiries/stats",
+  // Coupon endpoints
+  getCouponStats: "/admin/coupons/stats",
+  generateCoupons: "/admin/coupons/generate",
+  getCouponBatches: "/admin/coupons/batches",
+  getCouponsByBatch: "/admin/coupons/batches/:batchId/coupons",
+  downloadCouponBatchPdf: "/admin/coupons/batches/:batchId/download",
 };
 export { painterApis, dealerApis, adminApis };

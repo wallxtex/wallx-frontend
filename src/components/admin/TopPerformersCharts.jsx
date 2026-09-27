@@ -1,13 +1,8 @@
-import React from 'react';
-import { TOP_DEALERS_DATA } from '../../pages/dealers/dealerData';
-import { TOP_PAINTERS_DATA } from '../../pages/painter/component/painterData';
-
-// Use the first 10 items since we only want Top-10
-const dealers10 = TOP_DEALERS_DATA.slice(0, 10);
-const painters10 = TOP_PAINTERS_DATA.slice(0, 10);
+import React, { useState, useEffect } from 'react';
+import { getPublicData } from '../../services/dealers/dealers.services';
 
 const HorizontalBarChart = ({ title, data, valueKey, valueLabel, subtitle }) => {
-  const maxValue = Math.max(...data.map(d => d[valueKey]));
+  const maxValue = data.length > 0 ? Math.max(...data.map(d => d[valueKey])) : 1;
 
   const getRankBadge = (rank) => {
     if (rank === 1) return <span className="absolute -right-3 -top-3 w-8 h-8 bg-gradient-to-br from-yellow-300 to-yellow-500 text-white rounded-full flex items-center justify-center font-black text-xs shadow-[0_4px_12px_rgba(234,179,8,0.4)] border-2 border-white z-10">1st</span>;
@@ -30,7 +25,7 @@ const HorizontalBarChart = ({ title, data, valueKey, valueLabel, subtitle }) => 
         {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
       </div>
       
-      <div className="flex-1 space-y-6">
+      <div className="flex-1 space-y-6 pr-4">
         {data.map((item) => {
           const percentage = (item[valueKey] / maxValue) * 100;
           return (
@@ -59,20 +54,55 @@ const HorizontalBarChart = ({ title, data, valueKey, valueLabel, subtitle }) => 
 };
 
 const TopPerformersCharts = () => {
+  const [dealers, setDealers] = useState([]);
+  const [painters, setPainters] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getPublicData();
+        // Extract actual data safely
+        const data = response?.data?.data || response?.data || {};
+        
+        const formattedDealers = (data.topDealers || []).slice(0, 10).map((d, index) => ({
+          id: d._id || index,
+          rank: index + 1,
+          name: d.dealerName || d.name || "Unknown",
+          value: d.totalOrderVolume || d.totalOrders || 0
+        }));
+
+        const formattedPainters = (data.topPainters || []).slice(0, 10).map((p, index) => ({
+          id: p._id || index,
+          rank: index + 1,
+          name: p.painterName || p.name || "Unknown",
+          // Try different possible value keys for painters based on backend implementation
+          value: p.totalScans || p.totalRedeems || p.totalOrders || p.totalOrderVolume || 0
+        }));
+
+        setDealers(formattedDealers);
+        setPainters(formattedPainters);
+      } catch (error) {
+        console.error("Error fetching top performers data:", error);
+      }
+    };
+    
+    fetchData();
+  }, []);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
       <HorizontalBarChart 
         title="Top 10 Dealers"
         subtitle="Ranked by volume ordered this month"
-        data={dealers10}
-        valueKey="bucketsOrdered"
+        data={dealers}
+        valueKey="value"
         valueLabel="Units"
       />
       <HorizontalBarChart 
         title="Top 10 Painters"
         subtitle="Ranked by QR buckets scanned this month"
-        data={painters10}
-        valueKey="bucketsScanned"
+        data={painters}
+        valueKey="value"
         valueLabel="Scans"
       />
     </div>
