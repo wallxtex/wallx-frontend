@@ -9,7 +9,6 @@ const TopDealersRankingTable = () => {
   const [myStats, setMyStats] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const CURRENT_LOGGED_IN_DEALER_ID = "CURRENT_USER_ID_PLACEHOLDER"; 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +25,7 @@ const TopDealersRankingTable = () => {
           setDealers(sortedDealers);
         }
 
-        if (dashboardDataRes && dashboardDataRes.data) {
+        if (dashboardDataRes?.data) {
           setMyStats(dashboardDataRes.data.myStats);
         }
       } catch (error) {
@@ -47,17 +46,32 @@ const TopDealersRankingTable = () => {
 
     const top10 = rankedDealers.slice(0, 10);
   
-    const isCurrentInTop10 = top10.some(d => d._id === CURRENT_LOGGED_IN_DEALER_ID);
+    const currentDealerId = myStats?.id;
+    const isCurrentInTop10 = currentDealerId ? top10.some(d => d._id === currentDealerId) : false;
     
-    if (!isCurrentInTop10 && myStats) {
+    if (currentDealerId && !isCurrentInTop10 && myStats) {
       top10.push({ 
-        _id: CURRENT_LOGGED_IN_DEALER_ID, 
+        _id: currentDealerId, 
         dealerName: "You", 
-        shopName: "-", 
+        shopName: myStats.shopName || "-", 
         totalOrderVolume: myStats.totalOrderAmount || 0,
         totalOrders: myStats.totalOrderCount || 0,
         isAppended: true,
-        actualRank: "-" // Rank is unknown if outside top 10 from API
+        actualRank: myStats.rank || ""
+      });
+    }
+
+    // Pad with empty rows so the table always has exactly 10 slots (excluding the appended row if any)
+    // Actually, if we just want exactly 10 rows minimum:
+    while (top10.length < 10) {
+      top10.push({
+        _id: `dummy-${top10.length}`,
+        dealerName: "NA",
+        shopName: "NA",
+        totalOrderVolume: 0,
+        totalOrders: 0,
+        actualRank: top10.length + 1,
+        isDummy: true
       });
     }
     
@@ -115,7 +129,7 @@ const TopDealersRankingTable = () => {
               </tr>
             )}
             {displayData.map((dealer, idx) => {
-              const isCurrentUser = dealer._id === CURRENT_LOGGED_IN_DEALER_ID;
+              const isCurrentUser = dealer._id === myStats?.id;
               
               return (
                 <motion.tr 
