@@ -22,6 +22,96 @@ export async function getAllPainters() {
     }
 }
 
+export async function addProducts(payload){
+    try{
+        const response = await PrivateApi.post(adminApis.addProducts,payload)
+        return ApiResponseMessage.success(response.data)
+    }
+    catch(error){
+        return ApiResponseMessage.err(error)
+    }
+}
+
+export async function getAllProducts() {
+    try {
+        const response = await PrivateApi.get(adminApis.addProducts)
+        return ApiResponseMessage.success(response.data)
+    }
+    catch (error) {
+        return ApiResponseMessage.err(error)
+    }
+}
+
+export async function editProduct(id,payload){
+    try{
+        const response=await PrivateApi.patch(
+            `${adminApis.addProducts}/${id}`,
+            payload
+        )
+        return ApiResponseMessage.success(response.data)
+    }
+    catch(error){
+        return ApiResponseMessage.err(error)
+    }
+}
+
+export async function deleteProduct(id){
+    try{
+        const response=await PrivateApi.delete(
+            `${adminApis.addProducts}/${id}`
+        )
+        return ApiResponseMessage.success(response.data)
+    }
+    catch(error){
+        return ApiResponseMessage.err(error)
+    }
+}
+
+export async function addServices(payload){
+    try{
+        const response = await PrivateApi.post(adminApis.wallxServices,payload)
+        return ApiResponseMessage.success(response.data)
+    }
+    catch(error){
+        return ApiResponseMessage.err(error)
+    }
+}
+
+export async function getAllServices() {
+    try {
+        const response = await PrivateApi.get(adminApis.wallxServices)
+        return ApiResponseMessage.success(response.data)
+    }
+    catch (error) {
+        return ApiResponseMessage.err(error)
+    }
+}
+
+export async function editServices(id,payload){
+    try{
+        const response=await PrivateApi.patch(
+            `${adminApis.wallxServices}/${id}`,
+            payload
+        )
+        return ApiResponseMessage.success(response.data)
+    }
+    catch(error){
+        return ApiResponseMessage.err(error)
+    }
+}
+
+export async function deleteServices(id){
+    try{
+        const response=await PrivateApi.delete(
+            `${adminApis.wallxServices}/${id}`
+        )
+        return ApiResponseMessage.success(response.data)
+    }
+    catch(error){
+        return ApiResponseMessage.err(error)
+    }
+}
+
 export async function addSchemes(payload) {
     try {
         const response = await PrivateApi.post(adminApis.addSchemes, payload);

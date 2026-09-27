@@ -150,7 +150,7 @@ const PainterRankingTable = () => {
             <div className="grid grid-cols-2 gap-y-5 gap-x-4 pt-1">
               <div>
                 <p className="text-xs text-gray-500 font-semibold mb-1">Total Redeems</p>
-                <p className="text-2xl font-black text-gray-900">{selectedPainter.totalRedeems || "N/A"}</p>
+                <p className="text-2xl font-black text-gray-900">{selectedPainter.couponsRedeemed}</p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 font-semibold mb-1">Redeemed Amount</p>
