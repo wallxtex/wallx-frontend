@@ -8,7 +8,7 @@ const MAIN_NAV_LINKS = [
 ];
 
 const AUTH_NAV_LINKS = [
-  { name: "Painter Signup", path: "/painter-signup", icon: IoPersonOutline },
-  { name: "Dealer Signup", path: "/dealer-signup", icon: IoBriefcaseOutline },
+  { name: "Painter Login", path: "/painter-login", icon: IoPersonOutline },
+  { name: "Dealer Login", path: "/dealer-login", icon: IoBriefcaseOutline },
 ];
 export { MAIN_NAV_LINKS, AUTH_NAV_LINKS };

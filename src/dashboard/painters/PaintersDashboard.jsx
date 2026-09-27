@@ -9,7 +9,7 @@ const PainterDashboard = () => {
   const isAdmin = location.pathname.startsWith('/admin');
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
       <div className="mb-4">
         <h1 className="text-xl sm:text-2xl font-bold text-black">
           Painter Dashboard
@@ -22,11 +22,6 @@ const PainterDashboard = () => {
       {/* Stats Row */}
       <StatsRow />
 
-      <div className="border-t border-gray-100 my-4 sm:my-6" />
-
-      {/* Schemes Row */}
-      <SchemesRow hideCreateButton={!isAdmin} />
-
       {isAdmin && (
         <>
           <div className="border-t border-gray-100 my-4 sm:my-6" />
@@ -38,6 +33,11 @@ const PainterDashboard = () => {
 
       {!isAdmin && (
         <>
+          <div className="border-t border-gray-100 my-4 sm:my-6" />
+
+          {/* Schemes Row */}
+          <SchemesRow hideCreateButton={true} />
+
           <div className="border-t border-gray-100 my-4 sm:my-6" />
 
           {/* Scanner Placeholder */}
