@@ -155,7 +155,7 @@ export const routeConfig = [
   // ==================== DEALER PROTECTED ROUTES ====================
   {
     path: "/dealer",
-    protected: false,
+    protected: true,
     allowedRoles: [ROLES.DEALER],
     layout: DealersLayout,
     children: [
