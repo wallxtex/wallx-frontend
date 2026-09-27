@@ -1,14 +1,10 @@
-import React, { useState } from "react";
-import QRCode from "qrcode";
-import JSZip from "jszip";
-import { saveAs } from "file-saver";
+import React, { useState, useEffect } from "react";
 import CouponStats from "./GenerateCoupon/CouponStats";
 import GenerateForm from "./GenerateCoupon/GenerateForm";
 import AlertMessage from "./GenerateCoupon/AlertMessage";
-import CouponFooter from "./GenerateCoupon/CouponFooter";
-import PrivateApi from "../../../utils/apis/privateApi";
+import CouponBatchesList from "./GenerateCoupon/CouponBatchesList";
+import { getCouponStats, generateCoupons as generateCouponsApi, getCouponBatches, downloadCouponBatchPdf } from "../../../services/admin/admin.services";
 
-// coupone
 const GenerateCoupon = () => {
   const [scannerCount, setScannerCount] = useState("");
   const [amount, setAmount] = useState("");
@@ -17,6 +13,35 @@ const GenerateCoupon = () => {
   const [generatedCoupons, setGeneratedCoupons] = useState([]);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  
+  const [stats, setStats] = useState({});
+  const [batches, setBatches] = useState([]);
+  const [isFetchingBatches, setIsFetchingBatches] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setIsFetchingBatches(true);
+    try {
+      const [statsRes, batchesRes] = await Promise.all([
+        getCouponStats(),
+        getCouponBatches()
+      ]);
+      
+      if (statsRes.success) {
+        setStats(statsRes.data.data || statsRes.data);
+      }
+      if (batchesRes.success) {
+        setBatches(batchesRes.data.data || batchesRes.data.batches || []);
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    } finally {
+      setIsFetchingBatches(false);
+    }
+  };
 
   // Generate QR code as data URL
   const generateQRCodeDataURL = async (text) => {
@@ -55,6 +80,12 @@ const GenerateCoupon = () => {
       return;
     }
 
+    const validityDays = Math.ceil((new Date(validityDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+    if (validityDays <= 0) {
+      setError("Validity date must be in the future");
+      return;
+    }
+
     setIsGenerating(true);
     setError(null);
     setSuccess(null);
@@ -62,88 +93,55 @@ const GenerateCoupon = () => {
 
     try {
       // Call backend API
-      const response = await PrivateApi.post("/api/coupons/generate", {
-        scannerCount: count,
+      const response = await generateCouponsApi({
+        quantity: count,
         amount: Number(amount),
-        validityDate,
+        validityDays,
       });
 
+      if (!response.success) {
+        throw new Error(response.message || "Failed to generate coupons");
+      }
+
       // Assuming backend returns: { success: true, data: [{ id, token, code }, ...] }
-      const coupons = response.data.data || response.data.coupons || [];
-
-      // Generate QR codes for each coupon
-      const couponsWithQR = await Promise.all(
-        coupons.map(async (coupon) => {
-          const qrCodeDataURL = await generateQRCodeDataURL(
-            coupon.token || coupon.code || coupon.id,
-          );
-          return {
-            ...coupon,
-            qrCodeDataURL,
-          };
-        }),
-      );
-
-      setGeneratedCoupons(couponsWithQR);
-      setSuccess(`Successfully generated ${couponsWithQR.length} coupon(s)!`);
-      setScannerCount(""); // Reset input
+      // Wait, the backend generateCoupons returns batch info, but doesn't return the list of individual coupons!
+      // To show QRs immediately, we'd need to fetch the newly generated batch's coupons.
+      // But instead of doing that, let's just show success and refresh the batch list.
+      setSuccess(`Successfully generated ${count} coupon(s)!`);
+      setScannerCount(""); 
+      setAmount("");
+      setValidityDate("");
+      
+      // Refresh the table
+      fetchData();
     } catch (err) {
       console.error("Error generating coupons:", err);
-      setError(
-        err.response?.data?.message ||
-          "Failed to generate coupons. Please try again.",
-      );
+      setError(err.message || "Failed to generate coupons. Please try again.");
     } finally {
       setIsGenerating(false);
     }
   };
 
-  // Download individual QR code
-  const downloadSingleQR = (coupon, index) => {
-    if (!coupon.qrCodeDataURL) return;
-
-    const link = document.createElement("a");
-    link.href = coupon.qrCodeDataURL;
-    link.download = `coupon-${coupon.code || coupon.id || index + 1}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // Download all QR codes as ZIP
-  const downloadAllQRCodes = async () => {
-    if (generatedCoupons.length === 0) return;
-
+  const handleDownloadPDF = async (batchId) => {
     try {
-      const zip = new JSZip();
-      const folder = zip.folder("qr-codes");
-
-      // Add each QR code to the ZIP
-      generatedCoupons.forEach((coupon, index) => {
-        if (coupon.qrCodeDataURL) {
-          // Convert data URL to blob
-          const base64Data = coupon.qrCodeDataURL.split(",")[1];
-          folder.file(
-            `coupon-${coupon.code || coupon.id || index + 1}.png`,
-            base64Data,
-            { base64: true },
-          );
-        }
-      });
-
-      // Generate ZIP file and trigger download
-      const blob = await zip.generateAsync({ type: "blob" });
-      saveAs(blob, `coupons-${Date.now()}.zip`);
+      const response = await downloadCouponBatchPdf(batchId);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `coupon-batch-${batchId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     } catch (err) {
-      console.error("Error creating ZIP:", err);
-      setError("Failed to download all QR codes. Please try again.");
+      console.error("Failed to download PDF", err);
+      setError("Failed to download PDF");
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-3 sm:p-4 md:p-6">
 
-      <CouponStats />
+      <CouponStats stats={stats} />
 
       <GenerateForm
         scannerCount={scannerCount}
@@ -159,15 +157,14 @@ const GenerateCoupon = () => {
       <AlertMessage type="error" message={error} />
       <AlertMessage type="success" message={success} />
 
-      <CouponFooter
-        generatedCoupons={generatedCoupons}
-        isGenerating={isGenerating}
-        error={error}
-        downloadSingleQR={downloadSingleQR}
-        downloadAllQRCodes={downloadAllQRCodes}
+      <CouponBatchesList 
+        batches={batches}
+        isLoading={isFetchingBatches}
+        onDownloadPDF={handleDownloadPDF}
       />
     </div>
   );
 };
 
 export default GenerateCoupon;
+

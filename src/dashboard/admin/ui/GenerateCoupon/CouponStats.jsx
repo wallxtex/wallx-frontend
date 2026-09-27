@@ -1,13 +1,9 @@
 import React from 'react';
 import { Ticket, CheckCircle2, TicketMinus } from 'lucide-react';
 
-const MOCK_STATS = {
-  totalGenerated: 1250,
-  active: 840,
-  redeemed: 410
-};
+const CouponStats = ({ stats }) => {
+  const { generatedCoupons = 0, couponsActive = 0, couponsRedeemed = 0 } = stats || {};
 
-const CouponStats = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4 transition-transform hover:-translate-y-1 hover:shadow-lg">
@@ -16,7 +12,7 @@ const CouponStats = () => {
         </div>
         <div>
           <p className="text-sm font-medium text-gray-500">Total Generated</p>
-          <p className="text-2xl font-bold text-gray-900">{MOCK_STATS.totalGenerated.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-gray-900">{generatedCoupons.toLocaleString()}</p>
         </div>
       </div>
       
@@ -26,7 +22,7 @@ const CouponStats = () => {
         </div>
         <div>
           <p className="text-sm font-medium text-gray-500">Total Active</p>
-          <p className="text-2xl font-bold text-gray-900">{MOCK_STATS.active.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-gray-900">{couponsActive.toLocaleString()}</p>
         </div>
       </div>
 
@@ -36,7 +32,7 @@ const CouponStats = () => {
         </div>
         <div>
           <p className="text-sm font-medium text-gray-500">Total Redeemed</p>
-          <p className="text-2xl font-bold text-gray-900">{MOCK_STATS.redeemed.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-gray-900">{couponsRedeemed.toLocaleString()}</p>
         </div>
       </div>
     </div>

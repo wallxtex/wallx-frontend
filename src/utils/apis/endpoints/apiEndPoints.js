@@ -41,6 +41,12 @@ const adminApis = {
   // Enquiry endpoints
   getEnquiries: "/admin/enquiries",
   getEnquiryStats: "/admin/enquiries/stats",
+  // Coupon endpoints
+  getCouponStats: "/admin/coupons/stats",
+  generateCoupons: "/admin/coupons/generate",
+  getCouponBatches: "/admin/coupons/batches",
+  getCouponsByBatch: "/admin/coupons/batches/:batchId/coupons",
+  downloadCouponBatchPdf: "/admin/coupons/batches/:batchId/download",
 
 };
 
