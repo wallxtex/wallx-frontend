@@ -15,6 +15,7 @@ import {
   DealerSignupDetails,
   DealerApproval,
 } from "../../../services/dealers/dealer/dealerSignupdetail";
+import { adminDealerSignupStats } from "../../../services/dealers/dealer/dealerManagement";
 
 const DealerSignupAccounts = () => {
   console.log("[COMPONENT] DealerSignupAccounts mounted/rendered");
@@ -22,15 +23,22 @@ const DealerSignupAccounts = () => {
   const [dealers, setDealers] = useState([]);
   const [selectedDealer, setSelectedDealer] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalAccountsThisMonth: 0,
+    pendingApprovals: 0,
+    approvedAccounts: 0,
+    rejectedAccounts: 0,
+  });
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
 
-  // Fetch dealers on component mount
+  // Fetch dealers and stats on component mount
   useEffect(() => {
-    console.log("[COMPONENT] useEffect triggered - calling fetchDealers");
+    console.log("[COMPONENT] useEffect triggered - calling fetchDealers and fetchStats");
     fetchDealers();
+    fetchStats();
   }, []);
 
   const fetchDealers = async () => {
@@ -76,12 +84,46 @@ const DealerSignupAccounts = () => {
     }
   };
 
+  const fetchStats = async () => {
+    console.log("[DEALER SIGNUP STATS] ========== FETCH STARTED ==========");
+    try {
+      console.log("[DEALER SIGNUP STATS] Calling adminDealerSignupStats API...");
+      const response = await adminDealerSignupStats();
+      console.log("[DEALER SIGNUP STATS] ========== RAW RESPONSE ==========");
+      console.log(
+        "[DEALER SIGNUP STATS] Full response:",
+        JSON.stringify(response, null, 2),
+      );
+
+      if (response.success) {
+        const statsData = response.data.data;
+        console.log("[DEALER SIGNUP STATS] Stats data:", statsData);
+        setStats({
+          totalAccountsThisMonth: statsData.totalAccountsThisMonth || 0,
+          pendingApprovals: statsData.pendingApprovals || 0,
+          approvedAccounts: statsData.approvedAccounts || 0,
+          rejectedAccounts: statsData.rejectedAccounts || 0,
+        });
+        console.log("[DEALER SIGNUP STATS] Stats state updated!");
+      } else {
+        console.error("[DEALER SIGNUP STATS] ❌ API returned success: false");
+      }
+    } catch (error) {
+      console.error("[DEALER SIGNUP STATS] ========== ERROR ==========");
+      console.error("[DEALER SIGNUP STATS] Error object:", error);
+      console.error("[DEALER SIGNUP STATS] Error message:", error.message);
+    } finally {
+      console.log("[DEALER SIGNUP STATS] ========== FETCH COMPLETE ==========");
+    }
+  };
+
   const handleApprove = async (dealerId, name) => {
     try {
       await DealerApproval(dealerId, { action: "approve" });
       // Success toast is shown by the API function
       setSelectedDealer(null);
       fetchDealers(); // Refresh the list
+      fetchStats(); // Refresh stats
     } catch (error) {
       console.error("Failed to approve dealer:", error);
       // Error toast is shown by the API function
@@ -96,13 +138,14 @@ const DealerSignupAccounts = () => {
       // Success toast is shown by the API function
       setSelectedDealer(null);
       fetchDealers(); // Refresh the list
+      fetchStats(); // Refresh stats
     } catch (error) {
       console.error("Failed to reject dealer:", error);
       // Error toast is shown by the API function
     }
   };
 
-  // Stats calculation
+  // Stats calculation from local dealers (no longer needed, but keeping for backward compatibility)
   const totalThisMonth = dealers.length;
   const approvedAccounts = dealers.filter(
     (d) => d.status === "approved",
@@ -152,7 +195,7 @@ const DealerSignupAccounts = () => {
                 Total Accounts (This Month)
               </span>
               <span className="text-3xl font-bold text-gray-900 mt-2">
-                {totalThisMonth}
+                {stats.totalAccountsThisMonth}
               </span>
             </div>
             <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex flex-col">
@@ -160,7 +203,7 @@ const DealerSignupAccounts = () => {
                 Pending Approvals
               </span>
               <span className="text-3xl font-bold text-amber-500 mt-2">
-                {pendingAccounts}
+                {stats.pendingApprovals}
               </span>
             </div>
             <div className="bg-emerald-50 rounded-xl border border-emerald-100 p-5 shadow-sm flex flex-col">
@@ -168,7 +211,7 @@ const DealerSignupAccounts = () => {
                 Approved Accounts
               </span>
               <span className="text-3xl font-bold text-emerald-600 mt-2">
-                {approvedAccounts}
+                {stats.approvedAccounts}
               </span>
             </div>
             <div className="bg-red-50 rounded-xl border border-red-100 p-5 shadow-sm flex flex-col">
@@ -176,7 +219,7 @@ const DealerSignupAccounts = () => {
                 Rejected Accounts
               </span>
               <span className="text-3xl font-bold text-[#d82b2b] mt-2">
-                {rejectedAccounts}
+                {stats.rejectedAccounts}
               </span>
             </div>
           </div>

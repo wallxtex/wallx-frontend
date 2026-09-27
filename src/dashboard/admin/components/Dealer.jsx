@@ -1,72 +1,111 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Search, ShoppingCart, Banknote, Wallet, CreditCard } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import RankingTableLayout from '../../../components/shared/RankingTableLayout';
 import StatCard from '../../../components/shared/StatCard';
-
-import { getSecureRandom } from '../../../utils/helpers/constants/mockUtils';
-
-const MOCK_DEALERS = Array.from({ length: 45 }, (_, i) => {
-  const totalOrders = Math.floor(getSecureRandom() * 500) + 50;
-  return {
-    id: i + 1,
-    name: `Dealer ${String.fromCharCode(65 + (i % 26))}${i + 1}`,
-    shopName: ['Super Paints', 'Colors & Co', 'Prime Decor', 'Wall Masters', 'Elite Finishes'][i % 5] + ' ' + String.fromCharCode(65 + (i % 26)),
-    location: ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata'][i % 5],
-    state: ['Maharashtra', 'Delhi', 'Karnataka', 'Tamil Nadu', 'West Bengal'][i % 5],
-    area: ['Andheri', 'Connaught Place', 'Indiranagar', 'T Nagar', 'Salt Lake'][i % 5],
-    pinCode: Math.floor(getSecureRandom() * 900000 + 100000).toString(),
-    mobile: '+91 ' + Math.floor(getSecureRandom() * 9000000000 + 1000000000).toString(),
-    email: `dealer${i + 1}@example.com`,
-    totalOrders: totalOrders,
-    totalAmountPaid: totalOrders * (Math.floor(getSecureRandom() * 5000) + 2000),
-    amountLeftToPay: Math.floor(getSecureRandom() * 50000),
-  };
-}).sort((a, b) => b.totalOrders - a.totalOrders);
+import { adminDealerStats } from '../../../services/dealers/dealer/dealerManagement';
+import { DealerSignupDetails } from '../../../services/dealers/dealer/dealerSignupdetail';
 
 const DealerManagement = () => {
   const navigate = useNavigate();
+  const [dealers, setDealers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [statsData, setStatsData] = useState({
+    totalOrders: 0,
+    totalOrderedAmount: 0,
+    totalPaidAmount: 0,
+    totalRemaining: 0,
+  });
+
+  // Fetch dealers and stats on component mount
+  useEffect(() => {
+    fetchDealers();
+    fetchStats();
+  }, []);
+
+  const fetchDealers = async () => {
+    setIsLoading(true);
+    try {
+      const response = await DealerSignupDetails();
+      if (response.success) {
+        const dealerData = response.data.data?.dealers || [];
+        // Transform backend data to match frontend format
+        const transformedDealers = dealerData.map((dealer) => ({
+          id: dealer._id,
+          name: dealer.dealerName,
+          shopName: dealer.shopName,
+          location: dealer.location?.state || 'N/A',
+          state: dealer.location?.state || 'N/A',
+          area: dealer.location?.area || 'N/A',
+          pinCode: dealer.location?.pinCode || 'N/A',
+          mobile: dealer.phone,
+          email: dealer.email,
+          totalOrders: 0, // Will be populated from orders if needed
+          totalAmountPaid: 0,
+          amountLeftToPay: 0,
+        }));
+        setDealers(transformedDealers);
+      }
+    } catch (error) {
+      console.error('Error fetching dealers:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const response = await adminDealerStats();
+      if (response.success) {
+        const data = response.data.data;
+        setStatsData({
+          totalOrders: data.totalOrders || 0,
+          totalOrderedAmount: data.totalOrderedAmount || 0,
+          totalPaidAmount: data.totalPaidAmount || 0,
+          totalRemaining: data.totalRemaining || 0,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching dealer stats:', error);
+    }
+  };
 
   const stats = useMemo(() => {
-    const totalOrdersCount = MOCK_DEALERS.reduce((sum, dealer) => sum + dealer.totalOrders, 0);
-    const totalPaidAmount = MOCK_DEALERS.reduce((sum, dealer) => sum + dealer.totalAmountPaid, 0);
-    const totalRemainingAmount = MOCK_DEALERS.reduce((sum, dealer) => sum + dealer.amountLeftToPay, 0);
-    const totalOrderedAmount = totalPaidAmount + totalRemainingAmount;
-
     return [
       {
         label: "Total Orders",
-        value: totalOrdersCount.toLocaleString(),
+        value: statsData.totalOrders.toLocaleString(),
         icon: ShoppingCart,
         bgColor: "bg-blue-100",
         iconColor: "text-blue-600",
       },
       {
         label: "Total Ordered Amount",
-        value: `₹${(totalOrderedAmount / 100000).toFixed(2)}L`,
+        value: `₹${(statsData.totalOrderedAmount / 100000).toFixed(2)}L`,
         icon: Banknote,
         bgColor: "bg-purple-100",
         iconColor: "text-purple-600",
       },
       {
         label: "Total Paid Amount",
-        value: `₹${(totalPaidAmount / 100000).toFixed(2)}L`,
+        value: `₹${(statsData.totalPaidAmount / 100000).toFixed(2)}L`,
         icon: Wallet,
         bgColor: "bg-emerald-100",
         iconColor: "text-emerald-600",
       },
       {
         label: "Total Remaining",
-        value: `₹${(totalRemainingAmount / 100000).toFixed(2)}L`,
+        value: `₹${(statsData.totalRemaining / 100000).toFixed(2)}L`,
         icon: CreditCard,
         bgColor: "bg-amber-100",
         iconColor: "text-amber-600",
       }
     ];
-  }, []);
+  }, [statsData]);
   
   const filterFn = (dealer, searchTerm) => 
     dealer.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    dealer.shopName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     dealer.location.toLowerCase().includes(searchTerm.toLowerCase());
 
   const renderTable = (currentData, startIndex) => (
@@ -78,11 +117,19 @@ const DealerManagement = () => {
           <th className="px-6 py-4 text-center">Shop Name</th>
           <th className="px-6 py-4 text-center">Location</th>
           <th className="px-6 py-4 text-center">Mobile Number</th>
-          <th className="px-6 py-4 text-center">Total Orders</th>
+          <th className="px-6 py-4 text-center">Email</th>
         </tr>
       </thead>
       <tbody className="divide-y divide-gray-50 bg-white">
-        {currentData.length > 0 ? currentData.map((dealer, idx) => (
+        {isLoading ? (
+          <tr>
+            <td colSpan="6" className="px-6 py-12 text-center">
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#d82b2b]"></div>
+              </div>
+            </td>
+          </tr>
+        ) : currentData.length > 0 ? currentData.map((dealer, idx) => (
           <tr 
             key={dealer.id} 
             className="hover:bg-red-50 transition-colors group cursor-pointer"
@@ -115,10 +162,8 @@ const DealerManagement = () => {
             <td className="px-6 py-4 text-gray-600 font-medium tracking-wide text-center">
               {dealer.mobile}
             </td>
-            <td className="px-6 py-4 font-bold text-gray-900 text-center">
-              <span className="bg-gray-50 px-3 py-1 rounded-full border border-gray-100">
-                {dealer.totalOrders}
-              </span>
+            <td className="px-6 py-4 text-gray-600 font-medium text-center truncate max-w-[200px]">
+              {dealer.email}
             </td>
           </tr>
         )) : (
@@ -156,8 +201,8 @@ const DealerManagement = () => {
 
       <RankingTableLayout
         title="Dealer Rankings & List"
-        subtitle="Sorted by total purchased orders"
-        data={MOCK_DEALERS}
+        subtitle="All registered dealers in the system"
+        data={dealers}
         searchPlaceholder="Search dealers..."
         filterFn={filterFn}
         renderTable={renderTable}

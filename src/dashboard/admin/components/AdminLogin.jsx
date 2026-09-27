@@ -1,18 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, LogIn, User, Lock } from "lucide-react";
 import { adminLoginHandler } from "../../../services/global-auth/admin";
 import { useAuth } from "../../../auth/AuthContext";
+import adminVideo from "../../../assets/admin-video.mp4";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 0.7; //slow down 
+    }
+  }, []);
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -62,10 +70,25 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 p-4">
-      <div className="w-full max-w-md">
-        {/* Login Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 p-4 relative overflow-hidden">
+      {/* Background Video (Desktop Only) */}
+      <video
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="hidden md:block absolute inset-0 w-full h-full object-cover z-0"
+      >
+        <source src={adminVideo} type="video/mp4" />
+      </video>
+
+      {/* Overlay for better readability (Desktop Only) */}
+      <div className="hidden md:block absolute inset-0 bg-black/20 z-0 backdrop-blur-[2px]"></div>
+
+      <div className="w-full max-w-md relative z-10">
+        {/* Login Card with Glassmorphism */}
+        <div className="bg-white/80 md:bg-white/60 backdrop-blur-xl border border-white/50 rounded-2xl shadow-2xl p-8">
           {/* Logo/Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-[#d82b2b] rounded-full mb-4">
@@ -107,7 +130,7 @@ const AdminLogin = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#d82b2b] focus:border-[#d82b2b] outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-white/70 backdrop-blur-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#d82b2b] focus:border-[#d82b2b] outline-none transition-all placeholder:text-gray-500"
                   placeholder="Enter your email"
                   disabled={isLoading}
                 />
@@ -128,7 +151,7 @@ const AdminLogin = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#d82b2b] focus:border-[#d82b2b] outline-none transition-all"
+                  className="w-full pl-10 pr-12 py-3 bg-white/70 backdrop-blur-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#d82b2b] focus:border-[#d82b2b] outline-none transition-all placeholder:text-gray-500"
                   placeholder="Enter your password"
                   disabled={isLoading}
                 />
@@ -138,9 +161,9 @@ const AdminLogin = () => {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <EyeOff className="h-5 w-5 text-gray-500 hover:text-gray-700" />
                   ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <Eye className="h-5 w-5 text-gray-500 hover:text-gray-700" />
                   )}
                 </button>
               </div>
@@ -168,7 +191,7 @@ const AdminLogin = () => {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-gray-500 text-sm mt-6">
+        <p className="text-center text-gray-600 font-medium text-sm mt-6 relative z-10">
           © 2024 WallX Admin Panel
         </p>
       </div>

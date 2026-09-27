@@ -28,11 +28,16 @@ const adminApis = {
   logout: `${admin}/logout`,
   refreshToken: `${admin}/refresh-token`,
   addSchemes: "/admin/schemes",
+  adminDashboardData: "admin/dashboard",
+  allPainters: "admin/painters",
   DealerSignupDetails: adminDashboardApis,
   DealersPendingStatus: `${adminDashboardApis}/pending`,
   DealersRejected: `${adminDashboardApis}/rejected`,
   DealerApproval: `${adminDashboardApis}/:id/approval`,
   DealerParticularDetails: `${adminDashboardApis}/:id`,
+  dealerStats:`${adminDashboardApis}/stats`,
+  //dealer-management
+  dealerSignupStats:`${adminDashboardApis}/signup-stats`,
   // Enquiry endpoints
   getEnquiries: "/admin/enquiries",
   getEnquiryStats: "/admin/enquiries/stats",
@@ -42,6 +47,7 @@ const adminApis = {
   getCouponBatches: "/admin/coupons/batches",
   getCouponsByBatch: "/admin/coupons/batches/:batchId/coupons",
   downloadCouponBatchPdf: "/admin/coupons/batches/:batchId/download",
+
 };
 
 export { painterApis, dealerApis, adminApis };

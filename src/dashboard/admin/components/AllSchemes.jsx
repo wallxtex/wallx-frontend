@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import SharedSchemesRow from "../../../components/shared/SharedSchemesRow";
 import { getPublicData } from "../../../services/dealers/dealers.services";
-import { addSchemes } from "../../../services/admin/admin.services";
+import { addSchemes, updateSchemes, deleteSchemes } from "../../../services/admin/admin.services";
 import { Loader2, Plus, X } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -11,6 +11,8 @@ const AllSchemes = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editSchemeId, setEditSchemeId] = useState(null);
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -37,7 +39,7 @@ const AllSchemes = () => {
             const response = await addSchemes(formData);
 
             if (response.success) {
-                // toast.success("Scheme added successfully!");
+                toast.success("Scheme added successfully!");
                 setIsAddModalOpen(false);
                 // Reset form
                 setFormData({
@@ -65,6 +67,68 @@ const AllSchemes = () => {
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const handleEditSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        try {
+            const response = await updateSchemes(editSchemeId, formData);
+            if (response.success) {
+                toast.success("Scheme updated successfully!");
+                setIsEditModalOpen(false);
+                setEditSchemeId(null);
+                setFormData({ title: "", description: "", targetAudience: "DEALER", validUntil: "", isActive: true });
+                const refreshResponse = await getPublicData();
+                if (refreshResponse && refreshResponse.data && refreshResponse.data.activeSchemes) {
+                    const allSchemes = refreshResponse.data.activeSchemes;
+                    setDealerSchemes(allSchemes.filter(s => s.targetAudience === 'DEALER'));
+                    setPainterSchemes(allSchemes.filter(s => s.targetAudience === 'PAINTER'));
+                }
+            } else {
+                // toast.error(response.error?.message || "Failed to update scheme.");
+            }
+        } catch (error) {
+            console.error("Error updating scheme:", error);
+            // toast.error("An error occurred. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleDeleteScheme = async (id) => {
+        try {
+            const response = await deleteSchemes(id);
+            if (response.success) {
+                toast.success("Scheme deleted successfully!");
+                const refreshResponse = await getPublicData();
+                if (refreshResponse && refreshResponse.data && refreshResponse.data.activeSchemes) {
+                    const allSchemes = refreshResponse.data.activeSchemes;
+                    setDealerSchemes(allSchemes.filter(s => s.targetAudience === 'DEALER'));
+                    setPainterSchemes(allSchemes.filter(s => s.targetAudience === 'PAINTER'));
+                }
+            } else {
+                toast.error(response.error?.message || "Failed to delete scheme.");
+            }
+        } catch (error) {
+            console.error("Error deleting scheme:", error);
+            // toast.error("An error occurred.");
+        }
+    };
+
+    const handleUpdateClick = (scheme) => {
+        const allSchemes = [...dealerSchemes, ...painterSchemes];
+        const rawScheme = allSchemes.find(s => s._id === scheme.id || s.id === scheme.id) || scheme;
+        
+        setFormData({
+            title: rawScheme.title || "",
+            description: rawScheme.description || "",
+            targetAudience: rawScheme.targetAudience || "DEALER",
+            validUntil: rawScheme.validUntil ? new Date(rawScheme.validUntil).toISOString().split('T')[0] : "",
+            isActive: rawScheme.isActive ?? true
+        });
+        setEditSchemeId(scheme.id);
+        setIsEditModalOpen(true);
     };
 
     useEffect(() => {
@@ -127,6 +191,8 @@ const AllSchemes = () => {
                                 schemes={section.schemes}
                                 type={section.type}
                                 isAdmin={true}
+                                onDelete={handleDeleteScheme}
+                                onUpdate={handleUpdateClick}
                             />
                         ) : (
                             <div className="w-full bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
@@ -145,14 +211,19 @@ const AllSchemes = () => {
                 ))}
             </div>
 
-            {/* Add New Scheme Modal */}
-            {isAddModalOpen && (
+            {/* Add/Edit Scheme Modal */}
+            {(isAddModalOpen || isEditModalOpen) && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
                     <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
                         <div className="p-5 border-b border-gray-100 flex items-center justify-between">
-                            <h2 className="text-xl font-bold text-gray-900">Add New Scheme</h2>
+                            <h2 className="text-xl font-bold text-gray-900">{isEditModalOpen ? "Edit Scheme" : "Add New Scheme"}</h2>
                             <button
-                                onClick={() => setIsAddModalOpen(false)}
+                                onClick={() => {
+                                    setIsAddModalOpen(false);
+                                    setIsEditModalOpen(false);
+                                    setEditSchemeId(null);
+                                    setFormData({ title: "", description: "", targetAudience: "DEALER", validUntil: "", isActive: true });
+                                }}
                                 className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100 cursor-pointer"
                             >
                                 <X className="w-5 h-5" />
@@ -160,7 +231,7 @@ const AllSchemes = () => {
                         </div>
 
                         <div className="p-5 overflow-y-auto">
-                            <form id="add-scheme-form" onSubmit={handleAddSubmit} className="space-y-4">
+                            <form id="scheme-form" onSubmit={isEditModalOpen ? handleEditSubmit : handleAddSubmit} className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
                                     <input
@@ -242,14 +313,19 @@ const AllSchemes = () => {
                         <div className="p-5 border-t border-gray-100 flex justify-end gap-3 bg-gray-50">
                             <button
                                 type="button"
-                                onClick={() => setIsAddModalOpen(false)}
+                                onClick={() => {
+                                    setIsAddModalOpen(false);
+                                    setIsEditModalOpen(false);
+                                    setEditSchemeId(null);
+                                    setFormData({ title: "", description: "", targetAudience: "DEALER", validUntil: "", isActive: true });
+                                }}
                                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 cursor-pointer"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                form="add-scheme-form"
+                                form="scheme-form"
                                 disabled={isSubmitting}
                                 className="px-4 py-2 flex items-center gap-2 text-sm font-medium text-white bg-[#d82b2b] rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 cursor-pointer shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
                             >
@@ -259,7 +335,7 @@ const AllSchemes = () => {
                                         Saving...
                                     </>
                                 ) : (
-                                    "Save Scheme"
+                                    isEditModalOpen ? "Update Scheme" : "Save Scheme"
                                 )}
                             </button>
                         </div>
