@@ -3,15 +3,17 @@ import { Gift, Wallet } from "lucide-react";
 import { LuUsers } from "react-icons/lu";
 import { useEffect, useState } from "react";
 import { getAdminDashboardData } from "../../../services/admin/admin.services";
+import { getPainterDashboardData } from "../../../services/painter/painter.services";
+import { Award } from "lucide-react";
 
-const StatsRow = () => {
+const StatsRow = ({ isAdmin }) => {
 
   const [dashboardData, setDashboardData] = useState(null)
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await getAdminDashboardData()
+        const response = isAdmin ? await getAdminDashboardData() : await getPainterDashboardData();
         if (response?.success) {
           const actualData = response.data?.data || response.data
           setDashboardData(actualData)
@@ -23,9 +25,9 @@ const StatsRow = () => {
     }
 
     fetchDashboardData()
-  }, [])
+  }, [isAdmin])
 
-  const stats = [
+  const stats = isAdmin ? [
     {
       label: "Total Painters",
       value: (dashboardData?.totalPainters || 0).toLocaleString(),
@@ -43,6 +45,28 @@ const StatsRow = () => {
     {
       label: "Total Redeemed Amount",
       value: (dashboardData?.totalCouponAmount || 0).toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }),
+      icon: Wallet,
+      bgColor: "bg-green-100",
+      iconColor: "text-green-600",
+    },
+  ] : [
+    {
+      label: "Your Rank",
+      value: (dashboardData?.myStats?.rank || "-"),
+      icon: Award,
+      bgColor: "bg-blue-100",
+      iconColor: "text-blue-600",
+    },
+    {
+      label: "Recent Redeems",
+      value: (dashboardData?.myStats?.recentRedemptionCount || 0).toLocaleString(),
+      icon: Gift,
+      bgColor: "bg-purple-100",
+      iconColor: "text-purple-600",
+    },
+    {
+      label: "Total Redeemed Amount",
+      value: (dashboardData?.myStats?.totalRedeemedAmount || 0).toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }),
       icon: Wallet,
       bgColor: "bg-green-100",
       iconColor: "text-green-600",
