@@ -31,7 +31,7 @@ const DealersOrders = () => {
     setIsExporting(true);
         
     setTimeout(() => {
-      const headers = ["Order ID", "Date", "Product Name", "Quantity", "Price", "Amount", "Amount Received", "Remaining Amount"];
+      const headers = ["Order ID", "Date", "Product Name", "Quantity", "Price", "Amount", "Amount Paid", "Remaining Amount"];
       const csvData = [
         headers.join(","),
         ...currentOrders.map(order =>  
@@ -172,7 +172,7 @@ const DealersOrders = () => {
                         <p className="font-semibold text-gray-900">{formatCurrency(order.amount)}</p>
                       </div>
                       <div>
-                        <p className="text-gray-500 text-xs">Received</p>
+                        <p className="text-gray-500 text-xs">Paid</p>
                         <p className="font-semibold text-gray-900">{formatCurrency(order.amountReceived || 0)}</p>
                       </div>
                       <div className="col-span-2 pt-2 border-t border-gray-50">
@@ -206,7 +206,7 @@ const DealersOrders = () => {
                       <th className="py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">Quantity</th>
                       <th className="py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Price</th>
                       <th className="py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Total Amount</th>
-                      <th className="py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Received</th>
+                      <th className="py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Paid</th>
                       <th className="py-4 px-6 text-xs font-bold text-gray-500 uppercase tracking-wider text-right bg-gray-50/80">Remaining</th>
                     </tr>
                   </thead>

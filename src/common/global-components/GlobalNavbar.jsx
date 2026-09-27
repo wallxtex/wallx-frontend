@@ -1,32 +1,37 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { Bell, LogOut, ChevronDown } from "lucide-react";
+import { LogOut, ChevronDown } from "lucide-react";
 import logo from "../../assets/webp/wallx_final.webp";
-import NotificationsData from "./data/NotificationData";
 import { useAuth } from "../../auth/AuthContext";
+import { tokenStorage } from "../../utils/helpers/handlers/tokenStorage";
 import toast from "react-hot-toast";
 
-// Mock data — replace with real user/notification data once available.
-const painter = { name: "Sagar", initials: "S" };
-
 const GlobalNavbar = () => {
-  const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const { logout } = useAuth();
+  const { logout, token, role } = useAuth();
   const navigate = useNavigate();
 
-  const notifRef = useRef(null);
   const profileRef = useRef(null);
+  
+  const [currentUser, setCurrentUser] = useState({ name: "User", initials: "U", role: role || "User" });
 
-  const unreadCount = NotificationsData.filter((n) => n.unread).length;
+  useEffect(() => {
+    if (token) {
+      const { payload } = tokenStorage.getPayload(token);
+      if (payload && payload.name) {
+        setCurrentUser({
+          name: payload.name,
+          initials: payload.name.charAt(0).toUpperCase(),
+          role: payload.role || role || "User"
+        });
+      }
+    }
+  }, [token, role]);
 
-  // Close either dropdown when clicking outside of it.
+  // Close profile dropdown when clicking outside of it.
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (notifRef.current && !notifRef.current.contains(e.target)) {
-        setNotifOpen(false);
-      }
       if (profileRef.current && !profileRef.current.contains(e.target)) {
         setProfileOpen(false);
       }
@@ -60,83 +65,24 @@ const GlobalNavbar = () => {
 
         {/* Right: actions */}
         <div className="flex items-center gap-1 sm:gap-2">
-          {/* Notifications */}
-          <div className="relative" ref={notifRef}>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                setNotifOpen((o) => !o);
-                setProfileOpen(false);
-              }}
-              className="relative flex items-center justify-center w-11 h-11 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors duration-200"
-              aria-label="Notifications"
-            >
-              <Bell className="w-5 h-5" />
-              {unreadCount > 0 && (
-                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#d82b2b]" />
-              )}
-            </motion.button>
-
-            <AnimatePresence>
-              {notifOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute right-0 mt-2 w-80 max-w-[90vw] bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden"
-                >
-                  <div className="px-4 py-3 border-b border-gray-100">
-                    <p className="text-sm font-semibold text-black">
-                      Notifications
-                    </p>
-                  </div>
-                  <div className="max-h-80 overflow-y-auto">
-                    {NotificationsData.map((n) => (
-                      <div
-                        key={n.id}
-                        className="px-4 py-3 border-b border-gray-50 last:border-b-0 hover:bg-gray-50"
-                      >
-                        <div className="flex items-start gap-2">
-                          {n.unread && (
-                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#d82b2b] flex-shrink-0" />
-                          )}
-                          <div className={n.unread ? "" : "pl-3.5"}>
-                            <p className="text-sm font-medium text-black">
-                              {n.title}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-0.5">
-                              {n.detail}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
 
           {/* Profile menu */}
           <div className="relative" ref={profileRef}>
             <button
               onClick={() => {
                 setProfileOpen((o) => !o);
-                setNotifOpen(false);
               }}
               className="flex items-center gap-2 pl-2 pr-1 sm:pr-3 h-11 rounded-lg hover:bg-gray-100 transition-colors duration-200"
               aria-label="Account menu"
             >
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
-                {painter.initials}
+                {currentUser.initials}
               </div>
               <span className="hidden sm:flex flex-col items-start leading-tight">
                 <span className="text-sm text-gray-700 font-medium">
-                  Hi, {painter.name}
+                  Hi, {currentUser.name}
                 </span>
-                <span className="text-[11px] text-gray-400">Painter</span>
+                <span className="text-[11px] text-gray-400 capitalize">{currentUser.role}</span>
               </span>
               <ChevronDown className="hidden sm:block w-4 h-4 text-gray-400" />
             </button>
@@ -153,9 +99,9 @@ const GlobalNavbar = () => {
                   {/* User Info - shown on small screens */}
                   <div className="px-4 py-3 border-b border-gray-100 sm:hidden">
                     <p className="text-sm font-medium text-black">
-                      Hi, {painter.name}
+                      Hi, {currentUser.name}
                     </p>
-                    <p className="text-xs text-gray-400">Painter</p>
+                    <p className="text-xs text-gray-400 capitalize">{currentUser.role}</p>
                   </div>
 
                   {/* Logout Button */}
