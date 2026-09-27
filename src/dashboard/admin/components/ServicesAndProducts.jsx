@@ -112,6 +112,46 @@ const ItemCard = ({ item, type, onDelete, onEdit }) => {
   );
 };
 
+const buildPayload = (isServiceMode, formData) => {
+  const payload = new FormData();
+  if (isServiceMode) {
+    payload.append('serviceName', formData.productName);
+    payload.append('description', formData.description);
+  } else {
+    payload.append('productName', formData.productName);
+    payload.append('description', formData.description);
+    payload.append('keyFeatures', formData.keyFeatures);
+  }
+  if (formData.image) {
+    payload.append('image', formData.image);
+  }
+  return payload;
+};
+
+const saveItemData = async (isServiceMode, editingItem, payload) => {
+  if (editingItem) {
+    const id = editingItem._id || editingItem.id;
+    return isServiceMode ? await editServices(id, payload) : await editProduct(id, payload);
+  }
+  return isServiceMode ? await addServices(payload) : await addProducts(payload);
+};
+
+const renderItems = (items, type, isLoading, fallback, onDelete, onEdit) => {
+  if (isLoading) return <div className="col-span-full py-12 text-center text-gray-500">Loading {type}s...</div>;
+  const list = items.length > 0 ? items : fallback;
+  if (list.length === 0) return <div className="col-span-full py-12 text-center text-gray-500">No {type}s found. Add a new {type} to see it here.</div>;
+  
+  return list.map((item, index) => (
+    <ItemCard 
+      key={item._id || item.id || index}
+      item={item} 
+      type={type} 
+      onDelete={(id) => onDelete(id, type)}
+      onEdit={(item) => onEdit(item, type)}
+    />
+  ));
+};
+
 const ServicesAndProducts = () => {
   const [activeTab, setActiveTab] = useState('services');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -214,46 +254,19 @@ const ServicesAndProducts = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const payload = new FormData();
     const isServiceMode = editingItem ? editingItem.type === 'service' : activeTab === 'services';
-
-    if (isServiceMode) {
-      payload.append('serviceName', formData.productName);
-      payload.append('description', formData.description);
-    } else {
-      payload.append('productName', formData.productName);
-      payload.append('description', formData.description);
-      payload.append('keyFeatures', formData.keyFeatures);
-    }
+    const payload = buildPayload(isServiceMode, formData);
+    const response = await saveItemData(isServiceMode, editingItem, payload);
     
-    if (formData.image) {
-      payload.append('image', formData.image);
-    }
-
-    let response;
-    
-    if (editingItem) {
-      const id = editingItem._id || editingItem.id;
-      if (isServiceMode) {
-        response = await editServices(id, payload);
-      } else {
-        response = await editProduct(id, payload);
-      }
-    } else {
-      if (isServiceMode) {
-        response = await addServices(payload);
-      } else {
-        response = await addProducts(payload);
-      }
-    }
-
     if (response && response.success !== false) {
       closeModal();
       if (isServiceMode) fetchServicesData();
       else fetchProducts();
     }
   };
+
+  const isServiceMode = editingItem ? editingItem.type === 'service' : activeTab === 'services';
+  const typeName = isServiceMode ? 'Service' : 'Product';
 
   return (
     <div className="p-6">
@@ -297,36 +310,9 @@ const ServicesAndProducts = () => {
       {/* Content */}
       <div className="mt-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {activeTab === 'services' && (isLoading ? (
-            <div className="col-span-full py-12 text-center text-gray-500">Loading services...</div>
-          ) : servicesList.length === 0 && services.length === 0 ? (
-            <div className="col-span-full py-12 text-center text-gray-500">No services found. Add a new service to see it here.</div>
-          ) : (
-            (servicesList.length > 0 ? servicesList : services).map((service, index) => (
-              <ItemCard 
-                key={service._id || service.id || index}
-                item={service} 
-                type="service" 
-                onDelete={(id) => handleDeleteItem(id, 'service')}
-                onEdit={(item) => handleEditClick(item, 'service')}
-              />
-            ))
-          ))}
-          {activeTab === 'products' && (isLoading ? (
-            <div className="col-span-full py-12 text-center text-gray-500">Loading products...</div>
-          ) : productsList.length === 0 ? (
-            <div className="col-span-full py-12 text-center text-gray-500">No products found. Add a new product to see it here.</div>
-          ) : (
-            productsList.map((product, index) => (
-              <ItemCard 
-                key={product._id || product.id || index}
-                item={product} 
-                type="product" 
-                onDelete={(id) => handleDeleteItem(id, 'product')}
-                onEdit={(item) => handleEditClick(item, 'product')}
-              />
-            ))
-          ))}
+          {activeTab === 'services' 
+            ? renderItems(servicesList, 'service', isLoading, services, handleDeleteItem, handleEditClick)
+            : renderItems(productsList, 'product', isLoading, [], handleDeleteItem, handleEditClick)}
         </div>
       </div>
 
@@ -335,7 +321,7 @@ const ServicesAndProducts = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-              <h2 className="text-xl font-bold text-gray-900">{editingItem ? `Edit ${editingItem.type === 'service' ? 'Service' : 'Product'}` : `Add New ${activeTab === 'services' ? 'Service' : 'Product'}`}</h2>
+              <h2 className="text-xl font-bold text-gray-900">{editingItem ? `Edit ${typeName}` : `Add New ${typeName}`}</h2>
               <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
               </button>
@@ -345,7 +331,7 @@ const ServicesAndProducts = () => {
               <div className="space-y-4">
                 {/* Product Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{activeTab === 'services' || (editingItem && editingItem.type === 'service') ? 'Service Title' : 'Product Name'} <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{typeName} Title <span className="text-red-500">*</span></label>
                   <input 
                     type="text" 
                     name="productName"
@@ -353,7 +339,7 @@ const ServicesAndProducts = () => {
                     value={formData.productName}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                    placeholder={`e.g. WallX Pro ${activeTab === 'services' || (editingItem && editingItem.type === 'service') ? 'Service' : 'Texture'}`}
+                    placeholder={`e.g. WallX Pro ${isServiceMode ? 'Service' : 'Texture'}`}
                   />
                 </div>
 
@@ -367,12 +353,12 @@ const ServicesAndProducts = () => {
                     value={formData.description}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                    placeholder={`Brief description of the ${activeTab === 'services' || (editingItem && editingItem.type === 'service') ? 'service' : 'product'}...`}
+                    placeholder={`Brief description of the ${typeName.toLowerCase()}...`}
                   ></textarea>
                 </div>
 
                 {/* Key Features */}
-                {!(activeTab === 'services' || (editingItem && editingItem.type === 'service')) && (
+                {!isServiceMode && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Key Features <span className="text-red-500">*</span></label>
                     <input 
@@ -390,7 +376,7 @@ const ServicesAndProducts = () => {
 
                 {/* Image Upload */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{activeTab === 'services' || (editingItem && editingItem.type === 'service') ? 'Service Image' : 'Product Image'}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{typeName} Image</label>
                   <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-red-400 transition-colors bg-gray-50">
                     {formData.image ? (
                       <div className="space-y-1 text-center">
@@ -435,7 +421,7 @@ const ServicesAndProducts = () => {
                   type="submit" 
                   className="px-4 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 transition-colors shadow-sm"
                 >
-                  {editingItem ? 'Update' : 'Save'} {editingItem ? (editingItem.type === 'service' ? 'Service' : 'Product') : (activeTab === 'services' ? 'Service' : 'Product')}
+                  {editingItem ? 'Update' : 'Save'} {typeName}
                 </button>
               </div>
             </form>
