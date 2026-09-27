@@ -22,6 +22,7 @@ const dealerApis = {
   forgotPin: `${dealer}/forgot-pin`,
   resetPin: `${dealer}/reset-pin`,
 };
+
 const adminApis = {
   login: `${admin}/login`,
   logout: `${admin}/logout`,
@@ -34,16 +35,16 @@ const adminApis = {
   DealersRejected: `${adminDashboardApis}/rejected`,
   DealerApproval: `${adminDashboardApis}/:id/approval`,
   DealerParticularDetails: `${adminDashboardApis}/:id`,
-  dealerStats:`${adminDashboardApis}/stats`,
-  dealerSignupStats:`${adminDashboardApis}/signup-stats`,
-  // Enquiry endpoints
+  dealerStats: `${adminDashboardApis}/stats`,
+  dealerSignupStats: `${adminDashboardApis}/signup-stats`,
   getEnquiries: "/admin/enquiries",
   getEnquiryStats: "/admin/enquiries/stats",
-  // Coupon endpoints
   getCouponStats: "/admin/coupons/stats",
   generateCoupons: "/admin/coupons/generate",
   getCouponBatches: "/admin/coupons/batches",
   getCouponsByBatch: "/admin/coupons/batches/:batchId/coupons",
   downloadCouponBatchPdf: "/admin/coupons/batches/:batchId/download",
+  dealersOrders: `${adminDashboardApis}/:id/orders`,
+  dealerOrderPayement: "/admin/orders/:id/payment",
 };
 export { painterApis, dealerApis, adminApis };
