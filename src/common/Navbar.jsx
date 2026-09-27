@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/webp/wallx_final.webp";
-import { AUTH_NAV_LINKS , MAIN_NAV_LINKS} from "../constants/navbar";
+import { AUTH_NAV_LINKS, MAIN_NAV_LINKS } from "../constants/navbar";
 
 const ALL_MOBILE_LINKS = [
   ...MAIN_NAV_LINKS,
@@ -46,8 +46,10 @@ const PublicNavbar = () => {
             {MAIN_NAV_LINKS.map((link) => {
               const isActive =
                 location.pathname === link.path ||
-                (link.path === "/painters" && location.pathname.startsWith("/painters")) ||
-                (link.path === "/dealers" && location.pathname.startsWith("/dealers"));
+                (link.path === "/painters" &&
+                  location.pathname.startsWith("/painters")) ||
+                (link.path === "/dealers" &&
+                  location.pathname.startsWith("/dealers"));
               return (
                 <li
                   key={link.name}
@@ -94,7 +96,6 @@ const PublicNavbar = () => {
               );
             })}
           </div>
-
           {/* Hamburger Icon */}
           <button
             type="button"
