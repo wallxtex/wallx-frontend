@@ -5,6 +5,7 @@ import { ChevronLeft, Plus, Search, Calendar, Package, Wallet, Banknote, CreditC
 import { formatCurrency } from '../../../utils/helpers/constants/formatCurrency';
 import toast from 'react-hot-toast';
 
+
 const PAYMENT_STATUS_COLORS = {
   'Paid': 'bg-emerald-100 text-emerald-800 border-emerald-200',
   'Partial': 'bg-blue-100 text-blue-800 border-blue-200',

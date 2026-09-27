@@ -23,7 +23,9 @@ async function adminDealerStats() {
 async function adminDealerParticularIdDetail(dealerId) {
   try {
     const endpoint = adminApis.DealerParticularDetails.replace(":id", dealerId);
+    alert("dealer")
     const response = await PrivateApi.get(endpoint);
+
     return ApiResponseMessage.success(response.data);
   } catch (er) {
     return ApiResponseMessage.err(er);
