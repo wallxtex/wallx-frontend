@@ -11,6 +11,7 @@ const painterApis = {
   refreshToken: `${painter}/refresh-token`,
   forgotPin: `${painter}/forgot-pin`,
   resetPin: `${painter}/reset-pin`,
+  dashboard: "/painters/dashboard",
 };
 
 const dealerApis = {

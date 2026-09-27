@@ -19,4 +19,14 @@ async function VisitSiteHandler(formdata) {
     return ApiResponseMessage.err(error);
   }
 }
-export { NeedHelpHandler, VisitSiteHandler };
+
+async function getHomeDataHandler() {
+  try {
+    const response = await API.get("/public/home");
+    return ApiResponseMessage.success(response.data);
+  } catch (error) {
+    return ApiResponseMessage.err(error);
+  }
+}
+
+export { NeedHelpHandler, VisitSiteHandler, getHomeDataHandler };

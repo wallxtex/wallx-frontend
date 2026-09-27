@@ -20,7 +20,7 @@ const PainterDashboard = () => {
       </div>
 
       {/* Stats Row */}
-      <StatsRow />
+      <StatsRow isAdmin={isAdmin} />
 
       {isAdmin && (
         <>
