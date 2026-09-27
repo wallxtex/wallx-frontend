@@ -84,6 +84,8 @@ export async function getDealers(params = {}) {
         return ApiResponseMessage.success(response.data);
     } catch (error) {
         return ApiResponseMessage.err(error);
+    }
+}
 export async function updateSchemes(id, payload) {
     try {
         const response = await PrivateApi.put(
