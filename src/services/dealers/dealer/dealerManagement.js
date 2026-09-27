@@ -24,7 +24,37 @@ async function adminDealerParticularIdDetail(dealerId) {
   try {
     const endpoint = adminApis.DealerParticularDetails.replace(":id", dealerId);
     const response = await PrivateApi.get(endpoint);
-    return ApiResponseMessage.success(response.data);
+    return ApiResponseMessage.success(response.data.data);
+  } catch (er) {
+    return ApiResponseMessage.err(er);
+  }
+}
+
+async function dealersOrder(dealerId) {
+  try {
+    const endpoint = adminApis.dealersOrders.replace(":id", dealerId);
+    const response = await PrivateApi.get(endpoint);
+    return ApiResponseMessage.success(response.data.data);
+  } catch (er) {
+    return ApiResponseMessage.err(er);
+  }
+}
+
+async function createDealerOrder(dealerId, orderData) {
+  try {
+    const endpoint = adminApis.dealersOrders.replace(":id", dealerId);
+    const response = await PrivateApi.post(endpoint, orderData);
+    return ApiResponseMessage.success(response.data.data);
+  } catch (er) {
+    return ApiResponseMessage.err(er);
+  }
+}
+
+async function dealerOrderPayement(orderId, paymentData) {
+  try {
+    const endpoint = adminApis.dealerOrderPayement.replace(":id", orderId);
+    const response = await PrivateApi.patch(endpoint, paymentData);
+    return ApiResponseMessage.success(response.data.data);
   } catch (er) {
     return ApiResponseMessage.err(er);
   }
@@ -34,4 +64,7 @@ export {
   adminDealerSignupStats,
   adminDealerStats,
   adminDealerParticularIdDetail,
+  dealerOrderPayement,
+  dealersOrder,
+  createDealerOrder,
 };
