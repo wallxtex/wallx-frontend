@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { services } from '../../../constants/services';
-import { PRODUCTS } from '../../../constants/products';
 import { addProducts, getAllProducts, deleteProduct, editProduct, addServices, getAllServices, editServices, deleteServices } from '../../../services/admin/admin.services';
 
 const ItemCard = ({ item, type, onDelete, onEdit }) => {
   const [isActive, setIsActive] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  
+  if (!item) return null;
+  
   const isService = type === 'service';
   const title = item.title || item.name || item.productName || item.serviceName || "Untitled";
   const description = item.description || (item.features && item.features[0] ? item.features[0].description : "Description not available.");
@@ -166,12 +168,7 @@ const ServicesAndProducts = () => {
     setFormData({ productName: '', description: '', keyFeatures: '', image: null });
   };
 
-  useEffect(() => {
-    fetchProducts();
-    fetchServicesData();
-  }, []);
-
-  const fetchServicesData = async () => {
+  const fetchServicesData = useCallback(async () => {
     try {
       const response = await getAllServices();
       if (response && response.success) {
@@ -183,9 +180,9 @@ const ServicesAndProducts = () => {
     } catch (error) {
       console.error("Failed to fetch services", error);
     }
-  };
+  }, []);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await getAllProducts();
@@ -200,7 +197,12 @@ const ServicesAndProducts = () => {
       console.error("Failed to fetch products", error);
     }
     setIsLoading(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+    fetchServicesData();
+  }, [fetchProducts, fetchServicesData]);
 
   const handleDeleteItem = async (id, type) => {
     try {
