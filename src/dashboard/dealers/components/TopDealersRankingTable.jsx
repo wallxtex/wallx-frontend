@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Trophy, Medal, Award, Store, Loader2 } from "lucide-react";
+import { Trophy, Loader2 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { getDealerDashboardData, getPublicData } from "../../../services/dealers/dealers.services";
 import { formatCurrency } from "../../../utils/helpers/constants/formatCurrency";
@@ -45,15 +45,15 @@ const TopDealersRankingTable = () => {
     }));
 
     const top10 = rankedDealers.slice(0, 10);
-  
+
     const currentDealerId = myStats?.id;
     const isCurrentInTop10 = currentDealerId ? top10.some(d => d._id === currentDealerId) : false;
-    
+
     if (currentDealerId && !isCurrentInTop10 && myStats) {
-      top10.push({ 
-        _id: currentDealerId, 
-        dealerName: "You", 
-        shopName: myStats.shopName || "-", 
+      top10.push({
+        _id: currentDealerId,
+        dealerName: "You",
+        shopName: myStats.shopName || "-",
         totalOrderVolume: myStats.totalOrderAmount || 0,
         totalOrders: myStats.totalOrderCount || 0,
         isAppended: true,
@@ -74,7 +74,7 @@ const TopDealersRankingTable = () => {
         isDummy: true
       });
     }
-    
+
     return top10;
   }, [dealers, myStats]);
 
@@ -102,7 +102,7 @@ const TopDealersRankingTable = () => {
           <p className="text-sm text-gray-500 mt-1">Based on maximum total order amount</p>
         </div>
       </div>
-      
+
       <div className="overflow-x-auto min-h-[200px] relative">
         {isLoading ? (
           <div className="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm z-10">
@@ -130,18 +130,17 @@ const TopDealersRankingTable = () => {
             )}
             {displayData.map((dealer, idx) => {
               const isCurrentUser = dealer._id === myStats?.id;
-              
+
               return (
-                <motion.tr 
+                <motion.tr
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  key={dealer._id || idx} 
-                  className={`border-b group transition-colors ${
-                    isCurrentUser 
-                      ? 'bg-red-50/80 hover:bg-red-50 border-l-4 border-l-red-500 border-b-gray-100' 
-                      : 'border-b-gray-50 hover:bg-gray-50/50 border-l-4 border-l-transparent'
-                  } ${dealer.isAppended ? 'border-t-2 border-t-gray-200' : ''}`}
+                  key={dealer._id || idx}
+                  className={`border-b group transition-colors ${isCurrentUser
+                    ? 'bg-red-50/80 hover:bg-red-50 border-l-4 border-l-red-500 border-b-gray-100'
+                    : 'border-b-gray-50 hover:bg-gray-50/50 border-l-4 border-l-transparent'
+                    } ${dealer.isAppended ? 'border-t-2 border-t-gray-200' : ''}`}
                 >
                   <td className="py-4 px-6">
                     <div className="flex justify-center">
@@ -162,11 +161,10 @@ const TopDealersRankingTable = () => {
                   </td>
                   <td className="py-4 px-6">
                     <div className="flex justify-center">
-                      <div className={`inline-flex items-center text-sm font-bold ${
-                        isCurrentUser 
-                          ? 'text-red-700' 
-                          : 'text-gray-900'
-                      }`}>
+                      <div className={`inline-flex items-center text-sm font-bold ${isCurrentUser
+                        ? 'text-red-700'
+                        : 'text-gray-900'
+                        }`}>
                         {dealer.totalOrders ?? 'N/A'}
                       </div>
                     </div>

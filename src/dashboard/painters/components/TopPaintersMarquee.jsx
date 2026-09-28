@@ -1,12 +1,58 @@
 import { motion } from "motion/react";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { getPublicData } from "../../../services/dealers/dealers.services";
 
 const TopPaintersMarquee = () => {
   const [isPaused, setIsPaused] = useState(false);
+  const [painters, setPainters] = useState([]);
+
+  useEffect(() => {
+    const fetchPainters = async () => {
+      try {
+        const res = await getPublicData();
+        if (res?.success && res.data?.topPainters?.length > 0) {
+          const mapped = res.data.topPainters.map((p, index) => {
+            const name = p.name || (p.firstName ? `${p.firstName} ${p.lastName || ''}`.trim() : null) || 'Painter';
+            const initials = name.split(' ').filter(n => n.length > 0).map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            const colors = [
+              "bg-amber-100 text-amber-800 border-amber-300",
+              "bg-slate-100 text-slate-800 border-slate-300",
+              "bg-orange-100 text-orange-800 border-orange-300",
+              "bg-red-50 text-[#d82b2b] border-red-200",
+              "bg-yellow-50 text-yellow-800 border-yellow-200",
+              "bg-blue-50 text-blue-700 border-blue-200",
+              "bg-emerald-50 text-emerald-700 border-emerald-200",
+              "bg-purple-50 text-purple-700 border-purple-200"
+            ];
+            
+            const addressParts = typeof p.address === 'string' ? p.address.split(',').map(s => s.trim()) : [];
+            const city = addressParts[0] || p.city || p.location?.city || p.location?.area || p.address?.city || 'N/A';
+            const state = addressParts[1] || p.state || p.location?.state || p.address?.state || 'N/A';
+            
+            return {
+              id: p._id || p.id || index,
+              rank: index + 1,
+              name: name,
+              avatarInitials: initials,
+              avatarBg: colors[index % colors.length],
+              city,
+              state,
+              tier: p.tier || "Active Member",
+              bucketsScanned: p.couponsRedeemed ?? p.couponsScanned ?? p.bucketsScanned ?? 0,
+              recentReward: null
+            };
+          });
+          setPainters(mapped);
+        }
+      } catch (err) {
+        console.error("Failed to fetch top painters", err);
+      }
+    };
+    fetchPainters();
+  }, []);
 
   // Duplicate the list for seamless scrolling
-  const duplicatedPainters = [];
+  const duplicatedPainters = [...painters, ...painters];
 
   const getCardStyle = (rank) => {
     if (rank === 1) return "bg-gradient-to-b from-amber-50/70 via-white to-amber-50/40 border-2 border-amber-400";
