@@ -222,7 +222,7 @@ const DealersOrders = () => {
                           className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
                         >
                           <td className="py-4 px-6">
-                            <div className="font-mono text-xs text-gray-500 truncate max-w-[120px]" title={order._id}>{order._id}</div>
+                            <div className="font-mono text-xs text-gray-500 truncate max-w-[120px]" title={order._id}>{order.orderId}</div>
                           </td>
                           <td className="py-4 px-6">
                             <div className="flex items-center gap-1.5 text-sm font-medium text-gray-500">
