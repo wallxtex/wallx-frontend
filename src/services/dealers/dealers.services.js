@@ -1,9 +1,22 @@
 import PrivateApi from "../../utils/apis/privateApi";
+import API from "../../utils/apis/api";
 
 
 async function fetchDealerData(endpoint, errorMessage) {
     try {
         const response = await PrivateApi.get(endpoint);
+        if (response.status === 200) {
+            return response.data;
+        }
+        throw new Error(errorMessage);
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function fetchPublicData(endpoint, errorMessage) {
+    try {
+        const response = await API.get(endpoint);
         if (response.status === 200) {
             return response.data;
         }
@@ -22,5 +35,5 @@ export async function getDealerDashboardData() {
 }
 
 export async function getPublicData() {
-    return fetchDealerData("/public/home", "Failed to fetch public data");
+    return fetchPublicData("/public/home", "Failed to fetch public data");
 }

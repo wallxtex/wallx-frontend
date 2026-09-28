@@ -1,20 +1,45 @@
-import { useEffect } from 'react';
-import { 
-  IoDiamondOutline, 
-  IoBusinessOutline, 
-  IoFlashOutline, 
-  IoCallOutline, 
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  IoDiamondOutline,
+  IoBusinessOutline,
+  IoFlashOutline,
+  IoCallOutline,
   IoCartOutline,
   IoTrophy
 } from 'react-icons/io5';
-import SharedSchemes from '../../common/components/Shared/SharedSchemes';
+import SharedSchemesRow from '../../components/shared/SharedSchemesRow';
+import SharedSection from '../../common/components/Shared/SharedSection';
+import SectionHeader from '../../common/components/Shared/SectionHeader';
 import SharedLeaderboard from '../../common/components/Shared/SharedLeaderboard';
 import SharedCTA from '../../common/components/Shared/SharedCTA';
-import { DEALER_SCHEMES, TOP_DEALERS_DATA } from './dealerData';
+import { getPublicData } from '../../services/dealers/dealers.services';
 
 const DealersPage = () => {
+
+  const [schemes, setSchemes] = useState([])
+  const [topDealers, setTopDealers] = useState([])
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const fetchDealerData = async () => {
+      try {
+        const response = await getPublicData()
+        if (response?.success) {
+          const activeSchemes = response?.data.activeSchemes || []
+          const filteredSchemes = activeSchemes.filter(s => s.targetAudience === 'DEALER' || s.targetAudience === 'BOTH');
+          setSchemes(filteredSchemes)
+          
+          const dealersList = response?.data.topDealers || []
+          setTopDealers(dealersList)
+        }
+      }
+      catch (error) {
+        console.log("Something went wrong : ", error)
+      }
+    }
+    fetchDealerData()
   }, []);
 
   const schemesHeaderProps = {
@@ -40,58 +65,83 @@ const DealersPage = () => {
   };
 
   const leaderboardMetrics = {
-    primaryLabel: "Total Bonus Earned",
-    primaryKey: "totalBonusEarned",
-    formatPrimary: (val) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val),
-    secondaryLabel: "Buckets Ordered",
-    secondaryKey: "bucketsOrdered",
-    formatSecondary: (val) => `${val.toLocaleString()} Units`
+    primaryLabel: "Total Ordered Amount",
+    primaryKey: "totalOrderVolume",
+    formatPrimary: (val) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val || 0),
+    secondaryLabel: "Total Orders",
+    secondaryKey: "totalOrders",
+    formatSecondary: (val) => `${(val || 0).toLocaleString()} Orders`
   };
 
   const leaderboardColumns = [
     { label: "Dealer Name", align: "left" },
     { label: "Location", align: "center" },
-    { label: "Buckets Ordered", align: "center" },
-    { label: "Total Bonus Earned", align: "center" }
+    { label: "Total Orders", align: "center" },
+    { label: "Total Ordered Amount", align: "center" }
   ];
 
   const renderTableRow = (dealer) => (
     <>
       <td className="py-4 px-4 text-left font-bold text-gray-900">
-        {dealer.name}
+        {dealer.name || dealer.dealerName || dealer.shopName || `${dealer.firstName || ''} ${dealer.lastName || ''}`.trim() || 'Dealer'}
       </td>
       <td className="py-4 px-4 text-gray-600 text-center">
-        <span>{dealer.city}, {dealer.state}</span>
+        <span>{dealer.city || dealer.location?.area || dealer.address?.city || 'N/A'}, {dealer.state || dealer.location?.state || dealer.address?.state || 'N/A'}</span>
       </td>
       <td className="py-4 px-4 text-center">
         <div className="inline-flex items-center justify-center gap-1.5 font-semibold text-gray-700">
           <IoCartOutline className="text-gray-400" />
-          <span>{dealer.bucketsOrdered.toLocaleString()}</span>
+          <span>{Number(dealer.bucketsOrdered || dealer.totalOrders || 0).toLocaleString()}</span>
         </div>
       </td>
       <td className="py-4 px-4 sm:px-6 text-center font-extrabold text-base text-[#d82b2b]">
-        {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(dealer.totalBonusEarned)}
+        {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(dealer.totalBonusEarned || dealer.totalOrderVolume || dealer.totalRewards || 0)}
       </td>
     </>
   );
 
   return (
     <main className="min-h-screen bg-[#fafafa]">
-      <SharedSchemes
-        id="dealer-schemes"
-        headerProps={schemesHeaderProps}
-        categories={[]}
-        schemes={DEALER_SCHEMES}
-        contactBannerProps={schemesContactProps}
-        modalTermsHeader="Dealer Scheme Terms:"
-        modalCtaText="Register as Dealer"
-        modalCtaLink="/dealer-signup"
-      />
-      
+      <SharedSection id="dealer-schemes" className="bg-[#fafafa]">
+        <SectionHeader {...schemesHeaderProps} />
+
+        <div className="mt-10">
+          <SharedSchemesRow
+            title=""
+            subtitle=""
+            schemes={schemes}
+            type="DEALER"
+            isAdmin={false}
+          />
+        </div>
+
+        {schemesContactProps && (
+          <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white shadow-lg flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4 text-center sm:text-left">
+              <div className="w-12 h-12 rounded-xl bg-[#d82b2b] flex items-center justify-center text-white text-2xl shrink-0 shadow-md">
+                {schemesContactProps.icon}
+              </div>
+              <div>
+                <h4 className="text-lg font-bold text-white">{schemesContactProps.title}</h4>
+                <p className="text-sm text-gray-300">
+                  {schemesContactProps.description}
+                </p>
+              </div>
+            </div>
+            <Link
+              to={schemesContactProps.linkUrl}
+              className="whitespace-nowrap px-6 py-2.5 rounded-xl bg-[#d82b2b] hover:bg-[#b82222] text-white text-sm font-semibold transition-all shrink-0"
+            >
+              {schemesContactProps.linkText}
+            </Link>
+          </div>
+        )}
+      </SharedSection>
+
       <SharedLeaderboard
         id="top-dealers"
         headerProps={leaderboardHeaderProps}
-        data={TOP_DEALERS_DATA}
+        data={topDealers}
         metricsConfig={leaderboardMetrics}
         tableColumns={leaderboardColumns}
         renderTableRow={renderTableRow}
