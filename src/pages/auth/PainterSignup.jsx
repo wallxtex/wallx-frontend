@@ -70,7 +70,7 @@ const PAINTER_FIELDS = [
   {
     name: "address",
     label: "Address",
-    placeholder: "Enter your full address",
+    placeholder: "Enter City, State",
     maxLength: 500,
   },
   {

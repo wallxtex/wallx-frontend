@@ -1,9 +1,10 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Crown } from "lucide-react";
 import { IoLocationOutline } from "react-icons/io5";
 import { useSectionAnimation } from "./useSectionAnimation";
 import PodiumCard from '../../common/components/Shared/PodiumCard';
 import { TOP_PAINTERS_DATA } from '../../pages/painter/component/painterData';
+import { getPublicData } from '../../services/dealers/dealers.services';
 
 const PainterCard = ({ person, metricsConfig }) => (
   <div className="min-w-[230px] w-[230px] sm:min-w-[280px] sm:w-[280px] md:min-w-[310px] md:w-[310px] h-[325px] md:h-[355px] bg-red-50 border-2 border-red-100 rounded-3xl p-5 sm:p-6 hover:shadow-lg transition-all duration-300 relative text-center flex flex-col items-center mx-3 sm:mx-4">
@@ -21,7 +22,7 @@ const PainterCard = ({ person, metricsConfig }) => (
 
     <div className="mt-1 flex items-center gap-1 text-xs text-gray-500 font-medium">
       <IoLocationOutline className="text-gray-400 text-sm" />
-      {person.city}, {person.state}
+      {person.address || `${person.city}, ${person.state}`}
     </div>
 
     <div className="mt-auto w-full rounded-2xl p-4 bg-white border border-red-50">
@@ -39,6 +40,54 @@ const PainterCard = ({ person, metricsConfig }) => (
 const ThirdSection = () => {
   const headerRef = useRef(null);
   const performanceCardRef = useRef(null);
+  const [paintersData, setPaintersData] = useState([]);
+
+  useEffect(() => {
+    const fetchPainters = async () => {
+      try {
+        const response = await getPublicData();
+        if (response?.success) {
+          const list = response?.data?.topPainters || [];
+          
+          if (list.length > 0) {
+            const mappedList = list.map((painter, index) => {
+              const name = painter.name || (painter.firstName ? `${painter.firstName} ${painter.lastName || ''}`.trim() : null) || 'Painter';
+              const initials = name.split(' ').filter(n => n.length > 0).map(n => n[0]).join('').substring(0, 2).toUpperCase();
+              const colors = [
+                "bg-amber-100 text-amber-800 border-amber-300",
+                "bg-slate-100 text-slate-800 border-slate-300",
+                "bg-orange-100 text-orange-800 border-orange-300",
+                "bg-red-50 text-[#d82b2b] border-red-200",
+                "bg-yellow-50 text-yellow-800 border-yellow-200",
+                "bg-blue-50 text-blue-700 border-blue-200",
+                "bg-emerald-50 text-emerald-700 border-emerald-200",
+                "bg-purple-50 text-purple-700 border-purple-200"
+              ];
+              const color = colors[index % colors.length];
+
+              const address = typeof painter.address === 'string' ? painter.address : 'N/A';
+
+              return {
+                id: painter._id || painter.id || index,
+                name: name,
+                rank: index + 1,
+                avatarInitials: initials,
+                avatarBg: color,
+                address: address,
+                totalRedeemedAmount: painter.totalRedeemedAmount || painter.totalRewards || painter.totalBonusEarned || 0,
+                couponsScanned: painter.couponsRedeemed ?? painter.couponsScanned ?? painter.bucketsScanned ?? painter.totalScans ?? painter.totalOrders ?? 0,
+              };
+            });
+            setPaintersData(mappedList);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch top painters:", error);
+      }
+    };
+    
+    fetchPainters();
+  }, []);
 
   const formatINR = (val) => {
     return new Intl.NumberFormat('en-IN', {
@@ -49,17 +98,12 @@ const ThirdSection = () => {
   };
 
   const metricsConfig = {
-    primaryLabel: (
-      <>
-        <span className="hidden sm:inline">Total QR Cash Redeemed <br /> (₹90/unit)</span>
-        <span className="inline sm:hidden">Total Cash Redeemed</span>
-      </>
-    ),
+    primaryLabel: "Total Cash Redeemed",
     primaryKey: "totalRedeemedAmount",
     formatPrimary: formatINR,
     secondaryLabel: "Scanned",
-    secondaryKey: "bucketsScanned",
-    formatSecondary: (val) => `${val.toLocaleString()} Bags / Buckets`
+    secondaryKey: "couponsScanned",
+    formatSecondary: (val) => `${val ? val.toLocaleString() : 0} Coupons`
   };
 
   const sectionRef = useSectionAnimation(headerRef, performanceCardRef);
@@ -105,7 +149,7 @@ const ThirdSection = () => {
           <div className="w-full flex flex-col gap-10 md:gap-12 lg:gap-16">
             {/* Podium for Top 3 */}
             <div className="w-full grid grid-cols-3 gap-2 sm:gap-6 items-end mt-8 sm:mt-12 mb-8 max-w-5xl mx-auto px-1 sm:px-0">
-              {TOP_PAINTERS_DATA.slice(0, 3).map((person) => (
+              {paintersData.slice(0, 3).map((person) => (
                 <PodiumCard key={person.id} person={person} metricsConfig={metricsConfig} />
               ))}
             </div>
@@ -129,11 +173,11 @@ const ThirdSection = () => {
 
                 <div className="flex w-max animate-marquee pt-8 pb-4">
                   {/* First set of cards */}
-                  {TOP_PAINTERS_DATA.slice(3, 10).map((person) => (
+                  {paintersData.slice(3, 10).map((person) => (
                     <PainterCard key={`first-${person.id}`} person={person} metricsConfig={metricsConfig} />
                   ))}
                   {/* Duplicate set for infinite scroll effect */}
-                  {TOP_PAINTERS_DATA.slice(3, 10).map((person) => (
+                  {paintersData.slice(3, 10).map((person) => (
                     <PainterCard key={`second-${person.id}`} person={person} metricsConfig={metricsConfig} />
                   ))}
                 </div>

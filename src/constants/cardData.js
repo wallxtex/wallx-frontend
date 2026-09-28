@@ -8,21 +8,25 @@ export const cardImages = [
     {
         id: 1,
         image: card1,
-        title: "card1"
+        title: "Exterior House",
+        description: "Transform the look of your home's exterior."
     },
     {
         id: 2,
         image: card2,
-        title: "card2"
+        title: "Interior Room",
+        description: "Elevate your indoor living spaces."
     },
     {
         id: 3,
         image: card3,
-        title: "card3"
+        title: "Foundation/Waterproofing",
+        description: "Protect your foundation with advanced waterproofing."
     },
     {
         id: 4,
         image: card4,
-        title: "card4"
+        title: "House Construction/Renovation",
+        description: "Comprehensive solutions for construction and renovation."
     },
 ];

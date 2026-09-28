@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import video from '../../assets/redeem_new_video.mp4';
 import { benefitSections } from '../../constants/benefitSection';
+import { useNavigate } from 'react-router-dom';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,6 +12,7 @@ const RedeemSections = () => {
   const headingRef = useRef(null);
   const containerRef = useRef(null);
   const benefitsRef = useRef([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (headingRef.current) {
@@ -115,7 +117,9 @@ const RedeemSections = () => {
             <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 mb-8 max-w-xl leading-relaxed">
               Join thousands of satisfied customers who are enjoying exclusive rewards and special privileges. Transform your shopping experience with our premium redemption program.
             </p>
-            <button className="group inline-flex items-center gap-3 px-6 sm:px-8 py-3 bg-red-600 text-white font-bold text-sm md:text-base lg:text-lg rounded-xl hover:bg-red-700 hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
+            <button 
+              onClick={() => navigate('/painter-signup')}
+              className="group inline-flex items-center gap-3 px-6 sm:px-8 py-3 bg-red-600 text-white font-bold text-sm md:text-base lg:text-lg rounded-xl hover:bg-red-700 hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 cursor-pointer">
               Start Redeeming Now
               <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
