@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { ChevronRight, X, CheckCircle2, Edit, Trash2 } from "lucide-react";
+import { ChevronRight, X, CheckCircle2, Edit, Trash2, Gift, Sparkles, Award } from "lucide-react";
 
 const SharedSchemesRow = ({ title, subtitle, schemes, type, isAdmin = false, onDelete, onUpdate }) => {
   const [selectedScheme, setSelectedScheme] = useState(null);
@@ -9,16 +9,18 @@ const SharedSchemesRow = ({ title, subtitle, schemes, type, isAdmin = false, onD
   return (
     <div className="w-full">
       {/* Section Label - Bilingual, Compact */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-base font-semibold text-black">{title}</h2>
-          <p className="text-sm text-gray-500" style={{ fontFamily: "'Noto Sans Devanagari', system-ui, sans-serif" }}>
-            {subtitle}
-          </p>
+      {title && (
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="text-base font-semibold text-black">{title}</h2>
+            <p className="text-sm text-gray-500" style={{ fontFamily: "'Noto Sans Devanagari', system-ui, sans-serif" }}>
+              {subtitle}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full">
         {schemes.slice(0, 3).map((rawScheme, idx) => {
           // Adapt raw backend fields to UI requirements
           const scheme = {
@@ -33,52 +35,59 @@ const SharedSchemesRow = ({ title, subtitle, schemes, type, isAdmin = false, onD
             features: rawScheme.features || [rawScheme.description || "Terms apply.", "Valid for eligible users only."]
           };
 
+          const icons = [Gift, Sparkles, Award];
+          const Icon = icons[idx % icons.length];
+
           return (
             <motion.div
               key={scheme.id}
-              whileHover={{ y: -4 }}
+              whileHover={{ y: -8, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-              className="bg-white border border-gray-100 rounded-2xl p-5 sm:p-6 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:shadow-gray-200/50 flex flex-col justify-between relative overflow-hidden group transition-all min-h-[240px]"
+              transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
+              className="bg-white border-2 border-red-100 rounded-3xl p-6 sm:p-8 shadow-lg shadow-red-100/50 hover:shadow-2xl hover:shadow-red-500/10 hover:border-red-300 flex flex-col justify-between relative overflow-hidden group transition-all min-h-[280px]"
             >
-              {/* Decorative Background Element */}
-              <div className="absolute -right-8 -top-8 w-32 h-32 bg-gray-50 rounded-full opacity-50 group-hover:scale-[2] transition-transform duration-700 ease-out z-0" />
+              {/* Beautiful glowing background elements */}
+              <div className="absolute -right-16 -top-16 w-48 h-48 bg-gradient-to-br from-red-100/80 to-amber-100/40 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-700 ease-out z-0 blur-2xl" />
+              <div className="absolute -left-12 -bottom-12 w-40 h-40 bg-gradient-to-tr from-rose-100/60 to-transparent rounded-full opacity-0 group-hover:opacity-60 transition-all duration-700 ease-out z-0 blur-xl" />
 
-              <div className="relative z-10">
-                {/* Badge */}
-                <div className="mb-4 flex items-center justify-between">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-md text-[10px] sm:text-xs font-black uppercase tracking-widest shadow-sm ${scheme.badgeColor}`}>
-                    {scheme.badge}
-                  </span>
-                  {scheme.tag && (
-                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">{scheme.tag}</span>
-                  )}
+              <div className="relative z-10 flex flex-col h-full">
+                {/* Header with Icon */}
+                <div className="mb-5 flex items-start justify-between">
+                  <div className="flex flex-col gap-2">
+                    {scheme.tag && (
+                      <span className="text-[10px] w-fit font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 rounded-md uppercase tracking-wider">{scheme.tag}</span>
+                    )}
+                  </div>
+                  
+                  {/* Decorative Icon */}
+                  <div className="p-3 bg-gradient-to-br from-red-50 to-rose-100 rounded-2xl group-hover:rotate-12 transition-transform duration-500 shadow-sm border border-red-100">
+                    <Icon className="w-6 h-6 text-[#d82b2b]" strokeWidth={2.5} />
+                  </div>
                 </div>
 
                 {/* Title */}
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 leading-tight group-hover:text-[#d82b2b] transition-colors">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 mb-3 leading-tight group-hover:text-[#d82b2b] transition-colors">
                   {scheme.title}
                 </h3>
 
-
-
-                {/* Description - Line clamped for mobile */}
-                <p className="text-xs sm:text-sm text-gray-500 mb-2 line-clamp-3 leading-loose">
+                {/* Description */}
+                <p className="text-sm text-gray-500 mb-6 line-clamp-3 leading-relaxed font-medium">
                   {scheme.description}
                 </p>
               </div>
 
-              {/* View Details Button - Pushed to bottom */}
-              <div className="relative z-10 mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-                <span className="text-[10px] sm:text-xs font-semibold text-[#d82b2b] bg-red-50/80 px-2 py-0.5 rounded">
+              {/* Action Area */}
+              <div className="relative z-10 mt-auto pt-4 border-t border-gray-100/80 flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-500 flex items-center gap-1">
+                  <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" /></svg>
                   {scheme.highlight}
                 </span>
                 <button
                   type="button"
                   onClick={() => setSelectedScheme(scheme)}
-                  className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#d82b2b] group-hover:translate-x-1 transition-transform cursor-pointer bg-transparent border-none p-0 m-0"
+                  className="inline-flex items-center justify-center gap-1 px-1 py-1 text-[#d82b2b] hover:text-[#a01d1d] bg-transparent text-sm font-bold group-hover:translate-x-1 transition-all cursor-pointer"
                 >
-                  View Scheme
+                  View Details
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>

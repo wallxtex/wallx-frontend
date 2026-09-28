@@ -59,14 +59,20 @@ const recordToast = (key, toastId) => {
   });
 };
 const getToastConfig = (config) => {
+  if (!config) {
+    return null;
+  }
+
   // Check direct config.toast
   if (config.toast !== undefined) {
     return config.toast;
   }
+
   // Check meta.toast (TanStack Query compat)
   if (config.meta?.toast !== undefined) {
     return config.meta.toast;
   }
+
   return null;
 };
 const isMutation = (method) => {
@@ -185,7 +191,7 @@ export const setupInterceptors = (axiosInstance, config = {}) => {
       console.log("[INTERCEPTOR] Error:", error);
       console.log("[INTERCEPTOR] Error response:", error.response);
       console.log("[INTERCEPTOR] Error config:", error.config);
-      
+
       const { config: requestConfig, response } = error;
       const toastConfig = getToastConfig(requestConfig);
 

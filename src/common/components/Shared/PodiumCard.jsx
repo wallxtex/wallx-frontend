@@ -1,6 +1,6 @@
 import { IoTrophy, IoRibbonOutline, IoLocationOutline, IoCheckmarkCircle, IoStar } from 'react-icons/io5';
 
-const createRunnerUpPodium = ({ order, cardBg, crownBg, crownIcon, badgeClass, badgeLabel, boxBg, borderDivider }) => ({
+const createRunnerUpPodium = ({ order, cardBg, crownBg, crownIcon, badgeClass, badgeLabel, boxBg, borderDivider, avatarBg }) => ({
   order,
   cardBg,
   crownBg,
@@ -8,7 +8,8 @@ const createRunnerUpPodium = ({ order, cardBg, crownBg, crownIcon, badgeClass, b
   badgeClass,
   badgeIcon: <IoRibbonOutline />,
   badgeLabel,
-  avatarClass: 'w-10 h-10 sm:w-20 sm:h-20 border-2 text-[10px] sm:text-2xl font-bold',
+  avatarClass: 'w-10 h-10 sm:w-20 sm:h-20 text-[10px] sm:text-2xl font-bold',
+  avatarBg,
   nameSize: 'text-[9px] sm:text-xl font-bold leading-tight',
   boxBg,
   boxLabel: 'text-[7px] sm:text-xs text-gray-500 font-semibold',
@@ -26,7 +27,8 @@ const PODIUM_CONFIG = {
     badgeClass: 'bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-md shadow-amber-500/30 font-extrabold',
     badgeIcon: <IoStar className="text-white text-[8px] sm:text-xs hidden sm:block" />,
     badgeLabel: '1st Champion',
-    avatarClass: 'w-14 h-14 sm:w-24 sm:h-24 border-2 sm:border-4 ring-2 sm:ring-4 ring-amber-100 text-sm sm:text-3xl font-black',
+    avatarClass: 'w-14 h-14 sm:w-24 sm:h-24 text-sm sm:text-3xl font-black',
+    avatarBg: 'bg-white border-2 border-amber-400 text-amber-600 shadow-inner',
     nameSize: 'text-[11px] sm:text-2xl font-extrabold leading-tight',
     boxBg: 'bg-gradient-to-br from-amber-100/90 to-yellow-50 border border-amber-300/80 shadow-sm',
     boxLabel: 'text-amber-900 font-bold text-[7px] sm:text-xs',
@@ -43,6 +45,7 @@ const PODIUM_CONFIG = {
     badgeLabel: '2nd Position',
     boxBg: 'bg-slate-100/80 border border-slate-200',
     borderDivider: 'border-slate-200 text-gray-600',
+    avatarBg: 'bg-white border-2 border-slate-300 text-slate-600 shadow-inner',
   }),
   3: createRunnerUpPodium({
     order: 'order-3 shadow-md',
@@ -53,6 +56,7 @@ const PODIUM_CONFIG = {
     badgeLabel: '3rd Position',
     boxBg: 'bg-orange-50/70 border border-orange-200',
     borderDivider: 'border-orange-200 text-gray-600',
+    avatarBg: 'bg-white border-2 border-orange-300 text-orange-600 shadow-inner',
   }),
 };
 
@@ -74,7 +78,7 @@ const PodiumCard = ({ person, metricsConfig }) => {
         {cfg.badgeIcon} {cfg.badgeLabel} {person.tier && <span className="hidden sm:inline">• {person.tier}</span>}
       </span>
 
-      <div className={`mt-2 sm:mt-4 rounded-full ${person.avatarBg} flex items-center justify-center shadow-inner ${cfg.avatarClass}`}>
+      <div className={`mt-2 sm:mt-4 rounded-full flex items-center justify-center ${cfg.avatarBg} ${cfg.avatarClass}`}>
         {person.avatarInitials}
       </div>
 
