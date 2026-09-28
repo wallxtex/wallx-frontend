@@ -3,7 +3,7 @@ import { Crown } from "lucide-react";
 import { IoLocationOutline } from "react-icons/io5";
 import { useSectionAnimation } from "./useSectionAnimation";
 import PodiumCard from '../../common/components/Shared/PodiumCard';
-import { TOP_PAINTERS_DATA } from '../../pages/painter/component/painterData';
+
 import { getPublicData } from '../../services/dealers/dealers.services';
 
 const PainterCard = ({ person, metricsConfig }) => (

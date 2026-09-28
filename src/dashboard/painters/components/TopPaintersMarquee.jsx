@@ -1,12 +1,12 @@
 import { motion } from "motion/react";
 import { useState } from "react";
-import { TOP_PAINTERS_DATA } from "../../../pages/painter/component/painterData";
+
 
 const TopPaintersMarquee = () => {
   const [isPaused, setIsPaused] = useState(false);
 
   // Duplicate the list for seamless scrolling
-  const duplicatedPainters = [...TOP_PAINTERS_DATA, ...TOP_PAINTERS_DATA];
+  const duplicatedPainters = [];
 
   const getCardStyle = (rank) => {
     if (rank === 1) return "bg-gradient-to-b from-amber-50/70 via-white to-amber-50/40 border-2 border-amber-400";
