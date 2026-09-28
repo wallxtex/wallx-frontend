@@ -5,6 +5,7 @@ import {
     Ticket,
     MessageSquareMore,
     Package,
+    WrenchOff
 } from "lucide-react";
 
 export const adminMenu = [
@@ -36,7 +37,7 @@ export const adminMenu = [
     {
         label: "Services & Products",
         path: "/admin/services-products",
-        icon: Package,
+        icon: WrenchOff,
     },
     {
         label: "Schemes",

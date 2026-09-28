@@ -31,6 +31,8 @@ const adminApis = {
   addSchemes: "/admin/schemes",
   adminDashboardData: "admin/dashboard",
   allPainters: "admin/painters",
+  addProducts: "admin/products",
+  wallxServices: "admin/services",
   DealerSignupDetails: adminDashboardApis,
   DealersPendingStatus: `${adminDashboardApis}/pending`,
   DealersRejected: `${adminDashboardApis}/rejected`,
