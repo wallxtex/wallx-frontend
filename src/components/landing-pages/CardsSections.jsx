@@ -68,7 +68,7 @@ const CardsSections = () => {
                       {card.title}
                     </h3>
                     <p className="text-gray-200 text-xs sm:text-sm mt-2">
-                      Explore this collection
+                      {card.description}
                     </p>
                   </div>
                 </div>
@@ -78,7 +78,7 @@ const CardsSections = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes fadeInUp {
           from {
             opacity: 0;

@@ -1,5 +1,5 @@
 import { IoTrophy, IoQrCodeOutline } from 'react-icons/io5';
-import { TOP_PAINTERS_DATA } from './painterData';
+
 import SharedLeaderboard from '../../../common/components/Shared/SharedLeaderboard';
 
 const formatINR = (val) => {
@@ -66,7 +66,7 @@ const TopPaintersLeaderboard = () => {
     <SharedLeaderboard
       id="top-painters"
       headerProps={headerProps}
-      data={TOP_PAINTERS_DATA}
+      data={[]}
       metricsConfig={metricsConfig}
       tableColumns={tableColumns}
       renderTableRow={renderTableRow}
