@@ -1,4 +1,4 @@
-import { Users, PaintBucket, Store } from "lucide-react";
+import { Users, PaintBucket, Store, UserCircle } from "lucide-react";
 
 export const createFilterCards = (counts) => [
   {
@@ -15,7 +15,7 @@ export const createFilterCards = (counts) => [
   {
     id: "Painter",
     label: "Painters",
-    count: counts.painters,
+    count: counts.painter,
     icon: PaintBucket,
     color: "orange",
     gradient: "from-orange-500 to-orange-600",
@@ -26,12 +26,23 @@ export const createFilterCards = (counts) => [
   {
     id: "Dealer",
     label: "Dealers",
-    count: counts.dealers,
+    count: counts.dealer,
     icon: Store,
     color: "green",
     gradient: "from-green-500 to-green-600",
     bgColor: "bg-green-50",
     borderColor: "border-green-500",
     textColor: "text-green-700",
+  },
+  {
+    id: "Customer",
+    label: "Customers",
+    count: counts.customer,
+    icon: UserCircle,
+    color: "purple",
+    gradient: "from-purple-500 to-purple-600",
+    bgColor: "bg-purple-50",
+    borderColor: "border-purple-500",
+    textColor: "text-purple-700",
   },
 ];

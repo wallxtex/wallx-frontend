@@ -52,7 +52,7 @@ const GlobalNavbar = () => {
         {/* Left: Logo */}
         <div className="flex-1 flex justify-start">
           <Link
-            to="/painter/dashboard"
+            to="/painter-portal/dashboard"
             className="flex items-center cursor-pointer select-none"
           >
             <img

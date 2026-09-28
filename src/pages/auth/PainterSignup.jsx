@@ -14,6 +14,8 @@ import {
 } from "./utils/validation";
 import { useAuthForm } from "./utils/useAuthForm";
 import { painterSignupHandler } from "../../services/global-auth/painter";
+import LoadingButton from "../../components/shared/LoadingButton";
+import useAsyncAction from "../../hooks/useAsyncAction";
 
 const PAINTER_CONSTRAINTS = {
   name: { regex: /^[A-Za-z\s]*$/, max: 40 },
@@ -97,13 +99,17 @@ const PAINTER_FIELDS = [
 
 const PainterSignup = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
   
   const authForm = useAuthForm(
     INITIAL_PAINTER_STATE,
     PAINTER_VALIDATORS,
     PAINTER_CONSTRAINTS,
   );
+
+  const { run: handleSignup, loading: isLoading } = useAsyncAction(async (signupData) => {
+    const response = await painterSignupHandler(signupData);
+    return response;
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -114,8 +120,6 @@ const PainterSignup = () => {
       return;
     }
 
-    setIsLoading(true);
-
     try {
       const signupData = {
         name: authForm.formData.name,
@@ -125,7 +129,7 @@ const PainterSignup = () => {
         password: authForm.formData.pin,
       };
 
-      const response = await painterSignupHandler(signupData);
+      const response = await handleSignup(signupData);
 
       if (response.success) {
         navigate("/painter-verification", {
@@ -139,8 +143,6 @@ const PainterSignup = () => {
     } catch (error) {
       console.error("Painter signup error:", error);
       // Error toast is automatically shown by API interceptor ✅
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -196,13 +198,14 @@ const PainterSignup = () => {
         </p>
 
         {/* Register Button */}
-        <button
+        <LoadingButton
           type="submit"
-          disabled={isLoading}
+          loading={isLoading}
+          loadingText="Registering..."
           className="w-full h-11 sm:h-12 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-sm sm:text-base rounded-lg shadow-sm hover:shadow transition-all duration-200 cursor-pointer flex items-center justify-center tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? "Registering..." : "Register"}
-        </button>
+          Register
+        </LoadingButton>
       </form>
 
       <AuthSwitchLink

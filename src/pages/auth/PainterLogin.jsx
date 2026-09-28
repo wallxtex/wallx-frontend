@@ -12,6 +12,8 @@ import { validateMobile } from "./utils/validation";
 import { useAuthForm } from "./utils/useAuthForm";
 import { painterLoginHandler } from "../../services/global-auth/painter";
 import { useAuth } from "../../auth/AuthContext";
+import LoadingButton from "../../components/shared/LoadingButton";
+import useAsyncAction from "../../hooks/useAsyncAction";
 
 const PAINTER_LOGIN_CONSTRAINTS = {
   mobile: { regex: /^\d*$/, max: 10 },
@@ -52,38 +54,41 @@ const PainterLogin = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [isForgotPinOpen, setIsForgotPinOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const authForm = useAuthForm(
     INITIAL_PAINTER_LOGIN_STATE,
     PAINTER_LOGIN_VALIDATORS,
     PAINTER_LOGIN_CONSTRAINTS,
   );
+
+  const { run: handleLogin, loading: isLoading } = useAsyncAction(async (credentials) => {
+    const response = await painterLoginHandler(credentials);
+    return response;
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!authForm.validateAll()) return;
-    setIsLoading(true);
+
     try {
       const loginData = {
         mobileNumber: authForm.formData.mobile,
         password: authForm.formData.pin,
       };
-      const response = await painterLoginHandler(loginData);
+      const response = await handleLogin(loginData);
 
       // If we get here, login was successful
       const { accessToken } = response.data.data || response.data;
 
       if (accessToken) {
         login(accessToken);
-        navigate("/painter/dashboard");
+        navigate("/painter-portal/dashboard");
       } else {
         console.error("No accessToken found in response:", response);
       }
     } catch (error) {
       // Error handled by global toast interceptor
       console.error("Painter login error:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -122,13 +127,14 @@ const PainterLogin = () => {
           </button>
         </div>
 
-        <button
+        <LoadingButton
           type="submit"
-          disabled={isLoading}
+          loading={isLoading}
+          loadingText="Logging in..."
           className="w-full h-11 sm:h-12 mt-2 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-sm sm:text-base rounded-lg shadow-sm hover:shadow transition-all duration-200 cursor-pointer flex items-center justify-center tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? "Logging in..." : "Log In"}
-        </button>
+          Log In
+        </LoadingButton>
       </form>
 
       <AuthSwitchLink

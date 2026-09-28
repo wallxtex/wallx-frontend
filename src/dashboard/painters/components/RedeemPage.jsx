@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import PrivateApi from "../../../utils/apis/privateApi";
 import ScannerPlaceholder from "./ScannerPlaceholder";
+import LoadingButton from "../../../components/shared/LoadingButton";
+import useAsyncAction from "../../../hooks/useAsyncAction";
 
 const rewardsBgStyle = {
     backgroundColor: '#f3f4f6',
@@ -14,10 +16,16 @@ const RedeemPage = () => {
     const navigate = useNavigate();
     const code = paramCode || searchParams.get("code");
 
-    const [status, setStatus] = useState("ready"); // 'ready', 'redeeming', 'success', 'error'
+    const [status, setStatus] = useState("ready"); // 'ready', 'success', 'error'
     const [amount, setAmount] = useState(0);
     const [message, setMessage] = useState("");
     const [errorCode, setErrorCode] = useState(null);
+
+    // Setup async action for redemption
+    const { run: redeemCoupon, loading: isRedeeming } = useAsyncAction(async (redemptionCode) => {
+        const response = await PrivateApi.post(`/painters/redeem/${redemptionCode}`);
+        return response;
+    });
 
     const isUrl = (str) => {
         try {
@@ -47,10 +55,8 @@ const RedeemPage = () => {
     }, [code]);
 
     const handleRedeem = async () => {
-        setStatus("redeeming");
-
         try {
-            const response = await PrivateApi.post(`/painters/redeem/${code}`);
+            const response = await redeemCoupon(code);
             setStatus("success");
             
             // Set actual amount if backend returns it
@@ -82,12 +88,12 @@ const RedeemPage = () => {
         <div className="flex justify-center items-center min-h-[calc(100vh-64px)] sm:min-h-screen text-gray-900 p-5 font-sans" style={rewardsBgStyle}>
             <div className="bg-white rounded-2xl p-8 max-w-[350px] w-full text-center shadow-lg border border-gray-200">
 
-                {(status === "verifying" || status === "redeeming") && (
+                {(status === "verifying" || isRedeeming) && (
                     <div>
-                        <div className={`w-12 h-12 border-4 border-gray-100 ${status === 'redeeming' ? 'border-t-blue-500' : 'border-t-green-500'} rounded-full animate-spin mx-auto mb-5`}></div>
-                        <h2 className="font-semibold text-xl mb-2">{status === 'redeeming' ? 'Processing...' : 'Verifying Code'}</h2>
+                        <div className={`w-12 h-12 border-4 border-gray-100 ${isRedeeming ? 'border-t-blue-500' : 'border-t-green-500'} rounded-full animate-spin mx-auto mb-5`}></div>
+                        <h2 className="font-semibold text-xl mb-2">{isRedeeming ? 'Processing...' : 'Verifying Code'}</h2>
                         <p className="text-gray-500 text-sm leading-relaxed mb-5">
-                            {status === 'redeeming' ? 'Connecting to payment gateway...' : 'Please wait while we securely verify your QR code...'}
+                            {isRedeeming ? 'Connecting to payment gateway...' : 'Please wait while we securely verify your QR code...'}
                         </p>
                         <div className="bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg font-mono text-sm text-gray-600 inline-block mt-2 break-all w-full box-border">{code}</div>
                     </div>
@@ -100,11 +106,15 @@ const RedeemPage = () => {
                         <p className="text-gray-500 text-sm leading-relaxed mb-5">{message}</p>
                         
                         <p className="bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg font-mono text-sm text-gray-600 inline-block mt-2 break-all w-full box-border">Ref: {code}</p>
-                        <button type="button"
-                            className="bg-blue-600 hover:bg-blue-700 text-white border-none py-3 px-6 rounded-full text-base font-semibold cursor-pointer w-full mt-5 transition-transform active:scale-95 shadow-md shadow-blue-600/20"
-                            onClick={handleRedeem}>
+                        <LoadingButton
+                            type="button"
+                            loading={isRedeeming}
+                            loadingText="Redeeming..."
+                            className="bg-blue-600 hover:bg-blue-700 text-white border-none py-3 px-6 rounded-full text-base font-semibold cursor-pointer w-full mt-5 transition-transform active:scale-95 shadow-md shadow-blue-600/20 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={handleRedeem}
+                        >
                             Redeem Now
-                        </button>
+                        </LoadingButton>
                     </div>
                 )}
 
@@ -119,7 +129,7 @@ const RedeemPage = () => {
                         </div>
                         <button type="button"
                             className="bg-gray-800 hover:bg-gray-900 text-white border-none py-3 px-6 rounded-full text-base font-semibold cursor-pointer w-full mt-5 transition-transform active:scale-95 shadow-md"
-                            onClick={() => navigate("/painter/scan")}>
+                            onClick={() => navigate("/painter-portal/scan")}>
                             Scan Another
                         </button>
                     </div>
@@ -167,16 +177,20 @@ const RedeemPage = () => {
                                 errorCode === 409 ? 'bg-orange-600 hover:bg-orange-700 shadow-orange-600/20' :
                                 'bg-red-600 hover:bg-red-700 shadow-red-600/20'
                             }`}
-                            onClick={() => navigate("/painter/scan")}>
+                            onClick={() => navigate("/painter-portal/scan")}>
                             Scan Another
                         </button>
                         
                         {errorCode === 502 && (
-                             <button type="button"
-                                className="bg-transparent border border-yellow-300 text-yellow-600 py-3 px-6 rounded-full text-base font-semibold cursor-pointer w-full mt-3 transition-colors hover:bg-yellow-50"
-                                onClick={handleRedeem}>
+                             <LoadingButton
+                                type="button"
+                                loading={isRedeeming}
+                                loadingText="Retrying..."
+                                className="bg-transparent border border-yellow-300 text-yellow-600 py-3 px-6 rounded-full text-base font-semibold cursor-pointer w-full mt-3 transition-colors hover:bg-yellow-50 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                                onClick={handleRedeem}
+                            >
                                 Try Again Now
-                            </button>
+                            </LoadingButton>
                         )}
                     </div>
                 )}

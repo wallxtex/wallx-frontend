@@ -4,6 +4,8 @@ import { Eye, EyeOff, LogIn, User, Lock } from "lucide-react";
 import { adminLoginHandler } from "../../../services/global-auth/admin";
 import { useAuth } from "../../../auth/AuthContext";
 import adminVideo from "../../../assets/admin-video.mp4";
+import LoadingButton from "../../../components/shared/LoadingButton";
+import useAsyncAction from "../../../hooks/useAsyncAction";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -22,8 +24,12 @@ const AdminLogin = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const { run: handleLogin, loading: isLoading } = useAsyncAction(async (credentials) => {
+    const response = await adminLoginHandler(credentials);
+    return response;
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,10 +41,8 @@ const AdminLogin = () => {
       return;
     }
 
-    setIsLoading(true);
-
     try {
-      const response = await adminLoginHandler({
+      const response = await handleLogin({
         email: formData.email,
         password: formData.password,
       });
@@ -56,8 +60,6 @@ const AdminLogin = () => {
     } catch (error) {
       // Error toast is shown by the service
       console.error("Admin login error:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -170,23 +172,15 @@ const AdminLogin = () => {
             </div>
 
             {/* Submit Button */}
-            <button
+            <LoadingButton
               type="submit"
-              disabled={isLoading}
+              loading={isLoading}
+              loadingText="Signing in..."
               className="w-full py-3 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  <span>Signing in...</span>
-                </>
-              ) : (
-                <>
-                  <LogIn className="w-5 h-5" />
-                  <span>Sign In</span>
-                </>
-              )}
-            </button>
+              <LogIn className="w-5 h-5" />
+              <span>Sign In</span>
+            </LoadingButton>
           </form>
         </div>
 

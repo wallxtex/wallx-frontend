@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import AuthLayout from "./AuthLayout";
+import LoadingButton from "../../../components/shared/LoadingButton";
+import useAsyncAction from "../../../hooks/useAsyncAction";
 
 const AuthVerification = ({
   title = "Enter verification code",
@@ -13,10 +15,17 @@ const AuthVerification = ({
 }) => {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const inputRefs = useRef([]);
-
+  
   // 3 minutes (180 seconds) countdown timer
   const [timeLeft, setTimeLeft] = useState(180);
   const canResend = timeLeft <= 0;
+
+  // Setup async action for OTP verification
+  const { run: verifyOtp, loading: isVerifying } = useAsyncAction(async (fullOtp) => {
+    if (onVerify) {
+      await onVerify(fullOtp);
+    }
+  });
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -74,17 +83,19 @@ const AuthVerification = ({
     console.log(`Resending ${role} OTP to:`, mobile);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const fullOtp = otp.join("");
     if (fullOtp.length !== 4) {
       alert("Please enter a valid 4-digit OTP");
       return;
     }
-    if (onVerify) {
-      onVerify(fullOtp);
-    } else {
-      console.log(`Verified ${role} OTP:`, fullOtp);
+    
+    try {
+      await verifyOtp(fullOtp);
+    } catch (error) {
+      console.error("OTP verification failed:", error);
+      // Error is handled by global toast interceptor
     }
   };
 
@@ -154,12 +165,14 @@ const AuthVerification = ({
           </button>
         </div>
 
-        <button
+        <LoadingButton
           type="submit"
-          className="w-full h-12 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-[15px] rounded-xl shadow-md shadow-red-500/20 hover:shadow-lg hover:shadow-red-500/30 active:scale-[0.99] transition-all duration-200 cursor-pointer flex items-center justify-center"
+          loading={isVerifying}
+          loadingText="Verifying..."
+          className="w-full h-12 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-[15px] rounded-xl shadow-md shadow-red-500/20 hover:shadow-lg hover:shadow-red-500/30 active:scale-[0.99] transition-all duration-200 cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Verify & Continue
-        </button>
+        </LoadingButton>
       </form>
 
       <div className="mt-8 text-center text-sm text-gray-500">

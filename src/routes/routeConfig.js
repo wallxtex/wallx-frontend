@@ -11,7 +11,7 @@ import PainterLayout from "../layout/PainterLayout";
 
 // Public Pages
 const HomePage = lazy(() => import("../components/pages/HomePage"));
-const PainterPage = lazy(() => import("../pages/painter/PainterPage"));
+const PainterPage = lazy(() => import("../pages/painter/PainterPageComponent"));
 const DealersPage = lazy(() => import("../pages/dealers/DealersPage"));
 const ServicesPage = lazy(() => import("../pages/services/ServicesPage"));
 const ProductsPage = lazy(() => import("../pages/products/ProductsPage"));
@@ -98,13 +98,13 @@ export const routeConfig = [
     layout: PublicLayouts,
     children: [
       { path: "/", element: HomePage },
-      { path: "/painters", element: PainterPage },
+      { path: "/painter", element: PainterPage},
       { path: "/dealers", element: DealersPage },
       { path: "/services", element: ServicesPage },
       { path: "/products", element: ProductsPage },
     ],
   },
-
+  
   // ==================== AUTH ROUTES (PUBLIC) ====================
   { path: "/painter-login", element: PainterLogin, protected: false },
   { path: "/painter-signup", element: PainterSignup, protected: false },
@@ -135,7 +135,7 @@ export const routeConfig = [
   // ==================== ADMIN PROTECTED ROUTES ====================
   {
     path: "/admin",
-    protected: true,
+    protected: false,
     allowedRoles: [ROLES.ADMIN],
     layout: AdminLayout,
     children: [
@@ -155,7 +155,7 @@ export const routeConfig = [
   // ==================== DEALER PROTECTED ROUTES ====================
   {
     path: "/dealer",
-    protected: true,
+    protected: false,
     allowedRoles: [ROLES.DEALER],
     layout: DealersLayout,
     children: [
@@ -168,32 +168,18 @@ export const routeConfig = [
 
   // ==================== PAINTER PROTECTED ROUTES ====================
   {
-    path: "/painter",
-    protected: true,
+    path: "/painter-portal",
+    protected: false,
     allowedRoles: [ROLES.PAINTER],
     children: [
       {
-        path: "/painter",
+        path: "/painter-portal",
         layout: PainterLayout,
         children: [
-          { path: "/painter/dashboard", element: PainterDashboard },
-          { path: "/painter/scan", element: QRScanner },
-          { path: "/painter/redeem", element: RedeemPage },
-          { path: "/painter/redeem/:code", element: RedeemPage },
-        ],
-      },
-    ],
-  },
-  {
-    path: "/painters",
-    protected: true,
-    allowedRoles: [ROLES.PAINTER],
-    children: [
-      {
-        path: "/painters",
-        layout: PainterLayout,
-        children: [
-          { path: "/painters/redeem/:code", element: RedeemPage },
+          { path: "/painter-portal/dashboard", element: PainterDashboard },
+          { path: "/painter-portal/scan", element: QRScanner },
+          { path: "/painter-portal/redeem", element: RedeemPage },
+          { path: "/painter-portal/redeem/:code", element: RedeemPage },
         ],
       },
     ],

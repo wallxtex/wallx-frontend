@@ -8,7 +8,7 @@ import {
 export const painterMenu = [
   {
     label: "Dashboard",
-    path: "/painter/dashboard",
+    path: "/painter-portal/dashboard",
     icon: LayoutDashboard,
   },
 

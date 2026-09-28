@@ -20,7 +20,7 @@ const VisitEnquiry = () => {
   const [loading, setLoading] = useState(true);
   
   // State for filters and pagination
-  const [selectedType, setSelectedType] = useState("all");
+  const [selectedType, setSelectedType] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,25 +35,38 @@ const VisitEnquiry = () => {
       setLoading(true);
       // Fetch stats
       const statsResult = await getEnquiryStats();
+      console.log("Stats Result:", statsResult); // Debug log
       if (statsResult.success) {
-        setStats(statsResult.data.data);
+        // Handle the correct data structure: statsResult.data contains the response
+        const statsData = statsResult.data?.data || statsResult.data;
+        console.log("Stats Data:", statsData); // Debug log
+        setStats({
+          totalEnquiries: statsData.totalEnquiries || 0,
+          dealers: statsData.dealers || 0,
+          painters: statsData.painters || 0,
+          customers: statsData.customers || 0,
+        });
       }
 
       // Fetch all enquiries (adjust limit if needed)
       const enquiriesResult = await getEnquiries(1, 1000);
+      console.log("Enquiries Result:", enquiriesResult); // Debug log
       if (enquiriesResult.success) {
-        const enquiriesData = enquiriesResult.data.data.enquiries || [];
+        // Handle both possible data structures
+        const enquiriesData = enquiriesResult.data?.data?.enquiries || 
+                             enquiriesResult.data?.enquiries || 
+                             [];
+        console.log("Enquiries Data:", enquiriesData); // Debug log
+        
         // Transform backend data to match frontend format
         const transformedEnquiries = enquiriesData.map((enquiry) => ({
           id: enquiry._id,
           name: enquiry.name || "N/A",
           type: enquiry.role || "CUSTOMER", // DEALER, PAINTER, CUSTOMER
-          phone: enquiry.phone || enquiry.mobile || "N/A",
-          email: enquiry.email || "N/A",
+          phone: enquiry.mobile || "N/A",
+          address: enquiry.address || "N/A",
+          enquiry: enquiry.enquiry || "No message",
           visitDate: enquiry.date || enquiry.createdAt || new Date().toISOString(),
-          status: "Pending", // Backend doesn't have status field
-          location: enquiry.location || "N/A",
-          message: enquiry.message || "",
         }));
         setEnquiries(transformedEnquiries);
       }
@@ -67,12 +80,14 @@ const VisitEnquiry = () => {
   // Filter enquiries
   const filteredEnquiries = enquiries.filter((enquiry) => {
     const matchesType =
-      selectedType === "all" || enquiry.type.toLowerCase() === selectedType.toLowerCase();
+      selectedType.toLowerCase() === "all" || 
+      enquiry.type.toLowerCase() === selectedType.toLowerCase();
     const matchesSearch =
       searchQuery === "" ||
       enquiry.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       enquiry.phone.includes(searchQuery) ||
-      enquiry.email.toLowerCase().includes(searchQuery.toLowerCase());
+      enquiry.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      enquiry.enquiry.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesDate =
       selectedDate === "" ||
       new Date(enquiry.visitDate).toISOString().split("T")[0] === selectedDate;
@@ -88,9 +103,9 @@ const VisitEnquiry = () => {
 
   // Counts for filter cards
   const counts = {
-    all: enquiries.length,
-    dealer: stats.dealers,
+    all: stats.totalEnquiries,
     painter: stats.painters,
+    dealer: stats.dealers,
     customer: stats.customers,
   };
 
@@ -98,7 +113,7 @@ const VisitEnquiry = () => {
 
   // Clear filters
   const clearFilters = () => {
-    setSelectedType("all");
+    setSelectedType("All");
     setSearchQuery("");
     setSelectedDate("");
     setCurrentPage(1);
@@ -113,21 +128,20 @@ const VisitEnquiry = () => {
     }
 
     // CSV Headers
-    const headers = ["Name", "Type", "Phone", "Email", "Visit Date", "Status", "Location"];
+    const headers = ["Name", "Type", "Phone", "Address", "Enquiry", "Visit Date"];
     
     // CSV Rows
     const rows = filteredEnquiries.map(enquiry => [
       enquiry.name,
       enquiry.type,
       enquiry.phone,
-      enquiry.email,
+      enquiry.address,
+      enquiry.enquiry,
       new Date(enquiry.visitDate).toLocaleDateString("en-IN", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
       }),
-      enquiry.status,
-      enquiry.location
     ]);
 
     // Combine headers and rows
@@ -142,7 +156,7 @@ const VisitEnquiry = () => {
     const url = URL.createObjectURL(blob);
     
     // Generate filename based on filter with correct date format
-    const filterType = selectedType === "all" ? "All-Visitors" : selectedType;
+    const filterType = selectedType.toLowerCase() === "all" ? "All-Visitors" : selectedType;
     const now = new Date();
     const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const filename = `${filterType}-${timestamp}.csv`;

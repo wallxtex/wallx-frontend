@@ -15,7 +15,15 @@ const VisitorTable = ({
   return (
     <div className="bg-white rounded-lg sm:rounded-xl border border-gray-200 overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full table-fixed">
+          <colgroup>
+            <col className="w-[150px]" /> {/* Name */}
+            <col className="w-[120px]" /> {/* Type */}
+            <col className="w-[140px]" /> {/* Phone */}
+            <col className="w-[250px]" /> {/* Address */}
+            <col className="w-[300px]" /> {/* Enquiry */}
+            <col className="w-[140px]" /> {/* Visit Date */}
+          </colgroup>
           <VisitorTableHeader />
           <tbody className="divide-y divide-gray-200">
             {visitors.length > 0 ? (
