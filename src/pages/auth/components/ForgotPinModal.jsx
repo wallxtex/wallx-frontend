@@ -8,6 +8,8 @@ import {
   forgotPin as painterForgotPin,
   resetPin as painterResetPin,
 } from "../../../services/global-auth/painter";
+import LoadingButton from "../../../components/shared/LoadingButton";
+import useAsyncAction from "../../../hooks/useAsyncAction";
 
 const ForgotPinModal = ({
   isOpen,
@@ -21,9 +23,22 @@ const ForgotPinModal = ({
   const [newPin, setNewPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const otpRefs = useRef([]);
+
+  // Setup async actions for Send OTP
+  const { run: sendOtp, loading: isSendingOtp } = useAsyncAction(async (mobile) => {
+    const forgotPinFn = userType === "painter" ? painterForgotPin : dealerForgotPin;
+    const response = await forgotPinFn({ mobile });
+    return response;
+  });
+
+  // Setup async actions for Reset PIN
+  const { run: resetPinAction, loading: isResettingPin } = useAsyncAction(async (data) => {
+    const resetPinFn = userType === "painter" ? painterResetPin : dealerResetPin;
+    const response = await resetPinFn(data);
+    return response;
+  });
 
   // Reset state when modal opens/closes
   useEffect(() => {
@@ -45,12 +60,9 @@ const ForgotPinModal = ({
       return;
     }
     setError("");
-    setIsLoading(true);
 
     try {
-      const forgotPinFn =
-        userType === "painter" ? painterForgotPin : dealerForgotPin;
-      const response = await forgotPinFn({ mobile });
+      const response = await sendOtp(mobile);
 
       // If we get here, it was successful
       setStep(2);
@@ -58,8 +70,6 @@ const ForgotPinModal = ({
     } catch (error) {
       // Error is handled by global toast interceptor
       console.error("Forgot PIN error:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -85,12 +95,9 @@ const ForgotPinModal = ({
     }
 
     setError("");
-    setIsLoading(true);
 
     try {
-      const resetPinFn =
-        userType === "painter" ? painterResetPin : dealerResetPin;
-      const response = await resetPinFn({
+      const response = await resetPinAction({
         mobile,
         otp: fullOtp,
         newPin,
@@ -101,8 +108,6 @@ const ForgotPinModal = ({
     } catch (error) {
       // Error is handled by global toast interceptor
       console.error("Reset PIN error:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -170,13 +175,14 @@ const ForgotPinModal = ({
                 />
               </div>
             </div>
-            <button
+            <LoadingButton
               onClick={handleSendOtp}
-              disabled={isLoading}
-              className="w-full h-11 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-sm rounded-lg shadow-sm transition-all flex items-center justify-center disabled:opacity-70 cursor-pointer"
+              loading={isSendingOtp}
+              loadingText="Sending..."
+              className="w-full h-11 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-sm rounded-lg shadow-sm transition-all flex items-center justify-center cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Sending..." : "Send OTP"}
-            </button>
+              Send OTP
+            </LoadingButton>
           </div>
         )}
 
@@ -241,13 +247,14 @@ const ForgotPinModal = ({
             </div>
 
             {/* Submit Button */}
-            <button
+            <LoadingButton
               onClick={handleResetPin}
-              disabled={isLoading}
-              className="w-full h-11 mt-2 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-sm rounded-lg shadow-sm transition-all flex items-center justify-center disabled:opacity-70 cursor-pointer"
+              loading={isResettingPin}
+              loadingText="Saving..."
+              className="w-full h-11 mt-2 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-sm rounded-lg shadow-sm transition-all flex items-center justify-center cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Saving..." : "Reset PIN"}
-            </button>
+              Reset PIN
+            </LoadingButton>
           </div>
         )}
       </div>

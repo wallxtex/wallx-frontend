@@ -18,6 +18,8 @@ import {
 import { useAuthForm } from "./utils/useAuthForm";
 import { dealerSignupHandler } from "../../services/global-auth/dealer";
 import toast from "react-hot-toast";
+import LoadingButton from "../../components/shared/LoadingButton";
+import useAsyncAction from "../../hooks/useAsyncAction";
 
 const DEALER_CONSTRAINTS = {
   dealerName: { regex: /^[A-Za-z\s]*$/, max: 50 },
@@ -144,18 +146,21 @@ const DEALER_ROW_FIELDS = [
 
 const DealerSignup = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  
   const authForm = useAuthForm(
     INITIAL_DEALER_STATE,
     DEALER_VALIDATORS,
     DEALER_CONSTRAINTS,
   );
 
+  const { run: handleSignup, loading: isLoading } = useAsyncAction(async (signupData) => {
+    const response = await dealerSignupHandler(signupData);
+    return response;
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!authForm.validateAll()) return;
-
-    setIsLoading(true);
 
     try {
       const { formData } = authForm;
@@ -174,7 +179,7 @@ const DealerSignup = () => {
         password: formData.pin,
       };
 
-      const response = await dealerSignupHandler(signupData);
+      const response = await handleSignup(signupData);
 
       if (response.success) {
         navigate("/dealer-verification", {
@@ -192,8 +197,6 @@ const DealerSignup = () => {
     } catch (error) {
       console.error("Dealer signup error:", error);
       // Error toast is automatically shown by API interceptor ✅
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -230,13 +233,14 @@ const DealerSignup = () => {
 
         {/* Submit Button */}
         <div className="pt-3 sm:pt-4 lg:pt-3.5 xl:pt-5">
-          <button
+          <LoadingButton
             type="submit"
-            disabled={isLoading}
+            loading={isLoading}
+            loadingText="Registering..."
             className="w-full h-11 sm:h-12 bg-[#d82b2b] hover:bg-[#b92525] active:scale-[0.99] text-white font-semibold text-sm sm:text-base rounded-lg transition-all shadow-md shadow-[#d82b2b]/20 flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Registering..." : "Register Dealer Account"}
-          </button>
+            Register Dealer Account
+          </LoadingButton>
         </div>
       </form>
 

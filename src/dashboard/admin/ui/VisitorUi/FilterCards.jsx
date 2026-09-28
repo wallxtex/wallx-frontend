@@ -3,7 +3,7 @@ import { CheckCircle } from "lucide-react";
 
 const FilterCards = ({ filterCards, selectedType, onSelectType }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
       {filterCards.map((card) => {
         const Icon = card.icon;
         const isActive = selectedType === card.id;

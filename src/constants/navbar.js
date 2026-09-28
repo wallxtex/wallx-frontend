@@ -1,7 +1,7 @@
 import { IoPersonOutline, IoBriefcaseOutline } from "react-icons/io5";
 
 const MAIN_NAV_LINKS = [
-  { name: "Painters", path: "/painters" },
+  { name: "Painters", path: "/painter"},
   { name: "Dealers", path: "/dealers" },
   { name: "Services", path: "/services" },
   { name: "Products", path: "/products" },

@@ -1,10 +1,11 @@
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import PublicLayouts from "../layout/PublicLayout";
+import PainterPageComponent from "../pages/painter/PainterPageComponent";
 
 // Lazy Loaded Public Page Components
 const HomePage = lazy(() => import("../components/pages/HomePage"));
-const PainterPage = lazy(() => import("../pages/painter/PainterPage"));
+const PainterPage = lazy(() => import("../pages/painter/PainterPageComponent"));
 const DealersPage = lazy(() => import("../pages/dealers/DealersPage"));
 const ServicesPage = lazy(() => import("../pages/services/ServicesPage"));
 const ProductsPage = lazy(() => import("../pages/products/ProductsPage"));
@@ -31,7 +32,7 @@ const PublicRoute = () => {
         {/* ================= SECTION 1: PUBLIC LANDING PAGES ================= */}
         <Route element={<PublicLayouts />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/painters" element={<PainterPage />} />
+          <Route path="/painter" element={<PainterPageComponent/>} />
           <Route path="/dealers" element={<DealersPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/products" element={<ProductsPage/>} />

@@ -20,7 +20,7 @@ const ScannerPlaceholder = () => {
 
         <div className="flex flex-col items-center justify-center w-full">
           <motion.div
-            onClick={() => navigate('/painter/scan')}
+            onClick={() => navigate('/painter-portal/scan')}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ duration: 0.2 }}
@@ -36,7 +36,7 @@ const ScannerPlaceholder = () => {
       {/* Mobile view: Floating Action Button (FAB) style */}
       <div className="sm:hidden flex justify-center -mt-10 relative z-10">
         <motion.div
-          onClick={() => navigate('/painter/scan')}
+          onClick={() => navigate('/painter-portal/scan')}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           transition={{ duration: 0.2 }}

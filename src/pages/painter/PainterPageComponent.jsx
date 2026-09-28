@@ -5,7 +5,7 @@ import RedeemQRGuide from './component/RedeemQRGuide';
 import PainterPerks from './component/PainterPerks';
 import PainterCTA from './component/PainterCTA';
 
-const PainterPage = () => {
+const PainterPageComponent = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
@@ -14,11 +14,11 @@ const PainterPage = () => {
     <main className="min-h-screen bg-[#fafafa]">
       <PainterSchemes />
       <TopPaintersLeaderboard />
-      <RedeemQRGuide />
+      <RedeemQRGuide />j
       <PainterPerks />
       <PainterCTA />
     </main>
   );
 };
 
-export default PainterPage;
+export default PainterPageComponent;

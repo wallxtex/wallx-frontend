@@ -13,6 +13,8 @@ import { validateMobile } from "./utils/validation";
 import { useAuthForm } from "./utils/useAuthForm";
 import { dealerLoginHandler } from "../../services/global-auth/dealer";
 import { useAuth } from "../../auth/AuthContext";
+import LoadingButton from "../../components/shared/LoadingButton";
+import useAsyncAction from "../../hooks/useAsyncAction";
 
 const DEALER_LOGIN_CONSTRAINTS = {
   mobile: { regex: /^\d*$/, max: 10 },
@@ -53,7 +55,6 @@ const DealerLogin = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [isForgotPinOpen, setIsForgotPinOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const authForm = useAuthForm(
     INITIAL_DEALER_LOGIN_STATE,
@@ -61,17 +62,22 @@ const DealerLogin = () => {
     DEALER_LOGIN_CONSTRAINTS,
   );
 
+  const { run: handleLogin, loading: isLoading } = useAsyncAction(async (credentials) => {
+    const response = await dealerLoginHandler(credentials);
+    return response;
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!authForm.validateAll()) return;
-    setIsLoading(true);
+
     try {
       const loginData = {
         identifier: authForm.formData.mobile,
         password: authForm.formData.pin,
       };
 
-      const response = await dealerLoginHandler(loginData);
+      const response = await handleLogin(loginData);
 
       // If we get here, login was successful
       const { accessToken } = response.data.data || response.data;
@@ -96,8 +102,6 @@ const DealerLogin = () => {
         });
       }
       console.error("Dealer login error:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -136,13 +140,14 @@ const DealerLogin = () => {
           </button>
         </div>
 
-        <button
+        <LoadingButton
           type="submit"
-          disabled={isLoading}
+          loading={isLoading}
+          loadingText="Logging in..."
           className="w-full h-11 sm:h-12 mt-2 bg-[#d82b2b] hover:bg-[#b82222] text-white font-semibold text-sm sm:text-base rounded-lg shadow-sm hover:shadow transition-all duration-200 cursor-pointer flex items-center justify-center tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? "Logging in..." : "Log In"}
-        </button>
+          Log In
+        </LoadingButton>
       </form>
 
       <AuthSwitchLink

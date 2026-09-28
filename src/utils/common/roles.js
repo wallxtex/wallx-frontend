@@ -10,6 +10,6 @@ export const ROLES = Object.freeze({
  */
 export const ROLE_HOME_ROUTES = Object.freeze({
   [ROLES.ADMIN]: '/admin/dashboard',
-  [ROLES.PAINTER]: '/painter/dashboard',
+  [ROLES.PAINTER]: '/painter-portal/dashboard',
   [ROLES.DEALER]: '/dealer/dashboard',
 });

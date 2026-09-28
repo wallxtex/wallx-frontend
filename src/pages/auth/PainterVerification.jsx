@@ -20,7 +20,7 @@ const usePainterVerification = () => {
 
         if (accessToken) {
           login(accessToken);
-          navigate("/painter/dashboard");
+          navigate("/painter-portal/dashboard");
           // Toast is automatically shown by API interceptor ✅
         } else {
           console.error("No accessToken found in response:", response);

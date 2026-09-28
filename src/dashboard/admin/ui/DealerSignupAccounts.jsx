@@ -11,15 +11,18 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+
 import {
   DealerSignupDetails,
   DealerApproval,
 } from "../../../services/dealers/dealer/dealerSignupdetail";
+
 import { adminDealerSignupStats } from "../../../services/dealers/dealer/dealerManagement";
+import LoadingButton from "../../../components/shared/LoadingButton";
+import useAsyncAction from "../../../hooks/useAsyncAction";
 
 const DealerSignupAccounts = () => {
   console.log("[COMPONENT] DealerSignupAccounts mounted/rendered");
-  
   const [dealers, setDealers] = useState([]);
   const [selectedDealer, setSelectedDealer] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,13 +33,27 @@ const DealerSignupAccounts = () => {
     rejectedAccounts: 0,
   });
 
-  // Pagination State
+  // Pagination Stateou
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
-
+  // Setup async actions for Approve and Reject
+  const { run: approveDealer, loading: isApproving } = useAsyncAction(
+    async (dealerId) => {
+      const response = await DealerApproval(dealerId, { action: "approve" });
+      return response;
+    },
+  );
+  const { run: rejectDealer, loading: isRejecting } = useAsyncAction(
+    async (dealerId) => {
+      const response = await DealerApproval(dealerId, { action: "reject" });
+      return response;
+    },
+  );
   // Fetch dealers and stats on component mount
   useEffect(() => {
-    console.log("[COMPONENT] useEffect triggered - calling fetchDealers and fetchStats");
+    console.log(
+      "[COMPONENT] useEffect triggered - calling fetchDealers and fetchStats",
+    );
     fetchDealers();
     fetchStats();
   }, []);
@@ -87,7 +104,9 @@ const DealerSignupAccounts = () => {
   const fetchStats = async () => {
     console.log("[DEALER SIGNUP STATS] ========== FETCH STARTED ==========");
     try {
-      console.log("[DEALER SIGNUP STATS] Calling adminDealerSignupStats API...");
+      console.log(
+        "[DEALER SIGNUP STATS] Calling adminDealerSignupStats API...",
+      );
       const response = await adminDealerSignupStats();
       console.log("[DEALER SIGNUP STATS] ========== RAW RESPONSE ==========");
       console.log(
@@ -119,7 +138,7 @@ const DealerSignupAccounts = () => {
 
   const handleApprove = async (dealerId, name) => {
     try {
-      await DealerApproval(dealerId, { action: "approve" });
+      await approveDealer(dealerId);
       // Success toast is shown by the API function
       setSelectedDealer(null);
       fetchDealers(); // Refresh the list
@@ -132,9 +151,7 @@ const DealerSignupAccounts = () => {
 
   const handleReject = async (dealerId, name) => {
     try {
-      await DealerApproval(dealerId, {
-        action: "reject",
-      });
+      await rejectDealer(dealerId);
       // Success toast is shown by the API function
       setSelectedDealer(null);
       fetchDealers(); // Refresh the list
@@ -453,30 +470,36 @@ const DealerSignupAccounts = () => {
                 <div className="p-5 border-t border-gray-100 bg-gray-50">
                   {selectedDealer.approvalStatus === "PENDING" ? (
                     <div className="flex gap-3">
-                      <button
+                      <LoadingButton
                         onClick={() =>
                           handleReject(
                             selectedDealer._id,
                             selectedDealer.shopName,
                           )
                         }
-                        className="flex-1 py-2.5 flex items-center justify-center gap-1.5 rounded-lg border border-[#d82b2b] text-[#d82b2b] font-semibold text-sm hover:bg-red-50 transition-colors"
+                        loading={isRejecting}
+                        loadingText="Rejecting..."
+                        disabled={isApproving}
+                        className="flex-1 py-2.5 flex items-center justify-center gap-1.5 rounded-lg border border-[#d82b2b] text-[#d82b2b] font-semibold text-sm hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <X className="w-4 h-4" />
                         Reject
-                      </button>
-                      <button
+                      </LoadingButton>
+                      <LoadingButton
                         onClick={() =>
                           handleApprove(
                             selectedDealer._id,
                             selectedDealer.shopName,
                           )
                         }
-                        className="flex-1 py-2.5 flex items-center justify-center gap-1.5 rounded-lg bg-emerald-500 text-white font-semibold text-sm hover:bg-emerald-600 shadow-sm shadow-emerald-500/30 transition-colors"
+                        loading={isApproving}
+                        loadingText="Approving..."
+                        disabled={isRejecting}
+                        className="flex-1 py-2.5 flex items-center justify-center gap-1.5 rounded-lg bg-emerald-500 text-white font-semibold text-sm hover:bg-emerald-600 shadow-sm shadow-emerald-500/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Check className="w-4 h-4" />
                         Approve
-                      </button>
+                      </LoadingButton>
                     </div>
                   ) : (
                     <div className="text-center py-2 text-sm text-gray-500 font-medium">
