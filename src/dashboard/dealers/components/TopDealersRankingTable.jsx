@@ -83,9 +83,9 @@ const TopDealersRankingTable = () => {
       case 1:
         return <Trophy className="w-5 h-5 text-yellow-500" />;
       case 2:
-        return <Medal className="w-5 h-5 text-gray-400" />;
+        return <Trophy className="w-5 h-5 text-gray-400" />;
       case 3:
-        return <Award className="w-5 h-5 text-amber-600" />;
+        return <Trophy className="w-5 h-5 text-amber-600" />;
       case "-":
         return <span className="font-bold text-gray-400 w-5 h-5 flex items-center justify-center text-sm">-</span>;
       default:

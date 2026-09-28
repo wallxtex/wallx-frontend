@@ -35,7 +35,7 @@ const DealersOrders = () => {
       const csvData = [
         headers.join(","),
         ...currentOrders.map(order =>  
-          `"${order._id || order.id}","${new Date(order.date).toLocaleDateString('en-GB')}","${order.productName}","${order.quantity}","${order.price}","${order.amount}","${order.amountReceived}","${order.pendingAmount ?? (order.amount - order.amountReceived)}"`
+          `"${order.orderId}","${new Date(order.date).toLocaleDateString('en-GB')}","${order.productName}","${order.quantity}","${order.price}","${order.amount}","${order.amountReceived}","${order.pendingAmount ?? (order.amount - order.amountReceived)}"`
         )
       ].join("\n");
 
