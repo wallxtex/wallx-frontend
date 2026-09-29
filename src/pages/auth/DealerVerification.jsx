@@ -12,6 +12,8 @@ const useDealerVerification = () => {
         mobile: state.mobile,
         otp: otp,
       });
+      console.log("dealer otp" , response.data?.otp);
+      
 
       if (response.success) {
         navigate("/dealer-login");

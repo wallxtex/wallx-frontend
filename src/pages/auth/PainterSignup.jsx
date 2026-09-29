@@ -130,7 +130,12 @@ const PainterSignup = () => {
       };
 
       const response = await handleSignup(signupData);
-
+      
+      // Log OTP in development mode for testing
+      if (response?.data?.otp) {
+        console.log("🔐 Painter OTP:", response.data.otp);
+      }
+      
       if (response.success) {
         navigate("/painter-verification", {
           state: { 

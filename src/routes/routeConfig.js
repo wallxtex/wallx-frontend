@@ -135,7 +135,7 @@ export const routeConfig = [
   // ==================== ADMIN PROTECTED ROUTES ====================
   {
     path: "/admin",
-    protected: false,
+    protected: true,
     allowedRoles: [ROLES.ADMIN],
     layout: AdminLayout,
     children: [
@@ -155,7 +155,7 @@ export const routeConfig = [
   // ==================== DEALER PROTECTED ROUTES ====================
   {
     path: "/dealer",
-    protected: false,
+    protected: true,
     allowedRoles: [ROLES.DEALER],
     layout: DealersLayout,
     children: [
@@ -169,7 +169,7 @@ export const routeConfig = [
   // ==================== PAINTER PROTECTED ROUTES ====================
   {
     path: "/painter-portal",
-    protected: false,
+    protected: true,
     allowedRoles: [ROLES.PAINTER],
     children: [
       {

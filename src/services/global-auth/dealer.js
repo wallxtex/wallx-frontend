@@ -8,6 +8,12 @@ import { notify } from "../../lib/notify";
 async function dealerSignupHandler(signupData) {
   try {
     const response = await API.post(dealerApis.signup, signupData);
+    
+    // Log OTP in development mode for testing
+    if (response.data?.data?.otp) {
+      console.log("🔐 Dealer Signup OTP:", response.data.data.otp);
+    }
+    
     return ApiResponseMessage.success(response.data);
   } catch (error) {
     return ApiResponseMessage.err(error);
@@ -18,7 +24,7 @@ async function dealerSignupHandler(signupData) {
 async function dealerVerifyOtpHandler(otpData) {
   try {
     const response = await API.post(dealerApis.verifyOtp, otpData);
-
+      
     // Store refresh token if provided in response
     if (response.data?.data?.refreshToken) {
       console.log(
@@ -81,6 +87,12 @@ async function dealerRefreshTokenHandler() {
 async function forgotPin(data) {
   try {
     const response = await API.post(dealerApis.forgotPin, data);
+    
+    // Log OTP in development mode for testing
+    if (response.data?.data?.otp) {
+      console.log("🔐 Dealer Forgot PIN OTP:", response.data.data.otp);
+    }
+    
     return ApiResponseMessage.success(response.data);
   } catch (error) {
     // Show error toast

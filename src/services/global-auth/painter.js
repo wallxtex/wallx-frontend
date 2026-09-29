@@ -8,6 +8,12 @@ import { notify } from "../../lib/notify";
 async function painterSignupHandler(signupData) {
   try {
     const response = await API.post(painterApis.signup, signupData);
+    
+    // Log OTP in development mode for testing
+    if (response.data?.data?.otp) {
+      console.log("🔐 Painter Signup OTP:", response.data.data.otp);
+    }
+    
     return ApiResponseMessage.success(response.data);
   } catch (error) {
     return ApiResponseMessage.err(error);
@@ -84,6 +90,12 @@ async function painterRefreshTokenHandler() {
 async function forgotPin(data) {
   try {
     const response = await API.post(painterApis.forgotPin, data);
+    
+    // Log OTP in development mode for testing
+    if (response.data?.data?.otp) {
+      console.log("🔐 Painter Forgot PIN OTP:", response.data.data.otp);
+    }
+    
     return ApiResponseMessage.success(response.data);
   } catch (error) {
     // Show error toast

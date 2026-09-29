@@ -181,6 +181,11 @@ const DealerSignup = () => {
 
       const response = await handleSignup(signupData);
 
+      // Log OTP in development mode for testing
+      if (response?.data?.otp) {
+        console.log("🔐 Dealer OTP:", response.data.otp);
+      }
+
       if (response.success) {
         navigate("/dealer-verification", {
           state: {

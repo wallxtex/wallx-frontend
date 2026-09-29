@@ -64,6 +64,11 @@ const ForgotPinModal = ({
     try {
       const response = await sendOtp(mobile);
 
+      // Log OTP in development mode for testing
+      if (response?.data?.otp) {
+        console.log("🔐 Forgot PIN OTP:", response.data.otp);
+      }
+
       // If we get here, it was successful
       setStep(2);
       setError("");
