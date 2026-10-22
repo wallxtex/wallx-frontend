@@ -8,7 +8,7 @@ import { notify } from "../../lib/notify";
 async function dealerSignupHandler(signupData) {
   try {
     const response = await API.post(dealerApis.signup, signupData);
-    
+      
     // Log OTP in development mode for testing
     if (response.data?.data?.otp) {
       console.log("🔐 Dealer Signup OTP:", response.data.data.otp);
